@@ -1,18 +1,22 @@
 package com.github.kaydunov.entity;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
 public class Account {
-    Long id;
-    Long number;
-    BigDecimal balance;
-    Bank bank;
-    List<Transaction> transactions;
+    private Long id;
+    private Long number;
+    private BigDecimal balance;
+    private Bank bank;
+    private List<Transaction> transactions;
+
+
+    public Account(Long id, Long number, BigDecimal balance) {
+        this.id = id;
+        this.number = number;
+        this.balance = balance;
+    }
 }
