@@ -1,0 +1,20 @@
+db:
+  driver: org.postgresql.Driver
+  user: root
+  password: pass
+  poolsize: 32
+  url: jdbc:postgresql://localhost:5432/bank_db
+  useUnicode: true
+  encoding: UTF-8
+  useSSL: true
+  useJDBCCompliantTimezoneShift: true
+  useLegacyDatetimeCode: false
+  serverTimezone: UTC
+  serverSslCert: classpath:server.crt
+  AUTO_SERVER: TRUE
+
+flyway:
+  url: ${db.url}
+  user: ${db.user}
+  password: ${db.password}
+  locations: classpath:db
