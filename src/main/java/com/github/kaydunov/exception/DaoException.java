@@ -1,6 +1,6 @@
 package com.github.kaydunov.exception;
 
-public class DaoException extends Exception
+public class DaoException extends RuntimeException
 {
     public DaoException()
     {

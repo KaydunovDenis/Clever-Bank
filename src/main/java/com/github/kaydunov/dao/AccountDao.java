@@ -15,7 +15,7 @@ public class AccountDao {
 
     public AccountDao() {
         try {
-            this.connection = ConnectionManager.getInstance().getConnection();
+            this.connection = ConnectionManager.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
