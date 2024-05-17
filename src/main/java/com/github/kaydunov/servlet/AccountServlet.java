@@ -3,51 +3,70 @@ package com.github.kaydunov.servlet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kaydunov.dao.AccountDao;
 import com.github.kaydunov.entity.Account;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
+import lombok.SneakyThrows;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
-@WebServlet("/account")
+//todo @WebServlet("/account")
 public class AccountServlet extends HttpServlet {
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final AccountDao accountDao = new AccountDao();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final AccountDao accountDao = new AccountDao();
 
+    @SneakyThrows
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // Read JSON payload from request
-        BufferedReader reader = req.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)  {
+        PrintWriter writer = resp.getWriter();
 
-        // Parse JSON payload into AccountOperation object
-        AccountOperation operation = mapper.readValue(sb.toString(), AccountOperation.class);
+        writer.println("<html><title>Welcome</title><body>");
+        writer.println("<h1>Have a Great Day!</h1>");
+        writer.println("<h1>AccountServlet is available.</h1>");
+        writer.println("</body></html>");
+    }
 
-        // Perform the requested operation
+    @SneakyThrows
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            switch (operation.getType()) {
-                case "deposit":
-                    deposit(operation.getAccountId(), operation.getAmount());
-                    break;
-                case "withdraw":
-                    withdraw(operation.getAccountId(), operation.getAmount());
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid operation type");
+
+            // Read JSON payload from request
+            BufferedReader reader = req.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
             }
+
+            // Parse JSON payload into AccountOperation object
+            AccountOperation operation = mapper.readValue(sb.toString(), AccountOperation.class);
+
+            // Perform the requested operation
+            performRequestOperation(operation);
             resp.setStatus(HttpServletResponse.SC_OK);
+
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println("Error: " + e.getMessage());
+        }
+    }
+
+    private void performRequestOperation(AccountOperation operation) throws SQLException, InsufficientFundsException {
+        switch (operation.getType()) {
+            case "deposit":
+                deposit(operation.getAccountId(), operation.getAmount());
+                break;
+            case "withdraw":
+                withdraw(operation.getAccountId(), operation.getAmount());
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid operation type");
         }
     }
 

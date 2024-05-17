@@ -1,10 +1,10 @@
 package com.github.kaydunov;
 
 
-import javax.servlet.ServletException;
+import com.github.kaydunov.servlet.TomcatManager;
 
 public class CleverBank {
-    public static void main(String[] args) throws ServletException {
-        // Noncompliant - method is empty
+    public static void main(String[] args) {
+        TomcatManager.start();
     }
 }
