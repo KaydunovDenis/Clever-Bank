@@ -1,6 +1,10 @@
 package com.github.kaydunov.servlet;
 
+import com.github.kaydunov.dao.AccountDao;
+import com.github.kaydunov.dao.BankDao;
+import com.github.kaydunov.dao.UserDao;
 import com.github.kaydunov.exception.TomCatException;
+import com.github.kaydunov.service.AccountService;
 import lombok.extern.java.Log;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
@@ -40,7 +44,7 @@ public class TomcatManager {
         String servletName = AccountServlet.class.getName();
         String urlPattern = "/clever.bank";
 
-        tomcat.addServlet(contextPath, servletName, new AccountServlet());
+        tomcat.addServlet(contextPath, servletName, new AccountServlet(new AccountService(new AccountDao(new BankDao(), new UserDao()))));
         context.addServletMappingDecoded(urlPattern, servletName);
     }
 }

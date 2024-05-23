@@ -1,22 +1,18 @@
 package com.github.kaydunov.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
     private Long id;
-    private Long number;
     private BigDecimal balance;
     private Bank bank;
-    private List<Transaction> transactions;
+    private User user;
 
 
-    public Account(Long id, Long number, BigDecimal balance) {
-        this.id = id;
-        this.number = number;
-        this.balance = balance;
-    }
 }

@@ -1,5 +1,6 @@
 package com.github.kaydunov.entity;
 
+import com.github.kaydunov.service.AccountService;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -9,13 +10,11 @@ import java.sql.Timestamp;
 
 @Data
 @FieldDefaults(level= AccessLevel.PRIVATE)
-public class Transaction {
+public class Operation {
     Long id;
     BigDecimal amount;
-    Timestamp timestamp;
-    Type type;
-
-    enum Type {
-
-    }
+    Timestamp createdAt;
+    OperationType operationType;
+    Account source;
+    Account destination;
 }
