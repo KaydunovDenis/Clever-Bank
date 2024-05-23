@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS account, bank, transaction_type, transaction_, user_ cascade;
+DROP TABLE IF EXISTS account, bank, operation_type, operation, user_ cascade;
 
 CREATE TABLE bank
 (
@@ -16,27 +16,30 @@ CREATE TABLE user_
 CREATE TABLE account
 (
     id      SERIAL PRIMARY KEY,
-    number  INT NOT NULL,
-    balance DECIMAL(10,2),
+    balance DECIMAL(10, 2),
     bank_id INT,
     user_id INT,
     FOREIGN KEY (bank_id) REFERENCES bank (id),
     FOREIGN KEY (user_id) REFERENCES user_ (id)
 );
 
-CREATE TABLE transaction_type
+CREATE TABLE operation_type
 (
     id   SERIAL PRIMARY KEY,
     type VARCHAR
 );
 
-CREATE TABLE transaction_
+CREATE TABLE operation
 (
-    id                  SERIAL PRIMARY KEY,
-    amount              DECIMAL(2),
-    created_at           DATE,
-    transaction_type_id INT,
-    FOREIGN KEY (transaction_type_id) REFERENCES transaction_type
+    id                     SERIAL PRIMARY KEY,
+    amount                 DECIMAL(2),
+    created_at             DATE,
+    operation_type_id      INT,
+    account_source_id      INT,
+    account_destination_id INT,
+    FOREIGN KEY (operation_type_id) REFERENCES operation_type(id),
+    FOREIGN KEY (account_source_id) REFERENCES account(id),
+    FOREIGN KEY (account_destination_id) REFERENCES account(id)
 );
 
 INSERT INTO bank (name)
@@ -68,51 +71,51 @@ VALUES ('Denis Kaydunov', 'denis.kaydunov@gmail.com'),
        ('Karen Young', 'karen.young@example.com'),
        ('William Turner', 'william.turner@example.com');
 
-INSERT INTO account (number, balance, bank_id, user_id)
-VALUES
-    (1, 5000.31, 1, 1),
-    (2, 3000.52, 2, 2),
-    (3, 7000.73, 3, 3),
-    (4, 4000.94, 4, 4),
-    (5, 6000.15, 5, 5),
-    (6, 4500.36, 1, 6),
-    (7, 2500.47, 2, 7),
-    (8, 5500.58, 3, 8),
-    (9, 3500.69, 4, 9),
-    (10, 6500.70, 5, 10),
-    (11, 5200.81, 1, 11),
-    (12, 3200.92, 2, 12),
-    (13, 7200.13, 3, 13),
-    (14, 4200.24, 4, 14),
-    (15, 6200.35, 5, 15),
-    (16, 4800.46, 1, 16),
-    (17, 2800.57, 2, 17),
-    (18, 5800.68, 3, 18),
-    (19, 3800.79, 4, 19),
-    (20, 6800.80, 5, 20),
-    (21, 5100.91, 1, 1),
-    (22, 3100.02, 2, 2),
-    (23, 7100.13, 3, 3),
-    (24, 4100.24, 4, 4),
-    (25, 6100.35, 5, 5),
-    (26, 4600.46, 1, 6),
-    (27, 2600.57, 2, 7),
-    (28, 5600.68, 3, 8),
-    (29, 3600.79, 4, 9),
-    (30, 6600.80, 5, 10),
-    (31, 5300.91, 1, 11),
-    (32, 3300.02, 2, 12),
-    (33, 7300.13, 3, 13),
-    (34, 4300.24, 4, 14),
-    (35, 6300.35, 5, 15),
-    (36, 4900.46, 1, 16),
-    (37, 2900.57, 2, 17),
-    (38, 5900.68, 3, 18),
-    (39, 3900.79, 4, 19),
-    (40, 6900.80, 5, 20);
+INSERT INTO account (balance, bank_id, user_id)
+VALUES (5000.31, 1, 1),
+       (3000.52, 2, 2),
+       (7000.73, 3, 3),
+       (4000.94, 4, 4),
+       (6000.15, 5, 5),
+       (4500.36, 1, 6),
+       (2500.47, 2, 7),
+       (5500.58, 3, 8),
+       (3500.69, 4, 9),
+       (6500.70, 5, 10),
+       (5200.81, 1, 11),
+       (3200.92, 2, 12),
+       (7200.13, 3, 13),
+       (4200.24, 4, 14),
+       (6200.35, 5, 15),
+       (4800.46, 1, 16),
+       (2800.57, 2, 17),
+       (5800.68, 3, 18),
+       (3800.79, 4, 19),
+       (6800.80, 5, 20),
+       (5100.91, 1, 1),
+       (3100.02, 2, 2),
+       (7100.13, 3, 3),
+       (4100.24, 4, 4),
+       (6100.35, 5, 5),
+       (4600.46, 1, 6),
+       (2600.57, 2, 7),
+       (5600.68, 3, 8),
+       (3600.79, 4, 9),
+       (6600.80, 5, 10),
+       (5300.91, 1, 11),
+       (3300.02, 2, 12),
+       (7300.13, 3, 13),
+       (4300.24, 4, 14),
+       (6300.35, 5, 15),
+       (4900.46, 1, 16),
+       (2900.57, 2, 17),
+       (5900.68, 3, 18),
+       (3900.79, 4, 19),
+       (6900.80, 5, 20);
 
-INSERT INTO transaction_type (type)
-VALUES ('withdraw'),
-       ('deposit');
+
+INSERT INTO operation_type (type)
+VALUES ('WITHDRAW'),
+       ('DEPOSIT');
 
 
