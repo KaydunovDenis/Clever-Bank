@@ -2,39 +2,30 @@ package com.github.kaydunov.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kaydunov.dao.AccountDao;
-import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Operation;
 import com.github.kaydunov.service.AccountService;
+import com.github.kaydunov.spring.Autowired;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Data;
 import lombok.SneakyThrows;
 
+import javax.swing.text.html.HTML;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.sql.SQLException;
 
-//todo @WebServlet("/account")
-public class AccountServlet extends HttpServlet {
+@WebServlet(value = "/account")
+public class AccountServlet extends ServletMarker {
     private static final ObjectMapper mapper = new ObjectMapper();
-    private final AccountService accountService;
+    @Autowired
+    private AccountService accountService;
 
-    public AccountServlet(AccountService accountService) {
-        this.accountService = accountService;
-    }
 
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)  {
-        PrintWriter writer = resp.getWriter();
 
-        writer.println("<html><title>Welcome</title><body>");
-        writer.println("<h1>Have a Great Day!</h1>");
-        writer.println("<h1>AccountServlet is available.</h1>");
-        writer.println("</body></html>");
     }
 
     @SneakyThrows
