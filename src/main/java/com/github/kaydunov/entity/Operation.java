@@ -15,6 +15,6 @@ public class Operation {
     BigDecimal amount;
     Timestamp createdAt;
     OperationType operationType;
-    Account source;
-    Account destination;
+    Long accountSourceId;
+    Long destinationSourceId;
 }

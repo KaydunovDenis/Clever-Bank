@@ -1,22 +1,24 @@
 package com.github.kaydunov.service;
 
-import com.github.kaydunov.dao.AccountDao;
+import com.github.kaydunov.dao.impl.AccountDao;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Operation;
 import com.github.kaydunov.exception.InsufficientFundsException;
+import com.github.kaydunov.spring.Autowired;
+import com.github.kaydunov.spring.Component;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.Optional;
 
+@Component
 public class AccountService {
-    private final AccountDao accountDao;
+    @Autowired
+    private AccountDao accountDao;
 
-    public AccountService(AccountDao accountDao) {
-        this.accountDao = accountDao;
-    }
 
     private void deposit(Operation operation) {
-        Long accountSourceId = operation.getSource().getId();
+        Long accountSourceId = operation.getAccountSourceId();
         BigDecimal amount = operation.getAmount();
 
         Account sourceAccount = accountDao.findById(accountSourceId).get();

@@ -3,6 +3,7 @@ package com.github.kaydunov.entity;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,8 +12,8 @@ import java.math.BigDecimal;
 public class Account {
     private Long id;
     private BigDecimal balance;
-    private Bank bank;
-    private User user;
-
+    private Long bankId;
+    private Long userId;
+    private List<Operation> operations;
 
 }
