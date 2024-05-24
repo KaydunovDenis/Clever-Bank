@@ -1,5 +1,6 @@
-package com.github.kaydunov.dao;
+package com.github.kaydunov.dao.impl;
 
+import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.User;
 
 import java.util.List;
@@ -13,11 +14,11 @@ public class UserDao implements CrudRepository<User, Long> {
 
     @Override
     public Optional<User> findById(Long aLong) {
-        return Optional.empty();
+        return null;
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> readAll() {
         return null;
     }
 

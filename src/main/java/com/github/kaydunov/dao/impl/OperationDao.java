@@ -1,5 +1,6 @@
-package com.github.kaydunov.dao;
+package com.github.kaydunov.dao.impl;
 
+import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.Operation;
 
 import java.util.List;
@@ -13,11 +14,11 @@ public class OperationDao implements CrudRepository<Operation, Long> {
 
     @Override
     public Optional<Operation> findById(Long aLong) {
-        return Optional.empty();
+        return null;
     }
 
     @Override
-    public List<Operation> findAll() {
+    public List<Operation> readAll() {
         return null;
     }
 
@@ -29,5 +30,9 @@ public class OperationDao implements CrudRepository<Operation, Long> {
     @Override
     public void deleteById(Long aLong) {
 
+    }
+
+    public List<Operation> getOperationsByAccountId(Long accountId) {
+        return null;
     }
 }
