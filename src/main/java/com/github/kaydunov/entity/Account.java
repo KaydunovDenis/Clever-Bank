@@ -14,6 +14,5 @@ public class Account {
     private BigDecimal balance;
     private Long bankId;
     private Long userId;
-    private List<Operation> operations;
-
+    private List<Transaction> transactions;
 }
