@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS account, bank, operation_type, operation, user_ cascade;
+DROP TABLE IF EXISTS account, bank, transaction_type, transaction, user_ cascade;
 
 CREATE TABLE bank
 (
@@ -23,13 +23,13 @@ CREATE TABLE account
     FOREIGN KEY (user_id) REFERENCES user_ (id)
 );
 
-CREATE TABLE operation_type
+CREATE TABLE transaction_type
 (
     id   SERIAL PRIMARY KEY,
     type VARCHAR
 );
 
-CREATE TABLE operation
+CREATE TABLE transaction
 (
     id                     SERIAL PRIMARY KEY,
     amount                 DECIMAL(2),
@@ -37,9 +37,9 @@ CREATE TABLE operation
     operation_type_id      INT,
     account_source_id      INT,
     account_destination_id INT,
-    FOREIGN KEY (operation_type_id) REFERENCES operation_type(id),
-    FOREIGN KEY (account_source_id) REFERENCES account(id),
-    FOREIGN KEY (account_destination_id) REFERENCES account(id)
+    FOREIGN KEY (operation_type_id) REFERENCES operation_type (id),
+    FOREIGN KEY (account_source_id) REFERENCES account (id),
+    FOREIGN KEY (account_destination_id) REFERENCES account (id)
 );
 
 INSERT INTO bank (name)
@@ -114,8 +114,9 @@ VALUES (5000.31, 1, 1),
        (6900.80, 5, 20);
 
 
-INSERT INTO operation_type (type)
-VALUES ('WITHDRAW'),
-       ('DEPOSIT');
+INSERT INTO transaction_type (type)
+VALUES ('DEPOSIT'),
+       ('WITHDRAW');
+
 
 

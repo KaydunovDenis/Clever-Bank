@@ -1,6 +1,6 @@
 package com.github.kaydunov.entity;
 
-public enum OperationType {
+public enum TransactionType {
     DEPOSIT,
     WITHDRAW
 }
