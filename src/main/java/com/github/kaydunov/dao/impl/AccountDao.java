@@ -3,19 +3,22 @@ package com.github.kaydunov.dao.impl;
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.Account;
-import com.github.kaydunov.entity.Operation;
+import com.github.kaydunov.entity.Transaction;
+import com.github.kaydunov.entity.TransactionType;
 import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.InsufficientFundsException;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
+import lombok.extern.java.Log;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Log
 @Component
 public class AccountDao implements CrudRepository<Account, Long> {
 
@@ -25,9 +28,9 @@ public class AccountDao implements CrudRepository<Account, Long> {
     private static final String SQL_UPDATE = "UPDATE account SET balance = ? WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM account WHERE id = ?";
     @Autowired
-    OperationDao operationDao;
+    TransactionDao transactionDao;
 
-    private static Connection connection;
+    public static Connection connection;
 
     static {
         try {
@@ -39,13 +42,14 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
 
     @Override
-    public Account save(Account account) {
+    public Account create(Account account) {
         try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE)) {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getBankId());
             statement.setLong(3, account.getUserId());
             ResultSet resultSet = statement.executeQuery();
             account = mapResultSetToAccount(resultSet);
+            log.info("Account created");
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -67,7 +71,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
     }
 
     @Override
-    public List<Account> readAll() {
+    public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -93,8 +97,55 @@ public class AccountDao implements CrudRepository<Account, Long> {
         }
     }
 
+    public void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
+        try {
+            connection.setAutoCommit(false);
+
+            transactionDao.create(transaction);
+            this.update(account);
+
+            connection.commit();
+            log.info(transaction + "was successfully completed");
+        } catch (SQLException e) {
+            connection.rollback();
+            log.warning(transaction + "was automatically rolled back. Reason: " + e.getMessage());
+            throw new SQLTransactionRollbackException(e.getMessage(), e);
+        }
+    }
+
+    public void transfer(BigDecimal amount, Long accountSourceId, Long accountDestinationId) throws SQLException {
+        Account sourceAccount = findById(accountSourceId).get();
+        BigDecimal newSourceBalance = sourceAccount.getBalance().subtract(amount);
+        if (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InsufficientFundsException("Insufficient funds in account");
+        }
+        sourceAccount.setBalance(newSourceBalance);
+
+        Account destinationAccount = findById(accountDestinationId).get();
+        BigDecimal newDestinationBalance = destinationAccount.getBalance().add(amount);
+        destinationAccount.setBalance(newDestinationBalance);
+
+        Timestamp createdAt = Timestamp.from(Instant.now());
+        Transaction withdrawTransaction = new Transaction(amount, createdAt, accountSourceId, accountDestinationId, TransactionType.WITHDRAW);
+        Transaction depositTransaction = new Transaction(amount, createdAt, accountDestinationId, accountSourceId, TransactionType.DEPOSIT);
+
+        try {
+            connection.setAutoCommit(false);
+
+            updateWithTransaction(sourceAccount, withdrawTransaction);
+            updateWithTransaction(destinationAccount, depositTransaction);
+
+            connection.commit();
+            log.info("Transfer was successfully completed");
+        } catch (SQLException e) {
+            connection.rollback();
+            log.warning("Transfer was automatically rolled back. Reason: " + e.getMessage());
+            throw new SQLTransactionRollbackException(e.getMessage(), e);
+        }
+    }
+
     @Override
-    public void deleteById(Long id)  {
+    public void deleteById(Long id) {
         try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
@@ -110,8 +161,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
         account.setBalance(resultSet.getBigDecimal("balance"));
         account.setBankId(resultSet.getLong("bank_id"));
         account.setUserId(resultSet.getLong("user_id"));
-        List<Operation> operations = operationDao.getOperationsByAccountId(id);
-        account.setOperations(operations);
+        List<Transaction> transactions = transactionDao.getOperationsByAccountId(id);
+        account.setTransactions(transactions);
         return account;
     }
 }
