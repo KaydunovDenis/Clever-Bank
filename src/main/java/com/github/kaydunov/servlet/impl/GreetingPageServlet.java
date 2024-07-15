@@ -1,6 +1,8 @@
-package com.github.kaydunov.servlet;
+package com.github.kaydunov.servlet.impl;
 
 import com.github.kaydunov.convertor.HTMLFileToStringConverter;
+import com.github.kaydunov.servlet.ServletMarker;
+import com.github.kaydunov.spring.Component;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +10,7 @@ import lombok.SneakyThrows;
 
 import java.io.PrintWriter;
 
+@Component
 @WebServlet("")
 public class GreetingPageServlet extends ServletMarker {
     @SneakyThrows
