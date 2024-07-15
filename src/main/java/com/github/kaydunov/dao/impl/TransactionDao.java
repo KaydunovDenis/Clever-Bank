@@ -5,12 +5,14 @@ import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
 import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.spring.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TransactionDao implements CrudRepository<Transaction, Long> {
 
     private static final String SQL_CREATE = "INSERT INTO operation (amount, created_at, operation_type_id, account_source_id, account_destination_id) VALUES (?, ?, ?, ?, ?)";
