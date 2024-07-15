@@ -2,12 +2,6 @@
   <configuration default="false" name="CleverBank" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.github.kaydunov.CleverBank" />
     <module name="Clever-Bank" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="com.github.kaydunov.servlet.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
     <method v="2">
       <option name="Make" enabled="true" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="docker/docker-compose.yaml: Compose Deployment" run_configuration_type="docker-deploy" />
