@@ -34,10 +34,10 @@ CREATE TABLE transaction
     id                     SERIAL PRIMARY KEY,
     amount                 DECIMAL(2),
     created_at             DATE,
-    operation_type_id      INT,
+    transaction_type_id      INT,
     account_source_id      INT,
     account_destination_id INT,
-    FOREIGN KEY (operation_type_id) REFERENCES operation_type (id),
+    FOREIGN KEY (transaction_type_id) REFERENCES transaction_type (id),
     FOREIGN KEY (account_source_id) REFERENCES account (id),
     FOREIGN KEY (account_destination_id) REFERENCES account (id)
 );
