@@ -32,7 +32,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     public static Connection connection;
 
-    static {
+
+    public AccountDao() {
         try {
             connection = ConnectionManager.getConnection();
         } catch (SQLException e) {
@@ -97,22 +98,6 @@ public class AccountDao implements CrudRepository<Account, Long> {
         }
     }
 
-    public void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
-        try {
-            connection.setAutoCommit(false);
-
-            transactionDao.create(transaction);
-            this.update(account);
-
-            connection.commit();
-            log.info(transaction + "was successfully completed");
-        } catch (SQLException e) {
-            connection.rollback();
-            log.warning(transaction + "was automatically rolled back. Reason: " + e.getMessage());
-            throw new SQLTransactionRollbackException(e.getMessage(), e);
-        }
-    }
-
     public void transfer(BigDecimal amount, Long accountSourceId, Long accountDestinationId) throws SQLException {
         Account sourceAccount = findById(accountSourceId).get();
         BigDecimal newSourceBalance = sourceAccount.getBalance().subtract(amount);
@@ -140,6 +125,22 @@ public class AccountDao implements CrudRepository<Account, Long> {
         } catch (SQLException e) {
             connection.rollback();
             log.warning("Transfer was automatically rolled back. Reason: " + e.getMessage());
+            throw new SQLTransactionRollbackException(e.getMessage(), e);
+        }
+    }
+
+    private void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
+        try {
+            connection.setAutoCommit(false);
+
+            transactionDao.create(transaction);
+            this.update(account);
+
+            connection.commit();
+            log.info(transaction + "was successfully completed");
+        } catch (SQLException e) {
+            connection.rollback();
+            log.warning(transaction + "was automatically rolled back. Reason: " + e.getMessage());
             throw new SQLTransactionRollbackException(e.getMessage(), e);
         }
     }

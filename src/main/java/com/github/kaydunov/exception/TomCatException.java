@@ -5,4 +5,8 @@ public class TomCatException extends RuntimeException {
     public TomCatException(String message, Exception e) {
         super(message, e);
     }
+
+    public TomCatException(String message) {
+        super(message);
+    }
 }
