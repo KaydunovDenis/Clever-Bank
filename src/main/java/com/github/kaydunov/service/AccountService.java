@@ -2,7 +2,6 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dao.impl.AccountDao;
 import com.github.kaydunov.entity.Account;
-import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 
@@ -15,12 +14,16 @@ public class AccountService {
     @Autowired
     private AccountDao accountDao;
 
-    public void transfer(BigDecimal amount, Long accountSourceId, Long accountDestinationId) {
-        try {
-            accountDao.transfer(amount, accountSourceId, accountDestinationId);
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
+    public void transfer(BigDecimal amount, Long accountSourceId, Long accountDestinationId) throws SQLException {
+        accountDao.transfer(amount, accountSourceId, accountDestinationId);
+    }
+
+    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException {
+        accountDao.withdraw(amount, accountSourceId);
+    }
+
+    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException {
+        accountDao.deposit(amount, accountDestinationId);
     }
 
     public List<Account> getAll(){
