@@ -15,10 +15,10 @@ import java.util.Optional;
 @Component
 public class TransactionDao implements CrudRepository<Transaction, Long> {
 
-    private static final String SQL_CREATE = "INSERT INTO operation (amount, created_at, operation_type_id, account_source_id, account_destination_id) VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM operation WHERE id = ?";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM operation";
-    private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM operation WHERE account_source_id = ? OR account_destination_id = ?";
+    private static final String SQL_CREATE = "INSERT INTO transaction (amount, created_at, transaction_type_id, account_source_id, account_destination_id) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM transaction WHERE id = ?";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM transaction";
+    private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
 
     private static Connection connection;
 
@@ -35,7 +35,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setBigDecimal(1, transaction.getAmount());
             statement.setTimestamp(2, transaction.getCreatedAt());
-            statement.setInt(3, transaction.getTransactionType().ordinal() + 1); // Assuming the ordinal corresponds to the operation_type_id
+            statement.setInt(3, transaction.getTransactionType().ordinal() + 1); // Assuming the ordinal corresponds to the transaction_type_id
             statement.setLong(4, transaction.getAccountSourceId());
             statement.setLong(5, transaction.getAccountDestinationId());
             int affectedRows = statement.executeUpdate();
@@ -112,7 +112,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         transaction.setId(resultSet.getLong("id"));
         transaction.setAmount(resultSet.getBigDecimal("amount"));
         transaction.setCreatedAt(resultSet.getTimestamp("created_at"));
-        transaction.setTransactionType(TransactionType.values()[resultSet.getInt("operation_type_id") - 1]); // Assuming the operation_type_id corresponds to the ordinal
+        transaction.setTransactionType(TransactionType.values()[resultSet.getInt("transaction_type_id") - 1]); // Assuming the transaction_type_id corresponds to the ordinal
         transaction.setAccountSourceId(resultSet.getLong("account_source_id"));
         transaction.setAccountDestinationId(resultSet.getLong("account_destination_id"));
         return transaction;
