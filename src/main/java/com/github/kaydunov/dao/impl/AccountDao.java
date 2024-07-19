@@ -8,7 +8,7 @@ import com.github.kaydunov.entity.TransactionType;
 import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -17,15 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Log
+@Slf4j
 @Component
 public class AccountDao implements CrudRepository<Account, Long> {
 
-    private static final String SQL_CREATE = "INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)";
+    private static final String SQL_CREATE = "INSERT INTO account (balance, bank_id, user_id, is_saving_account) VALUES (?, ?, ?, ?)";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM account WHERE id = ?";
     private static final String SQL_SELECT_ALL = "SELECT * FROM account";
     private static final String SQL_UPDATE_BALANCE = "UPDATE account SET balance = ? WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM account WHERE id = ?";
+
+    private static final String SQL_SELECT_ALL_SAVING_ACCOUNTS = "SELECT * FROM account WHERE is_saving_account = TRUE";
     @Autowired
     private TransactionDao transactionDao;
 
@@ -47,7 +49,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             statement.setLong(3, account.getUserId());
             ResultSet resultSet = statement.executeQuery();
             account = mapResultSetToAccount(resultSet);
-            log.info("Account created");
+            log.info("Account was created: " + account);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -62,6 +64,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             try (ResultSet resultSet = statement.executeQuery()) {
                 account = Optional.of(mapResultSetToAccount(resultSet));
             }
+            log.info("Account was found: " + account);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -78,6 +81,23 @@ public class AccountDao implements CrudRepository<Account, Long> {
                     accounts.add(account);
                 }
             }
+            log.info("Accounts were found: " + accounts.stream().toList());
+        } catch (SQLException e) {
+            throw new DaoException(e.getMessage(), e);
+        }
+        return accounts;
+    }
+
+    public List<Account> findAllSavingAccounts() {
+        List<Account> accounts = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL_SAVING_ACCOUNTS)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Account account = mapResultSetToAccount(resultSet);
+                    accounts.add(account);
+                }
+            }
+            log.info("Accounts were found: " + accounts.stream().toList());
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -90,6 +110,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getId());
             statement.executeUpdate();
+            log.info("Account was updated: " + account);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -113,10 +134,10 @@ public class AccountDao implements CrudRepository<Account, Long> {
             updateWithTransaction(destinationAccount, depositTransaction);
 
             connection.commit();
-            log.info("Transfer was successfully completed");
+            log.info("Transfer %s from %s account to %s account was successfully completed.", amount, sourceAccount.getId(), destinationAccount.getId());
         } catch (SQLException e) {
             connection.rollback();
-            log.warning("Transfer was automatically rolled back. Reason: " + e.getMessage());
+            log.info("Transfer was automatically rolled back. Reason: " + e.getMessage());
             throw new SQLTransactionRollbackException(e.getMessage(), e);
         }
     }
@@ -150,7 +171,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             log.info(transaction + "was successfully completed");
         } catch (DaoException e) {
             connection.rollback();
-            log.warning(transaction + "was automatically rolled back. Reason: " + e.getMessage());
+            log.info(transaction + "was automatically rolled back. Reason: " + e.getMessage());
             throw new SQLTransactionRollbackException(e.getMessage(), e);
         } finally {
             connection.setAutoCommit(true);

@@ -17,13 +17,14 @@ public class ConnectionManager {
     private static final Properties PROPERTIES = new Properties();
     private static final String DATABASE_URL;
 
+    private static final String YAML_FILE_PATH = "src/main/resources/application.yaml";
+
     static {
-        String yamlFilePath = "src/main/resources/application.yaml";
 
         // Load YAML file
         Yaml yaml = new Yaml();
         try {
-            FileInputStream inputStream = new FileInputStream(yamlFilePath);
+            FileInputStream inputStream = new FileInputStream(YAML_FILE_PATH);
             Map<String, Object> yamlMap = yaml.load(inputStream);
 
             // Get JDBC driver configuration
