@@ -26,7 +26,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         try {
             connection = ConnectionManager.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
     }
 

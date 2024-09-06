@@ -24,7 +24,7 @@ public class UserDao implements CrudRepository<User, Long> {
         try {
             connection = ConnectionManager.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
     }
 

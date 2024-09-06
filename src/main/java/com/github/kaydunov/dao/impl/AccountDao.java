@@ -21,13 +21,13 @@ import java.util.Optional;
 @Component
 public class AccountDao implements CrudRepository<Account, Long> {
 
-    private static final String SQL_CREATE = "INSERT INTO account (balance, bank_id, user_id, is_saving_account) VALUES (?, ?, ?, ?)";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM account WHERE id = ?";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM account";
-    private static final String SQL_UPDATE_BALANCE = "UPDATE account SET balance = ? WHERE id = ?";
-    private static final String SQL_DELETE_BY_ID = "DELETE FROM account WHERE id = ?";
+    public static final String SQL_CREATE = "INSERT INTO account (balance, bank_id, user_id, is_saving_account) VALUES (?, ?, ?, ?)";
+    public static final String SQL_SELECT_BY_ID = "SELECT * FROM account WHERE id = ?";
+    public static final String SQL_SELECT_ALL = "SELECT * FROM account";
+    public static final String SQL_UPDATE_BALANCE = "UPDATE account SET balance = ? WHERE id = ?";
+    public static final String SQL_DELETE_BY_ID = "DELETE FROM account WHERE id = ?";
 
-    private static final String SQL_SELECT_ALL_SAVING_ACCOUNTS = "SELECT * FROM account WHERE is_saving_account = TRUE";
+    public static final String SQL_SELECT_ALL_SAVING_ACCOUNTS = "SELECT * FROM account WHERE is_saving_account = TRUE";
     @Autowired
     private TransactionDao transactionDao;
 
@@ -47,6 +47,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getBankId());
             statement.setLong(3, account.getUserId());
+            statement.setBoolean(4, account.isSavingAccount());
             ResultSet resultSet = statement.executeQuery();
             account = mapResultSetToAccount(resultSet);
             log.info("Account was created: " + account);
