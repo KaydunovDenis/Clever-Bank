@@ -3,6 +3,8 @@ package com.github.kaydunov.percentage_processor;
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.exception.DaoException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
@@ -15,11 +17,12 @@ import static org.mockito.Mockito.*;
 
 public class AccountPercentDaoTest {
 
-    private final Connection connectionMock = mock(Connection.class, "connection");
+    private static final double PERCENT = 1.0;
+    private Connection connectionMock = mock(Connection.class, "connection");
 
     private AutoCloseable autoCloseableMocks;
 
-    @InjectMocks()
+    @InjectMocks
     private AccountPercentDao target;
     @Mock
     private PreparedStatement preparedStatementMock;
@@ -33,7 +36,6 @@ public class AccountPercentDaoTest {
     @Test
     void chargePercents() throws SQLException {
         //given
-        double percent = 1.0;
 
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
             connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
@@ -43,9 +45,9 @@ public class AccountPercentDaoTest {
             when(connectionMock.prepareStatement(any())).thenReturn(preparedStatementMock);
 
             //then
-            target.chargePercents(percent);
+            target.chargePercents(PERCENT);
 
-            verify(preparedStatementMock).setDouble(1, percent);
+            verify(preparedStatementMock).setDouble(1, PERCENT);
             verify(preparedStatementMock).executeUpdate();
         }
     }
@@ -53,7 +55,6 @@ public class AccountPercentDaoTest {
     @Test
     void chargePercents_When_Error() throws SQLException {
         //given
-        double percent = 1.0;
 
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
             connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
@@ -65,11 +66,19 @@ public class AccountPercentDaoTest {
 
             //then
             final Throwable result = assertThrows(DaoException.class, () -> {
-                target.chargePercents(percent);
+                target.chargePercents(PERCENT);
             });
 
-            verify(preparedStatementMock).setDouble(1, percent);
+            verify(preparedStatementMock).setDouble(1, PERCENT);
             verify(preparedStatementMock).executeUpdate();
         }
+    }
+
+    @Disabled("MANUAL")
+    @Test
+    void manual_test() throws DaoException {
+        target = new AccountPercentDao();
+        target.chargePercents(PERCENT);
+
     }
 }
