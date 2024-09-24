@@ -14,11 +14,11 @@ import java.sql.SQLException;
 public class AccountPercentDao {
 
     private static final String SQL_CHARGE_PERCENTS = """
-            UPDATE account SET balance = balance + (? * balance/100) 
+            UPDATE account SET balance = balance + (? * balance/100)
                 WHERE is_saving_account = true AND balance > 0
             """;
 
-    private static Connection connection;
+    private static final Connection connection;
 
     static {
         try {
