@@ -3,10 +3,12 @@ package com.github.kaydunov.percentage_processor;
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.exception.DaoException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class AccountPercentDaoTest {
 
     private static final double PERCENT = 1.0;
-    private Connection connectionMock = mock(Connection.class, "connection");
+    private final Connection connectionMock = mock(Connection.class, "connection");
 
     private AutoCloseable autoCloseableMocks;
 
