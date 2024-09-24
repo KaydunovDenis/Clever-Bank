@@ -1,5 +1,6 @@
 package com.github.kaydunov.entity;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -26,9 +27,7 @@ class AccountSapientGeneratedTest {
         List<Transaction> transactionList = new ArrayList<>();
         Account target = new Account(0L, new BigDecimal("1.0"), 0L, 0L, transactionList, true);
         //Act Statement(s)
-        final InsufficientFundsException result = assertThrows(InsufficientFundsException.class, () -> {
-            target.withdrawBalance(new BigDecimal("2.0"));
-        });
+        final InsufficientFundsException result = assertThrows(InsufficientFundsException.class, () -> target.withdrawBalance(new BigDecimal("2.0")));
         
         //Assert statement(s)
         assertAll("result", () -> assertThat(result, is(notNullValue())));
@@ -48,7 +47,7 @@ class AccountSapientGeneratedTest {
         String money = "0.4";
         target.withdrawBalance(new BigDecimal(money));
         //Assert statement(s)
-        assertEquals(new BigDecimal("0.6"), target.getBalance());
+        Assertions.assertEquals(new BigDecimal("0.6"), target.getBalance());
     }
 
     //Sapient generated method id: ${depositBalanceTest}, hash: D691429363B3DB6A3D6CC8BF465485D7
@@ -62,7 +61,7 @@ class AccountSapientGeneratedTest {
         String money = "1.0";
         target.depositBalance(new BigDecimal(money));
         //Assert statement(s)
-        assertEquals(new BigDecimal("3.0"), target.getBalance());
+        Assertions.assertEquals(new BigDecimal("3.0"), target.getBalance());
 
     }
 }

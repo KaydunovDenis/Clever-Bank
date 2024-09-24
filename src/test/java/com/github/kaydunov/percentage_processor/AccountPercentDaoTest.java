@@ -40,7 +40,7 @@ public class AccountPercentDaoTest {
         //given
 
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
 
             //when
@@ -59,7 +59,7 @@ public class AccountPercentDaoTest {
         //given
 
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
 
             //when
@@ -67,7 +67,7 @@ public class AccountPercentDaoTest {
             when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
 
             //then
-            final Throwable result = assertThrows(DaoException.class, () -> {
+            assertThrows(DaoException.class, () -> {
                 target.chargePercents(PERCENT);
             });
 
