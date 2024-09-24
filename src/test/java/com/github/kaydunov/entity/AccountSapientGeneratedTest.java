@@ -1,18 +1,19 @@
 package com.github.kaydunov.entity;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.Test;
-import java.util.List;
 import com.github.kaydunov.exception.InsufficientFundsException;
-import java.util.ArrayList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
 class AccountSapientGeneratedTest {

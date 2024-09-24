@@ -67,9 +67,7 @@ public class AccountPercentDaoTest {
             when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
 
             //then
-            assertThrows(DaoException.class, () -> {
-                target.chargePercents(PERCENT);
-            });
+            assertThrows(DaoException.class, () -> target.chargePercents(PERCENT));
 
             verify(preparedStatementMock).setDouble(1, PERCENT);
             verify(preparedStatementMock).executeUpdate();
