@@ -13,16 +13,17 @@ import java.sql.SQLException;
 @Component
 public class AccountPercentDao {
 
-    private static final String SQL_CHARGE_PERCENTS = """
+    public static final String SQL_CHARGE_PERCENTS = """
             UPDATE account SET balance = balance + (? * balance/100)
                 WHERE is_saving_account = true AND balance > 0
             """;
 
-    private static final Connection connection;
+    private final Connection connection;
 
-    static {
+    // Default constructor uses ConnectionManager for production
+    public AccountPercentDao() {
         try {
-            connection = ConnectionManager.getConnection();
+            this.connection = ConnectionManager.getConnection();
         } catch (SQLException e) {
             throw new DaoException(e);
         }

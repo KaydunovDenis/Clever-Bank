@@ -2,13 +2,11 @@ package com.github.kaydunov.percentage_processor;
 
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.exception.DaoException;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,61 +15,55 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class AccountPercentDaoTest {
+class AccountPercentDaoTest {
 
     private static final double PERCENT = 1.0;
-    private final Connection connectionMock = mock(Connection.class, "connection");
 
-    private AutoCloseable autoCloseableMocks;
-
-    @InjectMocks
     private AccountPercentDao target;
-    @Mock
+    private Connection connectionMock;
     private PreparedStatement preparedStatementMock;
 
-    @AfterEach()
-    public void afterTest() throws Exception {
-        if (autoCloseableMocks != null)
-            autoCloseableMocks.close();
-    }
+    @BeforeEach
+    void setUp() throws SQLException {
+        // Mocking Connection and PreparedStatement
+        connectionMock = mock(Connection.class);
+        preparedStatementMock = mock(PreparedStatement.class);
 
-    @Test
-    void chargePercents() throws SQLException {
-        //given
+        // Use Mockito's static mocking to mock the static method `ConnectionManager.getConnection()`
+        try (MockedStatic<ConnectionManager> mockedConnectionManager = mockStatic(ConnectionManager.class)) {
+            mockedConnectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
 
-        try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
-            autoCloseableMocks = MockitoAnnotations.openMocks(this);
+            // Stubbing connection.prepareStatement to return the mocked PreparedStatement
+            when(connectionMock.prepareStatement(AccountPercentDao.SQL_CHARGE_PERCENTS)).thenReturn(preparedStatementMock);
 
-            //when
-            when(connectionMock.prepareStatement(any())).thenReturn(preparedStatementMock);
-
-            //then
-            target.chargePercents(PERCENT);
-
-            verify(preparedStatementMock).setDouble(1, PERCENT);
-            verify(preparedStatementMock).executeUpdate();
+            // Creating the instance of AccountPercentDao (this should pick up the mocked connection)
+            target = new AccountPercentDao();
         }
     }
 
     @Test
-    void chargePercents_When_Error() throws SQLException {
-        //given
+    void testChargePercents_Success() throws SQLException {
+        // Perform the method under test
+        target.chargePercents(PERCENT);
 
-        try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
-            autoCloseableMocks = MockitoAnnotations.openMocks(this);
+        // Verify that the correct SQL query was prepared
+        verify(connectionMock).prepareStatement(AccountPercentDao.SQL_CHARGE_PERCENTS);
 
-            //when
-            when(connectionMock.prepareStatement(any())).thenReturn(preparedStatementMock);
-            when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
+        // Verify the percent was set as a parameter in the PreparedStatement
+        verify(preparedStatementMock).setDouble(1, PERCENT);
 
-            //then
-            assertThrows(DaoException.class, () -> target.chargePercents(PERCENT));
+        // Verify the statement was executed
+        verify(preparedStatementMock).executeUpdate();
+    }
 
-            verify(preparedStatementMock).setDouble(1, PERCENT);
-            verify(preparedStatementMock).executeUpdate();
-        }
+    @Test
+    void testChargePercents_ThrowsDaoExceptionOnSQLException() throws SQLException {
+        // Simulate a SQLException when preparing the statement
+        when(connectionMock.prepareStatement(AccountPercentDao.SQL_CHARGE_PERCENTS))
+                .thenThrow(new SQLException("Test SQL Exception"));
+
+        // Assert that the method throws DaoException
+        assertThrows(DaoException.class, () -> target.chargePercents(PERCENT));
     }
 
     @Disabled("MANUAL")
@@ -79,6 +71,6 @@ public class AccountPercentDaoTest {
     void manual_test() throws DaoException {
         target = new AccountPercentDao();
         target.chargePercents(PERCENT);
-
+        Assertions.assertTrue(true); // Add your own assertions here
     }
 }
