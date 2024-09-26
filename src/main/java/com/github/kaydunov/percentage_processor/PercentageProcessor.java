@@ -26,13 +26,13 @@ public class PercentageProcessor {
     @Autowired
     private AccountService accountService;
 
-
-    public static void main(String[] args) {
-
+    public void processAccounts() {
+        // Асинхронный вызов проверки и начисления процентов
+        //checkAndApplyInterestAsync();
     }
 
-    public static void chargePercentage() {
-        //TODO
+    public void chargePercentage() {
+        accountService.chargePercents(getPercentageFromYaml());
     }
 
 

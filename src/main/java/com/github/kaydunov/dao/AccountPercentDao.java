@@ -1,6 +1,5 @@
-package com.github.kaydunov.percentage_processor;
+package com.github.kaydunov.dao;
 
-import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Component;
 import lombok.extern.slf4j.Slf4j;

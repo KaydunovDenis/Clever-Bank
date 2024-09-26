@@ -1,5 +1,6 @@
-package com.github.kaydunov.percentage_processor;
+package com.github.kaydunov.dao.impl;
 
+import com.github.kaydunov.dao.AccountPercentDao;
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.exception.DaoException;
 import org.junit.jupiter.api.Assertions;
