@@ -12,6 +12,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <apache.httpclient>4.5.14</apache.httpclient>
   </properties>
+
+  <repositories>
+    <!-- Официальный репозиторий Maven Central -->
+    <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+  </repositories>
+
+
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -121,6 +131,21 @@
       <version>5.2.0</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <version>2.0.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>2.0.9</version>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
   <build />
 </project>
