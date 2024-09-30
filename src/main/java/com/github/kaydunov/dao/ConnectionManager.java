@@ -42,7 +42,11 @@ public class ConnectionManager {
     private ConnectionManager(){}
 
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DATABASE_URL, PROPERTIES);
+    public static Connection getConnection() {
+        try {
+            return DriverManager.getConnection(DATABASE_URL, PROPERTIES);
+        } catch (SQLException e) {
+            throw new DatabaseConfigurationException(e);
+        }
     }
 }

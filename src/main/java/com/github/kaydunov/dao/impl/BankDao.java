@@ -18,15 +18,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
     private static final String SQL_UPDATE = "UPDATE bank SET name = ? WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM bank WHERE id = ?";
 
-    private static Connection connection;
-
-    static {
-        try {
-            connection = ConnectionManager.getConnection();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-    }
+    private static Connection connection = ConnectionManager.getConnection();
 
     @Override
     public Bank create(Bank bank) {

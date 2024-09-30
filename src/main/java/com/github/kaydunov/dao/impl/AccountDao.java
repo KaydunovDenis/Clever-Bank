@@ -31,15 +31,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Autowired
     private TransactionDao transactionDao;
 
-    private static Connection connection;
-
-    static {
-        try {
-            connection = ConnectionManager.getConnection();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-    }
+    private static Connection connection = ConnectionManager.getConnection();
 
     @Override
     public Account create(Account account) {

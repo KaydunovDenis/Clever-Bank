@@ -17,16 +17,7 @@ public class AccountPercentDao {
                 WHERE is_saving_account = true AND balance > 0
             """;
 
-    private final Connection connection;
-
-    // Default constructor uses ConnectionManager for production
-    public AccountPercentDao() {
-        try {
-            this.connection = ConnectionManager.getConnection();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-    }
+    private final Connection connection = ConnectionManager.getConnection();
 
     public void chargePercents(double percent) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(SQL_CHARGE_PERCENTS)) {

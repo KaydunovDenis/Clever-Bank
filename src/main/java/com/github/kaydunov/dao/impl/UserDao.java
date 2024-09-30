@@ -18,15 +18,7 @@ public class UserDao implements CrudRepository<User, Long> {
     private static final String SQL_UPDATE = "UPDATE user_ SET name = ?, email = ? WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM user_ WHERE id = ?";
 
-    private static Connection connection;
-
-    static {
-        try {
-            connection = ConnectionManager.getConnection();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-    }
+    private static Connection connection = ConnectionManager.getConnection();
 
     @Override
     public User create(User user) {

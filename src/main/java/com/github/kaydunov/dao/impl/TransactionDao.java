@@ -20,15 +20,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     private static final String SQL_SELECT_ALL = "SELECT * FROM transaction";
     private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
 
-    private static Connection connection;
-
-    static {
-        try {
-            connection = ConnectionManager.getConnection();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-    }
+    private static Connection connection = ConnectionManager.getConnection();
 
     @Override
     public Transaction create(Transaction transaction) {
