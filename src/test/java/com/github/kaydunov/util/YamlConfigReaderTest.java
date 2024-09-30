@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
+import static com.github.kaydunov.util.YamlConfigReader.PERCENTAGE_PROPERTY;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class YamlConfigReaderTest {
@@ -15,10 +17,10 @@ public class YamlConfigReaderTest {
         Map<String, String> result = YamlConfigReader.readConfigYaml();
 
         // Assert statement(s)
-        assertTrue(result.containsKey("percentage"));
+        assertTrue(result.containsKey(PERCENTAGE_PROPERTY));
 
-        Object percentage = result.get("percentage");
-        assertTrue(percentage instanceof Number, "Percentage should be a number");
+        Object percentage = result.get(PERCENTAGE_PROPERTY);
+        assertInstanceOf(Number.class, percentage, "Percentage should be a number");
     }
 
 }
