@@ -7,10 +7,10 @@
   <version>1.0-SNAPSHOT</version>
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
-    <apache.tomcat-embed-core>9.0.81</apache.tomcat-embed-core>
     <maven.compiler.source>17</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <apache.httpclient>4.5.14</apache.httpclient>
+    <apache.tomcat>11.0.0-M26</apache.tomcat> <!-- New property for Tomcat versions -->
   </properties>
 
   <repositories>
@@ -38,27 +38,27 @@
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
-      <version>10.1.0-M11</version>
+      <version>${apache.tomcat}</version> <!-- Reference the new property -->
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-jasper</artifactId>
-      <version>10.1.0-M11</version>
+      <version>${apache.tomcat}</version> <!-- Reference the new property -->
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper</artifactId>
-      <version>10.1.0-M11</version>
+      <version>${apache.tomcat}</version> <!-- Reference the new property -->
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.0-M11</version>
+      <version>${apache.tomcat}</version> <!-- Reference the new property -->
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jsp-api</artifactId>
-      <version>10.1.0-M11</version>
+      <version>${apache.tomcat}</version> <!-- Reference the new property -->
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -95,6 +95,8 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.36</version>
     </dependency>
+
+    <!--For Tests-->
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
@@ -102,9 +104,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>5.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -125,18 +127,15 @@
       <version>5.10.2</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-inline</artifactId>
-      <version>5.2.0</version>
-      <scope>test</scope>
-    </dependency>
+    <!--For async testing-->
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <version>4.2.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- end-->
+
   </dependencies>
   <build />
 </project>
