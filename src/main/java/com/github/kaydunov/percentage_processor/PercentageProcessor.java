@@ -4,6 +4,11 @@ import com.github.kaydunov.service.AccountService;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import static com.github.kaydunov.util.YamlConfigReader.getPercentageFromYaml;
 
 /**
@@ -20,17 +25,23 @@ public class PercentageProcessor {
 
     @Autowired
     private AccountService accountService;
+    private ScheduledExecutorService executorService;
 
-    public void processAccounts() {
-        // Асинхронный вызов проверки и начисления процентов
-        //checkAndApplyInterestAsync();
-    }
-
-    public void chargePercentage() {
-        accountService.chargePercents(getPercentageFromYaml());
+    public void startProcessing() {
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(this::chargePercentageAsync, 0, CHECK_PERIOD, TimeUnit.SECONDS);
     }
 
 
+    private void chargePercentageAsync() {
+        CompletableFuture.runAsync(() -> accountService.chargePercents(getPercentageFromYaml()));
+    }
+
+    public void stopProcessing() {
+        if (executorService != null) {
+            executorService.shutdown();
+        }
+    }
 
 
 }
