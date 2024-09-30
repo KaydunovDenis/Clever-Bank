@@ -14,7 +14,7 @@
   </properties>
 
   <repositories>
-    <!-- Официальный репозиторий Maven Central -->
+    <!-- Official Maven Central repository -->
     <repository>
       <id>central</id>
       <url>https://repo.maven.apache.org/maven2</url>
@@ -131,7 +131,7 @@
       <version>5.2.0</version>
       <scope>test</scope>
     </dependency>
-
+    <!--powermock-->
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito2</artifactId>
@@ -144,7 +144,7 @@
       <version>2.0.9</version>
       <scope>test</scope>
     </dependency>
-
+    <!--/powermock-->
 
   </dependencies>
   <build />
