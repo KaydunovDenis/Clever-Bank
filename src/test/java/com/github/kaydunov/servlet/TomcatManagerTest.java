@@ -1,6 +1,5 @@
 package com.github.kaydunov.servlet;
 
-import com.github.kaydunov.CleverBank;
 import com.github.kaydunov.exception.TomCatException;
 import com.github.kaydunov.spring.ApplicationContext;
 import jakarta.servlet.http.HttpServlet;
@@ -9,7 +8,6 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.mockito.MockedStatic;
 
 import java.util.HashSet;
@@ -25,12 +23,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class TomcatManagerSapientGeneratedTest {
+class TomcatManagerTest {
 
-    private ApplicationContext applicationContext = new ApplicationContext(CleverBank.BASE_PACKAGE);
-
-    private final Context contextMock = mock(Context.class, "context");
+    private ApplicationContext applicationContext;
 
     //Sapient generated method id: ${startWhenAnnotationIsNotNull}, hash: 03873BFF0DEFCD415D2FCA84FAFB1405
     @Test()
@@ -43,11 +38,11 @@ class TomcatManagerSapientGeneratedTest {
          * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
          *  The test code, including the assertion statements, has been successfully generated.
          */
-         //Arrange Statement(s)
+        //Arrange Statement(s)
         Wrapper wrapperMock = mock(Wrapper.class);
         HttpServlet httpServletMock = mock(HttpServlet.class);
         try (MockedStatic<Tomcat> tomcat = mockStatic(Tomcat.class);
-            MockedStatic<ServletScanner> servletScanner = mockStatic(ServletScanner.class)) {
+             MockedStatic<ServletScanner> servletScanner = mockStatic(ServletScanner.class)) {
             Set<Class<?>> anySet = new HashSet<>();
             anySet.add(Object.class);
             servletScanner.when(() -> ServletScanner.getServletClasses("")).thenReturn(anySet);
@@ -73,7 +68,7 @@ class TomcatManagerSapientGeneratedTest {
          * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
          *  The test code, including the assertion statements, has been successfully generated.
          */
-         //Arrange Statement(s)
+        //Arrange Statement(s)
         try (MockedStatic<ServletScanner> servletScanner = mockStatic(ServletScanner.class)) {
             Set<Class<?>> anySet = new HashSet<>();
             anySet.add(Object.class);
@@ -95,8 +90,15 @@ class TomcatManagerSapientGeneratedTest {
 
     @Test
     void testInitializeTomcat() {
+        //arrange
+        applicationContext = mock(ApplicationContext.class);
+        //act
         Tomcat tomcat = TomcatManager.initializeTomcat();
+
+        //assert
         assertNotNull(tomcat);
+        assertNotNull(tomcat.getConnector());
         assertEquals(TomcatManager.PORT, tomcat.getConnector().getPort());
+        assertEquals(TomcatManager.TEMP, tomcat.getServer().getCatalinaHome().getName());
     }
 }
