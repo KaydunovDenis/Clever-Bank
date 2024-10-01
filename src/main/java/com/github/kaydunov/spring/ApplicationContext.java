@@ -1,5 +1,6 @@
 package com.github.kaydunov.spring;
 
+import com.github.kaydunov.exception.ApplicationContextException;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
@@ -7,11 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A simple Spring-like application context.
+ */
 public class ApplicationContext {
     private final Map<Class<?>, Object> beanRegistry = new HashMap<>();
 
-    public ApplicationContext(String basePackage) {
-        scanAndRegisterBeans(basePackage);
+    /**
+     *
+     * @param clazz - this class exist in your base package
+     * @return
+     */
+    public ApplicationContext(Class<?> clazz) {
+        scanAndRegisterBeans(clazz.getPackage().getName());
         injectDependencies();
     }
 
@@ -33,7 +42,7 @@ public class ApplicationContext {
             Object instance = clazz.getDeclaredConstructor().newInstance();
             beanRegistry.put(clazz, instance);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create bean for " + clazz.getName(), e);
+            throw new ApplicationContextException("Failed to create bean for " + clazz.getName(), e);
         }
     }
 
@@ -47,7 +56,7 @@ public class ApplicationContext {
                         try {
                             field.set(bean, dependency);
                         } catch (IllegalAccessException e) {
-                            throw new RuntimeException("Failed to inject dependency for " + field.getName(), e);
+                            throw new ApplicationContextException("Failed to inject dependency for " + field.getName(), e);
                         }
                     }
                 }
@@ -55,5 +64,3 @@ public class ApplicationContext {
         }
     }
 }
-
-
