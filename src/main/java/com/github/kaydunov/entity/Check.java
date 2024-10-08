@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 @Data
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Check {
     int number;
-    Date date;
+    Timestamp date;
     TransactionType type;
     String recipientBankName;
     String senderBankName;
@@ -23,15 +24,22 @@ public class Check {
 
     @Override
     public String toString() {
-        return "Check{" +
-                "number=" + number +
-                ", date=" + date +
-                ", type=" + type +
-                ", recipientBankName='" + recipientBankName + '\'' +
-                ", senderBankName='" + senderBankName + '\'' +
-                ", accountSourceId=" + accountSourceId +
-                ", accountDestinationId=" + accountDestinationId +
-                ", amount=" + amount +
-                '}';
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("----------------------------------\n");
+        sb.append("|          Банковский Чек        |\n");
+        sb.append(String.format("| Чек: %25d |\n", number));
+        sb.append(String.format("| %s %19s |\n", dateFormat.format(date), timeFormat.format(date)));
+        sb.append(String.format("| Тип транзакции: %14s |\n", type));
+        sb.append(String.format("| Банк отправителя: %12s |\n", senderBankName));
+        sb.append(String.format("| Банк получателя: %10s |\n", recipientBankName));
+        sb.append(String.format("| Счет отправителя: %12d |\n", accountSourceId));
+        sb.append(String.format("| Счет получателя:%14d |\n", accountDestinationId));
+        sb.append(String.format("| Сумма:        %12.2f BYN |\n", amount));
+        sb.append("----------------------------------\n");
+
+        return sb.toString();
     }
 }
