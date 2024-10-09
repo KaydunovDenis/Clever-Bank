@@ -8,6 +8,23 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+/**
+ * This class responsible for a check view.
+ * <p>
+ * String checkExample = """
+ * ----------------------------------
+ * |          Банковский Чек        |
+ * | Чек:                        -1 |
+ * | 01-01-1970            03:00:05 |
+ * | Тип транзакции:        PERCENT |
+ * | Банк отправителя:   SenderBank |
+ * | Банк получателя: RecipientBank |
+ * | Счет отправителя:            1 |
+ * | Счет получателя:             2 |
+ * | Сумма:              100.00 BYN |
+ * ----------------------------------
+ * """;
+ */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Check {
@@ -24,9 +41,9 @@ public class Check {
 
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        StringBuilder sb = new StringBuilder();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("----------------------------------\n");
         sb.append("|          Банковский Чек        |\n");
