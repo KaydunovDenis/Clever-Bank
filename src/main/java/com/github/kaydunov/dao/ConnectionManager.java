@@ -18,11 +18,11 @@ public class ConnectionManager {
     private static final String DATABASE_URL;
 
     private static final String YAML_FILE_PATH = "src/main/resources/application.yaml";
-
+//todo сделать пул connection
     static {
 
         // Load YAML file
-        Yaml yaml = new Yaml();
+        Yaml yaml = new Yaml();//todo use YamlReader
         try {
             FileInputStream inputStream = new FileInputStream(YAML_FILE_PATH);
             Map<String, Object> yamlMap = yaml.load(inputStream);

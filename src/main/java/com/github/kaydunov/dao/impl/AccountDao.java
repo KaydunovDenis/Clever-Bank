@@ -31,12 +31,12 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Autowired
     private TransactionDao transactionDao;
 
-    private static Connection connection = ConnectionManager.getConnection();
+    private static Connection connection = ConnectionManager.getConnection();//todo  брать каждый раз, не статик
 
     @Override
     public Account create(Account account) {
         try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE)) {
-            statement.setBigDecimal(1, account.getBalance());
+            statement.setBigDecimal(1, account.getBalance());//todo replace to BalanceIndex constant
             statement.setLong(2, account.getBankId());
             statement.setLong(3, account.getUserId());
             statement.setBoolean(4, account.isSavingAccount());
@@ -52,7 +52,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Override
     public Optional<Account> findById(Long id) {
         Optional<Account> account;
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
+        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {//todo connection close или вернуть в pool (bloking quee)
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 account = Optional.of(mapResultSetToAccount(resultSet));

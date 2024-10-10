@@ -25,5 +25,5 @@ public class Transaction {
         this.accountSourceId = accountSourceId;
         this.accountDestinationId = accountDestinationId;
         this.transactionType = transactionType;
-    }
+    }//todo remove
 }

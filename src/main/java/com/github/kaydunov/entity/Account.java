@@ -11,10 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
-    private Long id;
+    private Long id;//todo private
     private BigDecimal balance;
-    private Long bankId;
-    private Long userId;
+    private Long bankId;//todo bank   здесь они не нужны
+    private Long userId;//todo user
     private List<Transaction> transactions;
     private boolean isSavingAccount;
 
