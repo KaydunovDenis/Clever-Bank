@@ -19,11 +19,20 @@ public class Transaction {
     Long accountDestinationId;
     TransactionType transactionType;
 
+    /**
+     * I need this constructor to generate ID using database
+     * Lombok can't to create constructor without one argument
+     * @param amount
+     * @param createdAt
+     * @param accountSourceId
+     * @param accountDestinationId
+     * @param transactionType
+     */
     public Transaction(BigDecimal amount, Timestamp createdAt, Long accountSourceId, Long accountDestinationId, TransactionType transactionType) {
         this.amount = amount;
         this.createdAt = createdAt;
         this.accountSourceId = accountSourceId;
         this.accountDestinationId = accountDestinationId;
         this.transactionType = transactionType;
-    }//todo remove
+    }
 }

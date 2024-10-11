@@ -2,6 +2,7 @@ package com.github.kaydunov.entity;
 
 import com.github.kaydunov.exception.InsufficientFundsException;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,13 +11,14 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level= AccessLevel.PRIVATE)
 public class Account {
-    private Long id;//todo private
-    private BigDecimal balance;
-    private Long bankId;//todo bank   здесь они не нужны
-    private Long userId;//todo user
-    private List<Transaction> transactions;
-    private boolean isSavingAccount;
+    Long id;
+    BigDecimal balance;
+    Long bankId;//todo bank   здесь они не нужны
+    Long userId;//todo user
+    List<Transaction> transactions;
+    boolean isSavingAccount;
 
     public void withdrawBalance(BigDecimal amount) {
         BigDecimal newSourceBalance = this.getBalance().subtract(amount);
