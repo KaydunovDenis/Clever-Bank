@@ -15,9 +15,9 @@ import java.util.List;
 public class Account {
     Long id;
     BigDecimal balance;
-    Long bankId;//todo bank   здесь они не нужны
-    Long userId;//todo user
-    List<Transaction> transactions;
+    Long bankId;
+    Long userId;
+    List<Long> transactionsIds;
     boolean isSavingAccount;
 
     public void withdrawBalance(BigDecimal amount) {

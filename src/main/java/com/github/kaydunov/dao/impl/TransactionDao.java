@@ -19,6 +19,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM transaction WHERE id = ?";
     private static final String SQL_SELECT_ALL = "SELECT * FROM transaction";
     private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
+    private static final String SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID = "SELECT id FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
 
     private static Connection connection = ConnectionManager.getConnection();
 
@@ -84,7 +85,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         throw new UnsupportedOperationException();
     }
 
-    public List<Transaction> getOperationsByAccountId(Long accountId) {
+    public List<Transaction> getTransactionsByAccountId(Long accountId) {
         List<Transaction> transactions = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ACCOUNT_ID)) {
             statement.setLong(1, accountId);
@@ -97,6 +98,21 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
             throw new DaoException(e.getMessage(), e);
         }
         return transactions;
+    }
+
+    public List<Long> getTransactionsIdsByAccountId(Long accountId) {
+        List<Long> transactionsIds = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID)) {
+            statement.setLong(1, accountId);
+            statement.setLong(2, accountId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                transactionsIds.add(resultSet.getLong("id"));
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e.getMessage(), e);
+        }
+        return transactionsIds;
     }
 
     private Transaction mapResultSetToOperation(ResultSet resultSet) throws SQLException {

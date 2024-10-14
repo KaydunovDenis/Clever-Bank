@@ -82,7 +82,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(preparedStatementMock).setLong(3, 1L);
                 verify(preparedStatementMock).executeQuery();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock, never()).getOperationsByAccountId(1L);
+                verify(transactionDaoMock, never()).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -111,7 +111,7 @@ class AccountDaoSapientGeneratedTest {
             doReturn(resultSetMock).when(preparedStatementMock).executeQuery();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             Account account = new Account();
             account.setBankId(1L);
             account.setBalance(new BigDecimal("0"));
@@ -134,7 +134,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(preparedStatementMock).setLong(3, 1L);
                 verify(preparedStatementMock).executeQuery();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -164,7 +164,7 @@ class AccountDaoSapientGeneratedTest {
             doReturn(resultSetMock).when(preparedStatementMock).executeQuery();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             Account account = new Account();
             account.setBankId(1L);
             account.setBalance(new BigDecimal("0"));
@@ -177,7 +177,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getUserId(), equalTo(1L));
                 assertThat(result.getBankId(), equalTo(1L));
-                assertThat(result.getTransactions().size(), equalTo(0));
+                assertThat(result.getTransactionsIds().size(), equalTo(0));
                 assertThat(result.getId(), equalTo(1L));
                 assertThat(result.getBalance(), equalTo(new BigDecimal("0")));
                 connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
@@ -187,7 +187,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(preparedStatementMock).setLong(3, 1L);
                 verify(preparedStatementMock).executeQuery();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -216,7 +216,7 @@ class AccountDaoSapientGeneratedTest {
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             final Throwable result = assertThrows(Throwable.class, () -> {
                 target.findById(1L);
@@ -230,7 +230,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(preparedStatementMock).executeQuery();
                 verify(resultSetMock).close();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -252,21 +252,21 @@ class AccountDaoSapientGeneratedTest {
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             Optional<Account> result = target.findById(123L);
             Account account = new Account();
             account.setBankId(1L);
             account.setBalance(new BigDecimal("0"));
             account.setId(1L);
-            account.setTransactions(transactionList);
+            account.setTransactionsIds(transactionList);
             account.setUserId(1L);
             Optional<Account> accountOptional = Optional.of(account);
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, equalTo(accountOptional));
                 connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -295,7 +295,7 @@ class AccountDaoSapientGeneratedTest {
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             final DaoException result = assertThrows(DaoException.class, () -> {
                 target.findById(1L);
@@ -313,7 +313,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(preparedStatementMock).executeQuery();
                 verify(resultSetMock).close();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -343,14 +343,14 @@ class AccountDaoSapientGeneratedTest {
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             Optional<Account> result = target.findById(1L);
             Account account = new Account();
             account.setBankId(1L);
             account.setBalance(new BigDecimal("0"));
             account.setId(1L);
-            account.setTransactions(transactionList);
+            account.setTransactionsIds(transactionList);
             account.setUserId(1L);
             Optional<Account> accountOptional = Optional.of(account);
             //Assert statement(s)
@@ -362,7 +362,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(preparedStatementMock).executeQuery();
                 verify(resultSetMock).close();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -392,7 +392,7 @@ class AccountDaoSapientGeneratedTest {
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             final Throwable result = assertThrows(Throwable.class, () -> {
                 target.findAll();
@@ -406,7 +406,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(resultSetMock, times(2)).next();
                 verify(resultSetMock).close();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -429,7 +429,7 @@ class AccountDaoSapientGeneratedTest {
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             List<Account> result = target.findAll();
             //Assert statement(s)
@@ -437,7 +437,7 @@ class AccountDaoSapientGeneratedTest {
             assertAll("result", () -> {
                 assertThat(result.size(), equalTo(1));
                 connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -467,7 +467,7 @@ class AccountDaoSapientGeneratedTest {
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             final DaoException result = assertThrows(DaoException.class, () -> {
                 target.findAll();
@@ -485,7 +485,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(resultSetMock, times(2)).next();
                 verify(resultSetMock).close();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }
@@ -516,7 +516,7 @@ class AccountDaoSapientGeneratedTest {
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
             List<Transaction> transactionList = new ArrayList<>();
-            doReturn(transactionList).when(transactionDaoMock).getOperationsByAccountId(1L);
+            doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             List<Account> result = target.findAll();
             //Assert statement(s)
@@ -529,7 +529,7 @@ class AccountDaoSapientGeneratedTest {
                 verify(resultSetMock, times(2)).next();
                 verify(resultSetMock).close();
                 verify(preparedStatementMock).close();
-                verify(transactionDaoMock).getOperationsByAccountId(1L);
+                verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
     }

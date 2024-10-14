@@ -188,8 +188,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
         account.setBalance(resultSet.getBigDecimal("balance"));
         account.setBankId(resultSet.getLong("bank_id"));
         account.setUserId(resultSet.getLong("user_id"));
-        List<Transaction> transactions = transactionDao.getOperationsByAccountId(id);
-        account.setTransactions(transactions);
+        List<Long> transactions = transactionDao.getTransactionsIdsByAccountId(id);
+        account.setTransactionsIds(transactions);
         return account;
     }
 }

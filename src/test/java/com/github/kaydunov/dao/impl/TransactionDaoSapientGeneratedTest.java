@@ -537,10 +537,10 @@ class TransactionDaoSapientGeneratedTest {
         assertAll("result", () -> assertThat(result, is(notNullValue())));
     }
 
-    //Sapient generated method id: ${getOperationsByAccountIdWhenDefaultBranchThrowsThrowable}, hash: F82F2450A41ABBCF5E8E198D079897CB
+    //Sapient generated method id: ${getTransactionsByAccountIdWhenDefaultBranchThrowsThrowable}, hash: F82F2450A41ABBCF5E8E198D079897CB
     @Disabled()
     @Test()
-    void getOperationsByAccountIdWhenDefaultBranchThrowsThrowable() throws SQLException {
+    void getTransactionsByAccountIdWhenDefaultBranchThrowsThrowable() throws SQLException {
         /* Branches:
          * (resultSet.next()) : true
          * (branch expression (line 97)) : true
@@ -564,7 +564,7 @@ class TransactionDaoSapientGeneratedTest {
             doNothing().when(preparedStatementMock).close();
             //Act Statement(s)
             final Throwable result = assertThrows(Throwable.class, () -> {
-                target.getOperationsByAccountId(1L);
+                target.getTransactionsByAccountId(1L);
             });
             //Assert statement(s)
             assertAll("result", () -> {
@@ -580,10 +580,10 @@ class TransactionDaoSapientGeneratedTest {
         }
     }
 
-    //Sapient generated method id: ${getOperationsByAccountIdWhenCaughtSQLException}, hash: D1AB4D1C5F6148067F5A2BDBFF04C657
+    //Sapient generated method id: ${getTransactionsByAccountIdWhenCaughtSQLException}, hash: D1AB4D1C5F6148067F5A2BDBFF04C657
     @Disabled()
     @Test()
-    void getOperationsByAccountIdWhenCaughtSQLException() {
+    void getTransactionsByAccountIdWhenCaughtSQLException() {
         /* Branches:
          * (resultSet.next()) : true
          * (catch-exception (SQLException)) : false
@@ -598,7 +598,7 @@ class TransactionDaoSapientGeneratedTest {
             target = new TransactionDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             //Act Statement(s)
-            List<Transaction> result = target.getOperationsByAccountId(123456789L);
+            List<Transaction> result = target.getTransactionsByAccountId(123456789L);
             //Assert statement(s)
             //TODO: Please implement equals method in Transaction for verification of the entire object or you need to adjust respective assertion statements
             assertAll("result", () -> {
@@ -608,10 +608,10 @@ class TransactionDaoSapientGeneratedTest {
         }
     }
 
-    //Sapient generated method id: ${getOperationsByAccountIdWhenCaughtSQLExceptionThrowsDaoException}, hash: DF2F1F262BD832B389E4D2F0D26F0D67
+    //Sapient generated method id: ${getTransactionsByAccountIdWhenCaughtSQLExceptionThrowsDaoException}, hash: DF2F1F262BD832B389E4D2F0D26F0D67
     @Disabled()
     @Test()
-    void getOperationsByAccountIdWhenCaughtSQLExceptionThrowsDaoException() throws SQLException {
+    void getTransactionsByAccountIdWhenCaughtSQLExceptionThrowsDaoException() throws SQLException {
         /* Branches:
          * (resultSet.next()) : true
          * (catch-exception (SQLException)) : false
@@ -635,7 +635,7 @@ class TransactionDaoSapientGeneratedTest {
             doNothing().when(preparedStatementMock).close();
             //Act Statement(s)
             final DaoException result = assertThrows(DaoException.class, () -> {
-                target.getOperationsByAccountId(1L);
+                target.getTransactionsByAccountId(1L);
             });
             SQLException sQLException = new SQLException("message1", "message1", 0);
             DaoException daoException = new DaoException("message1", sQLException);
@@ -655,10 +655,10 @@ class TransactionDaoSapientGeneratedTest {
         }
     }
 
-    //Sapient generated method id: ${getOperationsByAccountIdWhenDefaultBranch}, hash: 1FD417628E6D76F0E53CEA6A33791CFF
+    //Sapient generated method id: ${getTransactionsByAccountIdWhenDefaultBranch}, hash: 1FD417628E6D76F0E53CEA6A33791CFF
     @Disabled()
     @Test()
-    void getOperationsByAccountIdWhenDefaultBranch() throws SQLException {
+    void getTransactionsByAccountIdWhenDefaultBranch() throws SQLException {
         /* Branches:
          * (resultSet.next()) : true
          * (catch-exception (SQLException)) : false
@@ -682,7 +682,7 @@ class TransactionDaoSapientGeneratedTest {
             doReturn(true, false).when(resultSetMock).next();
             doNothing().when(preparedStatementMock).close();
             //Act Statement(s)
-            List<Transaction> result = target.getOperationsByAccountId(1L);
+            List<Transaction> result = target.getTransactionsByAccountId(1L);
             //Assert statement(s)
             //TODO: Please implement equals method in Transaction for verification of the entire object or you need to adjust respective assertion statements
             assertAll("result", () -> {
