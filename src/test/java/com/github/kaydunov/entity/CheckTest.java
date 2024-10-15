@@ -1,6 +1,5 @@
 package com.github.kaydunov.entity;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -37,13 +36,6 @@ public class CheckTest {
         assertEquals(expectedCheck, result);
     }
 
-    @Disabled("Manual")
-    @Test
-    void Test() {
-        System.out.println(getCheck());
-    }
-
-
     public static Check getCheck() {
         Check target = new Check();
         target.setNumber(-1);
@@ -54,6 +46,7 @@ public class CheckTest {
         target.setSenderBankName("SenderBank");
         target.setRecipientBankName("RecipientBank");
         target.setType(TransactionType.PERCENT);
+        target.setCurrency("BYN");
         return target;
     }
 }
