@@ -27,17 +27,9 @@ class TomcatManagerTest {
 
     private ApplicationContext applicationContext;
 
-    //Sapient generated method id: ${startWhenAnnotationIsNotNull}, hash: 03873BFF0DEFCD415D2FCA84FAFB1405
     @Test()
     @Disabled()
     void startWhenAnnotationIsNotNull() {
-        /* Branches:
-         * (for-each(servletClasses)) : true  #  inside registerServlets method
-         * (annotation != null) : true  #  inside registerServlet method
-         *
-         * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
-         *  The test code, including the assertion statements, has been successfully generated.
-         */
         //Arrange Statement(s)
         Wrapper wrapperMock = mock(Wrapper.class);
         HttpServlet httpServletMock = mock(HttpServlet.class);
@@ -57,17 +49,9 @@ class TomcatManagerTest {
         }
     }
 
-    //Sapient generated method id: ${startWhenAnnotationIsNullThrowsTomCatException}, hash: E8EC765D7FB7AD3134AF486CC0717570
     @Test()
     @Disabled()
     void startWhenAnnotationIsNullThrowsTomCatException() {
-        /* Branches:
-         * (for-each(servletClasses)) : true  #  inside registerServlets method
-         * (annotation != null) : false  #  inside registerServlet method
-         *
-         * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
-         *  The test code, including the assertion statements, has been successfully generated.
-         */
         //Arrange Statement(s)
         try (MockedStatic<ServletScanner> servletScanner = mockStatic(ServletScanner.class)) {
             Set<Class<?>> anySet = new HashSet<>();
