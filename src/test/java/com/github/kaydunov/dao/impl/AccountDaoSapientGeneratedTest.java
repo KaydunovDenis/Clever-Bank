@@ -251,7 +251,7 @@ class AccountDaoSapientGeneratedTest {
             connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
-            List<Transaction> transactionList = new ArrayList<>();
+            List<Long> transactionList = new ArrayList<>();
             doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             Optional<Account> result = target.findById(123L);
@@ -342,7 +342,7 @@ class AccountDaoSapientGeneratedTest {
             doReturn(resultSetMock).when(preparedStatementMock).executeQuery();
             doNothing().when(resultSetMock).close();
             doNothing().when(preparedStatementMock).close();
-            List<Transaction> transactionList = new ArrayList<>();
+            List<Long> transactionList = new ArrayList<>();
             doReturn(transactionList).when(transactionDaoMock).getTransactionsByAccountId(1L);
             //Act Statement(s)
             Optional<Account> result = target.findById(1L);

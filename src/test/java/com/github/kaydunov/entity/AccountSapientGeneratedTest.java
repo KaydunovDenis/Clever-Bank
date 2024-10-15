@@ -25,7 +25,7 @@ class AccountSapientGeneratedTest {
          * (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) : true
          */
          //Arrange Statement(s)
-        List<Transaction> transactionList = new ArrayList<>();
+        List<Long> transactionList = new ArrayList<>();
         Account target = new Account(0L, new BigDecimal("1.0"), 0L, 0L, transactionList, true);
         //Act Statement(s)
         final InsufficientFundsException result = assertThrows(InsufficientFundsException.class, () -> target.withdrawBalance(new BigDecimal("2.0")));
@@ -41,7 +41,7 @@ class AccountSapientGeneratedTest {
          * (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) : false
          */
          //Arrange Statement(s)
-        List<Transaction> transactionList = new ArrayList<>();
+        List<Long> transactionList = new ArrayList<>();
         Account target = new Account(0L, new BigDecimal("1.0"), 0L, 0L, transactionList, true);
         
         //Act Statement(s)
@@ -55,7 +55,7 @@ class AccountSapientGeneratedTest {
     @Test()
     void depositBalanceTest() {
         //Arrange Statement(s)
-        List<Transaction> transactionList = new ArrayList<>();
+        List<Long> transactionList = new ArrayList<>();
         Account target = new Account(0L, new BigDecimal("2.0"), 0L, 0L, transactionList, true);
         
         //Act Statement(s)
