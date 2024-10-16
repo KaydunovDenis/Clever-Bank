@@ -1,7 +1,6 @@
 package com.github.kaydunov.percentage_processor;
 
 import com.github.kaydunov.service.AccountService;
-import com.github.kaydunov.util.YamlConfigReader;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,32 +30,23 @@ class PercentageProcessorTest {
 
     @Test
     void testStartProcessing() {
-        // Mock the static method getPercentageFromYaml
-        try (var mockedYamlConfigReader = mockStatic(YamlConfigReader.class)) {
-            mockedYamlConfigReader.when(YamlConfigReader::getPercentageFromYaml).thenReturn(1.0);
+        percentageProcessor.startProcessing();
 
-            // Start processing
-            percentageProcessor.startProcessing();
+        // Use Awaitility to wait for at least one task to be completed
+        Awaitility.await()
+                .atMost(35, TimeUnit.SECONDS)  // Wait a maximum of 35 seconds
+                .untilAsserted(() -> {
+                    // Verify that the AccountService.chargePercents method was called
+                    verify(accountService, times(1)).chargePercents(1.0);
+                });
 
-            // Use Awaitility to wait for at least one task to be completed
-            Awaitility.await()
-                    .atMost(35, TimeUnit.SECONDS)  // Wait a maximum of 35 seconds
-                    .untilAsserted(() -> {
-                        // Verify that the AccountService.chargePercents method was called
-                        verify(accountService, times(1)).chargePercents(1.0);
-                    });
-
-            // Stop processing
-            percentageProcessor.stopProcessing();
-        }
+        // Stop processing
+        percentageProcessor.stopProcessing();
     }
 
     @Test
     void testStopProcessing() {
-        // Start processing
         percentageProcessor.startProcessing();
-
-        // Stop processing
         percentageProcessor.stopProcessing();
 
         // Verify that the method is not called after stopping
