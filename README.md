@@ -23,7 +23,28 @@ It adheres to SOLID principles and ensures asynchronous operations in a multi-th
 2. Run [docker-compose.yaml](docker%2Fdocker-compose.yaml)
 3. Run [CleverBank.java](src%2Fmain%2Fjava%2Fcom%2Fgithub%2Fkaydunov%2FCleverBank.java)
 
-### Links
+### Lombok
+For a successful code compilation with lombok we need:
+1. Turn on Annotation Processors:
+Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors.
+
+2. Add this to pom.xml:
+```xml
+<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-compiler-plugin</artifactId>
+   <version>3.3</version>
+   <configuration>
+      <compilerVersion>1.8</compilerVersion>
+      <source>1.8</source>
+      <target>1.8</target>
+      <annotationProcessors>
+         <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+         </annotationProcessor>
+      </annotationProcessors>
+   </configuration>
+</plugin>
+```
 
 
 
