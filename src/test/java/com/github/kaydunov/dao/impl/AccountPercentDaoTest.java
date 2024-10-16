@@ -66,12 +66,4 @@ class AccountPercentDaoTest {
         // Assert that the method throws DaoException
         assertThrows(DaoException.class, () -> target.chargePercents(PERCENT));
     }
-
-    @Disabled("MANUAL")
-    @Test
-    void manual_test() throws DaoException {
-        target = new AccountPercentDao();
-        target.chargePercents(PERCENT);
-        Assertions.assertTrue(true); // Add your own assertions here
-    }
 }
