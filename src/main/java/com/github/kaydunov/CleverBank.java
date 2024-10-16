@@ -7,6 +7,6 @@ public class CleverBank {
 
     public static void main(String[] args) {
         ApplicationContext context = new ApplicationContext(CleverBank.class);
-        TomcatManager.start(context);//todo сорать код в jar
+        TomcatManager.start(context);
     }
 }

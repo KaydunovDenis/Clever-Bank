@@ -29,8 +29,8 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
             statement.setBigDecimal(1, transaction.getAmount());
             statement.setTimestamp(2, transaction.getCreatedAt());
             statement.setInt(3, transaction.getTransactionType().ordinal() + 1); // Assuming the ordinal corresponds to the transaction_type_id
-            statement.setLong(4, transaction.getAccountSourceId());
-            statement.setLong(5, transaction.getAccountDestinationId());
+            statement.setLong(4, transaction.getSourceAccountId());
+            statement.setLong(5, transaction.getDestinationAccountId());
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows > 0) {
@@ -121,8 +121,8 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         transaction.setAmount(resultSet.getBigDecimal("amount"));
         transaction.setCreatedAt(resultSet.getTimestamp("created_at"));
         transaction.setTransactionType(TransactionType.values()[resultSet.getInt("transaction_type_id") - 1]); // Assuming the transaction_type_id corresponds to the ordinal
-        transaction.setAccountSourceId(resultSet.getLong("account_source_id"));
-        transaction.setAccountDestinationId(resultSet.getLong("account_destination_id"));
+        transaction.setSourceAccountId(resultSet.getLong("account_source_id"));
+        transaction.setDestinationAccountId(resultSet.getLong("account_destination_id"));
         return transaction;
     }
 }

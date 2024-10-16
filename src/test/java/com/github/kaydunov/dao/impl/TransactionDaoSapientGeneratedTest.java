@@ -292,8 +292,8 @@ class TransactionDaoSapientGeneratedTest {
             Transaction transaction = new Transaction();
             transaction.setTransactionType(TransactionType.DEPOSIT);
             transaction.setCreatedAt(timestamp);
-            transaction.setAccountSourceId(1L);
-            transaction.setAccountDestinationId(1L);
+            transaction.setSourceAccountId(1L);
+            transaction.setDestinationAccountId(1L);
             transaction.setAmount(new BigDecimal("0"));
             transaction.setId(1L);
             Optional<Transaction> transactionOptional = Optional.of(transaction);

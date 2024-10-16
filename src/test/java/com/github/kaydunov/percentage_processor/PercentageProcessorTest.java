@@ -2,6 +2,7 @@ package com.github.kaydunov.percentage_processor;
 
 import com.github.kaydunov.service.AccountService;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,14 +18,21 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class PercentageProcessorTest {
 
     @Mock
-    private AccountService accountService;  // Mock the AccountService
-
+    private AccountService accountServiceMock;
     @InjectMocks
-    private PercentageProcessor percentageProcessor;  // The object being tested
+    private PercentageProcessor percentageProcessor;
+    private AutoCloseable autoCloseable;
+
 
     @BeforeEach
     void setUp() {
-        openMocks(this);  // Open mocks
+        autoCloseable = openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        if (autoCloseable != null)
+            autoCloseable.close();
     }
 
 
@@ -37,7 +45,7 @@ class PercentageProcessorTest {
                 .atMost(35, TimeUnit.SECONDS)  // Wait a maximum of 35 seconds
                 .untilAsserted(() -> {
                     // Verify that the AccountService.chargePercents method was called
-                    verify(accountService, times(1)).chargePercents(1.0);
+                    verify(accountServiceMock, times(1)).chargePercents(1.0);
                 });
 
         // Stop processing
@@ -51,7 +59,7 @@ class PercentageProcessorTest {
 
         // Verify that the method is not called after stopping
         Awaitility.await().atMost(ONE_SECOND);
-        verify(accountService, never()).chargePercents(Mockito.anyDouble());
+        verify(accountServiceMock, never()).chargePercents(Mockito.anyDouble());
     }
 }
 

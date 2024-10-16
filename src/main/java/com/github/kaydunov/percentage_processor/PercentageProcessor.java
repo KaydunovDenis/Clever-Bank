@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Регулярно, по расписанию (раз в полминуты),проверяет, нужно ли начислять проценты
+ * Регулярно, по расписанию (раз в полминуты), проверяет, нужно ли начислять проценты
  * (1% - значение подставляется из конфигурационного файла)
  * на остаток счета в конце месяца
  * <p>
@@ -25,7 +25,6 @@ public class PercentageProcessor {
     private static final int CHECK_PERIOD = 30;
     public static final String CONFIG_FILE_PATH = "src/main/resources/config.yaml";
     public static final String PERCENTAGE_PROPERTY = "percentage";
-
 
     @Autowired
     private AccountService accountService;

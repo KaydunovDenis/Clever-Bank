@@ -15,8 +15,8 @@ public class Transaction {
     Long id;
     BigDecimal amount;
     Timestamp createdAt;
-    Long accountSourceId;
-    Long accountDestinationId;
+    Long sourceAccountId;
+    Long destinationAccountId;
     TransactionType transactionType;
 
     /**
@@ -24,15 +24,15 @@ public class Transaction {
      * Lombok can't to create constructor without one argument
      * @param amount
      * @param createdAt
-     * @param accountSourceId
-     * @param accountDestinationId
+     * @param sourceAccountId
+     * @param destinationAccountId
      * @param transactionType
      */
-    public Transaction(BigDecimal amount, Timestamp createdAt, Long accountSourceId, Long accountDestinationId, TransactionType transactionType) {
+    public Transaction(BigDecimal amount, Timestamp createdAt, Long sourceAccountId, Long destinationAccountId, TransactionType transactionType) {
         this.amount = amount;
         this.createdAt = createdAt;
-        this.accountSourceId = accountSourceId;
-        this.accountDestinationId = accountDestinationId;
+        this.sourceAccountId = sourceAccountId;
+        this.destinationAccountId = destinationAccountId;
         this.transactionType = transactionType;
     }
 }
