@@ -15,10 +15,7 @@ import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -83,6 +80,6 @@ class TomcatManagerTest {
         assertNotNull(tomcat);
         assertNotNull(tomcat.getConnector());
         assertEquals(TomcatManager.PORT, tomcat.getConnector().getPort());
-        assertEquals(TomcatManager.TEMP, tomcat.getServer().getCatalinaHome().getName());
+        assertEquals(TomcatManager.TOMCAT_BASE_DIR, tomcat.getServer().getCatalinaHome().getName());
     }
 }

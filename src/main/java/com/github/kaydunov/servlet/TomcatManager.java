@@ -16,7 +16,7 @@ public class TomcatManager {
     private static final String CONTEXT_PATH = "/clever-bank";
     private static final String SERVLETS_PACKAGE_NAME = "com.github.kaydunov.servlet";
     public static final int PORT = 8080;
-    public static final String TEMP = "temp";//TODO I don't what is it.
+    public static final String TOMCAT_BASE_DIR = "temp";
     private static Context context;
 
     private TomcatManager() {}
@@ -38,7 +38,7 @@ public class TomcatManager {
 
     protected static Tomcat initializeTomcat() {
         Tomcat tomcat = new Tomcat();
-        tomcat.setBaseDir(TEMP);
+        tomcat.setBaseDir(TOMCAT_BASE_DIR);
         tomcat.setPort(PORT);
         tomcat.getConnector();
         return tomcat;
