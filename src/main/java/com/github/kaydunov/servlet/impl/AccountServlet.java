@@ -1,10 +1,9 @@
 package com.github.kaydunov.servlet.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.service.AccountService;
+import com.github.kaydunov.servlet.ObjectMapperWrapper;
 import com.github.kaydunov.servlet.ServletMarker;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
@@ -20,7 +19,7 @@ import java.util.List;
 @WebServlet(value = "/account")
 public class AccountServlet extends ServletMarker {
     @Autowired
-    private ObjectMapper mapper;
+    private ObjectMapperWrapper mapper;
     @Autowired
     private AccountService accountService;
 
@@ -35,7 +34,8 @@ public class AccountServlet extends ServletMarker {
         response.getWriter().write(json);
     }
 
-    private String convertToJson(Object object) throws JsonProcessingException {
+    @SneakyThrows
+    private String convertToJson(Object object) {
         return mapper.writeValueAsString(object);
     }
 

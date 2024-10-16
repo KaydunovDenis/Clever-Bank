@@ -1,10 +1,10 @@
 package com.github.kaydunov.servlet.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.service.AccountService;
+import com.github.kaydunov.servlet.ObjectMapperWrapper;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +39,7 @@ class AccountServletTest {
     @Mock
     private HttpServletRequest requestMock;
     @Mock
-    private ObjectMapper objectMapper;
+    private ObjectMapperWrapper objectMapper;
     @Mock
     private ServletInputStream servletInputStreamMock;
     @InjectMocks
@@ -110,8 +110,7 @@ class AccountServletTest {
     @Test
     void doPostReturns500WhenJsonParsingFails() throws IOException {
         // Arrange
-        InputStream inputStream = mock(InputStream.class);
-        when(inputStream.read()).thenThrow(new JsonProcessingException("Failed to parse JSON") {
+        when(servletInputStreamMock.read()).thenThrow(new JsonProcessingException("Failed to parse JSON") {
         });
         when(requestMock.getInputStream()).thenReturn(null);
         doNothing().when(responseMock).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
