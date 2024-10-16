@@ -19,7 +19,8 @@ import java.util.List;
 @Component
 @WebServlet(value = "/account")
 public class AccountServlet extends ServletMarker {
-    private static final ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
     @Autowired
     private AccountService accountService;
 
@@ -47,8 +48,8 @@ public class AccountServlet extends ServletMarker {
 
             // Perform the requested operation
             BigDecimal amount = transaction.getAmount();
-            Long accountSourceId = transaction.getAccountSourceId();
-            Long accountDestinationId = transaction.getAccountDestinationId();
+            Long accountSourceId = transaction.getSourceAccountId();
+            Long accountDestinationId = transaction.getDestinationAccountId();
             accountService.transfer(amount, accountSourceId, accountDestinationId);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
