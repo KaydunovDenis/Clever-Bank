@@ -12,7 +12,7 @@ public class YamlReader {
     }
 
     @SneakyThrows
-    public static Map<String, String> readYaml(String filePath) {
+    public static Map<String, Object> readYaml(String filePath) {
         Yaml yaml = new Yaml();
         FileInputStream inputStream = new FileInputStream(filePath);
         return yaml.load(inputStream);

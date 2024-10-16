@@ -15,7 +15,7 @@ public class YamlReaderTest {
     @Test
     public void readYamlTest() {
         // Act Statement(s)
-        Map<String, String> result = YamlReader.readYaml(CONFIG_FILE_PATH);
+        Map<String, Object> result = YamlReader.readYaml(CONFIG_FILE_PATH);
 
         // Assert statement(s)
         assertTrue(result.containsKey(PERCENTAGE_PROPERTY));
