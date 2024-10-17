@@ -21,11 +21,9 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
     private static final String SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID = "SELECT id FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
 
-    private static Connection connection = ConnectionManager.getConnection();
-
     @Override
     public Transaction create(Transaction transaction) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setBigDecimal(1, transaction.getAmount());
             statement.setTimestamp(2, transaction.getCreatedAt());
             statement.setInt(3, transaction.getTransactionType().ordinal() + 1); // Assuming the ordinal corresponds to the transaction_type_id
@@ -49,7 +47,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     @Override
     public Optional<Transaction> findById(Long id) {
         Transaction transaction = null;
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -64,7 +62,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     @Override
     public List<Transaction> findAll() {
         List<Transaction> transactions = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 transactions.add(mapResultSetToOperation(resultSet));
@@ -87,7 +85,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
 
     public List<Transaction> getTransactionsByAccountId(Long accountId) {
         List<Transaction> transactions = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ACCOUNT_ID)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ACCOUNT_ID)) {
             statement.setLong(1, accountId);
             statement.setLong(2, accountId);
             ResultSet resultSet = statement.executeQuery();
@@ -102,7 +100,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
 
     public List<Long> getTransactionsIdsByAccountId(Long accountId) {
         List<Long> transactionsIds = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID)) {
             statement.setLong(1, accountId);
             statement.setLong(2, accountId);
             ResultSet resultSet = statement.executeQuery();

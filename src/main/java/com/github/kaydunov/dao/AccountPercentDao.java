@@ -17,10 +17,8 @@ public class AccountPercentDao {
                 WHERE is_saving_account = true AND balance > 0
             """;
 
-    private final Connection connection = ConnectionManager.getConnection();
-
     public void chargePercents(double percent) throws DaoException {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CHARGE_PERCENTS)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CHARGE_PERCENTS)) {
             statement.setDouble(1, percent);
             statement.executeUpdate();
             log.info("Percents accrued on the accounts with savings status.");

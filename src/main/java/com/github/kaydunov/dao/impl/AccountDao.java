@@ -31,11 +31,9 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Autowired
     private TransactionDao transactionDao;
 
-    private static Connection connection = ConnectionManager.getConnection();//todo  брать каждый раз, не статик
-
     @Override
     public Account create(Account account) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE)) {
             statement.setBigDecimal(1, account.getBalance());//todo replace to BalanceIndex constant
             statement.setLong(2, account.getBankId());
             statement.setLong(3, account.getUserId());
@@ -52,7 +50,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Override
     public Optional<Account> findById(Long id) {
         Optional<Account> account;
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {//todo connection close или вернуть в pool (bloking quee)
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 account = Optional.of(mapResultSetToAccount(resultSet));
@@ -67,7 +65,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Override
     public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Account account = mapResultSetToAccount(resultSet);
@@ -83,7 +81,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     public List<Account> findAllSavingAccounts() {
         List<Account> accounts = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL_SAVING_ACCOUNTS)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL_SAVING_ACCOUNTS)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Account account = mapResultSetToAccount(resultSet);
@@ -99,7 +97,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     @Override
     public void update(Account account) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_BALANCE)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_UPDATE_BALANCE)) {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getId());
             statement.executeUpdate();
@@ -120,6 +118,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
         destinationAccount.depositBalance(amount);
         Transaction depositTransaction = new Transaction(amount, createdAt, accountDestinationId, accountSourceId, TransactionType.DEPOSIT);
 
+        Connection connection = ConnectionManager.getConnection();
         try {
             connection.setAutoCommit(false);
 
@@ -156,6 +155,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
 
     private void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
+        Connection connection = ConnectionManager.getConnection();
         try {
             connection.setAutoCommit(false);
             transactionDao.create(transaction);
@@ -169,11 +169,12 @@ public class AccountDao implements CrudRepository<Account, Long> {
         } finally {
             connection.setAutoCommit(true);
         }
+        connection.close();
     }
 
     @Override
     public void deleteById(Long id) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_DELETE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {

@@ -18,11 +18,9 @@ public class BankDao implements CrudRepository<Bank, Long> {
     private static final String SQL_UPDATE = "UPDATE bank SET name = ? WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM bank WHERE id = ?";
 
-    private static Connection connection = ConnectionManager.getConnection();
-
     @Override
     public Bank create(Bank bank) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, bank.getName());
             int affectedRows = statement.executeUpdate();
 
@@ -46,7 +44,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
     @Override
     public Optional<Bank> findById(Long id) {
         Bank bank = null;
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -61,7 +59,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
     @Override
     public List<Bank> findAll() {
         List<Bank> banks = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 banks.add(mapResultSetToBank(resultSet));
@@ -74,7 +72,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
 
     @Override
     public void update(Bank bank) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_UPDATE)) {
             statement.setString(1, bank.getName());
             statement.setLong(2, bank.getId());
             statement.executeUpdate();
@@ -85,7 +83,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
 
     @Override
     public void deleteById(Long id) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)) {
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_DELETE_BY_ID)) {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
