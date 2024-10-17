@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Durations.ONE_SECOND;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -20,7 +21,7 @@ class PercentageProcessorTest {
     @Mock
     private AccountService accountServiceMock;
     @InjectMocks
-    private PercentageProcessor percentageProcessor;
+    private PercentageProcessor target;
     private AutoCloseable autoCloseable;
 
 
@@ -38,7 +39,7 @@ class PercentageProcessorTest {
 
     @Test
     void testStartProcessing() {
-        percentageProcessor.startProcessing();
+        target.startProcessing();
 
         // Use Awaitility to wait for at least one task to be completed
         Awaitility.await()
@@ -49,17 +50,25 @@ class PercentageProcessorTest {
                 });
 
         // Stop processing
-        percentageProcessor.stopProcessing();
+        target.stopProcessing();
     }
 
     @Test
     void testStopProcessing() {
-        percentageProcessor.startProcessing();
-        percentageProcessor.stopProcessing();
+        target.startProcessing();
+        target.stopProcessing();
 
         // Verify that the method is not called after stopping
         Awaitility.await().atMost(ONE_SECOND);
         verify(accountServiceMock, never()).chargePercents(Mockito.anyDouble());
+    }
+
+    @Test
+    void getPercentageFromYamlTest() {
+
+        //Arrange Statement(s)
+        double percentageFromYaml = target.getPercentageFromYaml();
+        assertTrue(percentageFromYaml >= 0);
     }
 }
 
