@@ -15,9 +15,7 @@ public class ApplicationContext {
     private final Map<Class<?>, Object> beanRegistry = new HashMap<>();
 
     /**
-     *
      * @param clazz - this class exist in your base package
-     * @return
      */
     public ApplicationContext(Class<?> clazz) {
         scanAndRegisterBeans(clazz.getPackage().getName());

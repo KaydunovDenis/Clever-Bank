@@ -55,7 +55,7 @@ class AccountDaoSapientGeneratedTest {
     void createWhenDefaultBranchThrowsThrowable() throws SQLException {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)");
@@ -75,7 +75,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)");
                 verify(preparedStatementMock).setBigDecimal(eq(1), any());
                 verify(preparedStatementMock).setLong(2, 1L);
@@ -101,7 +101,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)");
@@ -117,9 +117,7 @@ class AccountDaoSapientGeneratedTest {
             account.setBalance(new BigDecimal("0"));
             account.setUserId(1L);
             //Act Statement(s)
-            final DaoException result = assertThrows(DaoException.class, () -> {
-                target.create(account);
-            });
+            final DaoException result = assertThrows(DaoException.class, () -> target.create(account));
             SQLException sQLException = new SQLException("message1", "message1", 0);
             DaoException daoException = new DaoException("message1", sQLException);
             //Assert statement(s)
@@ -127,7 +125,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getMessage(), equalTo(daoException.getMessage()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)");
                 verify(preparedStatementMock).setBigDecimal(eq(1), any());
                 verify(preparedStatementMock).setLong(2, 1L);
@@ -154,7 +152,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)");
@@ -180,7 +178,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result.getTransactionsIds().size(), equalTo(0));
                 assertThat(result.getId(), equalTo(1L));
                 assertThat(result.getBalance(), equalTo(new BigDecimal("0")));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("INSERT INTO account (balance, bank_id, user_id) VALUES (?, ?, ?)");
                 verify(preparedStatementMock).setBigDecimal(eq(1), any());
                 verify(preparedStatementMock).setLong(2, 1L);
@@ -207,7 +205,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("SELECT * FROM account WHERE id = ?");
@@ -224,7 +222,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("SELECT * FROM account WHERE id = ?");
                 verify(preparedStatementMock).setLong(1, 1L);
                 verify(preparedStatementMock).executeQuery();
@@ -238,7 +236,7 @@ class AccountDaoSapientGeneratedTest {
     //Sapient generated method id: ${findByIdWhenCaughtSQLException}, hash: E28FC96FE0EF9C40187267A246687DBB
     @Disabled()
     @Test()
-    void findByIdWhenCaughtSQLException() throws SQLException {
+    void findByIdWhenCaughtSQLException() {
         /* Branches:
          * (branch expression (line 66)) : false
          * (catch-exception (SQLException)) : false
@@ -248,7 +246,7 @@ class AccountDaoSapientGeneratedTest {
          */
         //Arrange Statement(s)
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             List<Long> transactionList = new ArrayList<>();
@@ -265,7 +263,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, equalTo(accountOptional));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
@@ -286,7 +284,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("SELECT * FROM account WHERE id = ?");
@@ -307,7 +305,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getMessage(), equalTo(daoException.getMessage()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("SELECT * FROM account WHERE id = ?");
                 verify(preparedStatementMock).setLong(1, 1L);
                 verify(preparedStatementMock).executeQuery();
@@ -334,7 +332,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("SELECT * FROM account WHERE id = ?");
@@ -356,7 +354,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, equalTo(accountOptional));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("SELECT * FROM account WHERE id = ?");
                 verify(preparedStatementMock).setLong(1, 1L);
                 verify(preparedStatementMock).executeQuery();
@@ -383,7 +381,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("SELECT * FROM account");
@@ -400,7 +398,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("SELECT * FROM account");
                 verify(preparedStatementMock).executeQuery();
                 verify(resultSetMock, times(2)).next();
@@ -425,7 +423,7 @@ class AccountDaoSapientGeneratedTest {
          */
         //Arrange Statement(s)
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             List<Transaction> transactionList = new ArrayList<>();
@@ -436,7 +434,7 @@ class AccountDaoSapientGeneratedTest {
             //TODO: Please implement equals method in Account for verification of the entire object or you need to adjust respective assertion statements
             assertAll("result", () -> {
                 assertThat(result.size(), equalTo(1));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(transactionDaoMock).getTransactionsByAccountId(1L);
             });
         }
@@ -458,7 +456,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("SELECT * FROM account");
@@ -479,7 +477,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getMessage(), equalTo(daoException.getMessage()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("SELECT * FROM account");
                 verify(preparedStatementMock).executeQuery();
                 verify(resultSetMock, times(2)).next();
@@ -507,7 +505,7 @@ class AccountDaoSapientGeneratedTest {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         ResultSet resultSetMock = mock(ResultSet.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("SELECT * FROM account");
@@ -523,7 +521,7 @@ class AccountDaoSapientGeneratedTest {
             //TODO: Please implement equals method in Account for verification of the entire object or you need to adjust respective assertion statements
             assertAll("result", () -> {
                 assertThat(result.size(), equalTo(1));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("SELECT * FROM account");
                 verify(preparedStatementMock).executeQuery();
                 verify(resultSetMock, times(2)).next();
@@ -547,7 +545,7 @@ class AccountDaoSapientGeneratedTest {
         //Arrange Statement(s)
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("UPDATE account SET balance = ? WHERE id = ?");
@@ -565,7 +563,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("UPDATE account SET balance = ? WHERE id = ?");
                 verify(preparedStatementMock).setBigDecimal(eq(1), any());
                 verify(preparedStatementMock).setLong(2, 1L);
@@ -587,7 +585,7 @@ class AccountDaoSapientGeneratedTest {
          */
         //Arrange Statement(s)
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             Account account = new Account();
@@ -596,7 +594,7 @@ class AccountDaoSapientGeneratedTest {
             //Act Statement(s)
             target.update(account);
             //Assert statement(s)
-            assertAll("result", () -> connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1)));
+            assertAll("result", () -> connectionManager.verify(ConnectionManager::getConnection, atLeast(1)));
         }
     }
 
@@ -613,7 +611,7 @@ class AccountDaoSapientGeneratedTest {
         //Arrange Statement(s)
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("UPDATE account SET balance = ? WHERE id = ?");
@@ -635,7 +633,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getMessage(), equalTo(daoException.getMessage()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("UPDATE account SET balance = ? WHERE id = ?");
                 verify(preparedStatementMock).setBigDecimal(eq(1), any());
                 verify(preparedStatementMock).setLong(2, 1L);
@@ -658,7 +656,7 @@ class AccountDaoSapientGeneratedTest {
         //Arrange Statement(s)
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("UPDATE account SET balance = ? WHERE id = ?");
@@ -673,7 +671,7 @@ class AccountDaoSapientGeneratedTest {
             target.update(account);
             //Assert statement(s)
             assertAll("result", () -> {
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("UPDATE account SET balance = ? WHERE id = ?");
                 verify(preparedStatementMock).setBigDecimal(eq(1), any());
                 verify(preparedStatementMock).setLong(2, 1L);
@@ -696,7 +694,7 @@ class AccountDaoSapientGeneratedTest {
         Transaction transactionMock = mock(Transaction.class);
         Transaction transactionMock2 = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(Optional.of(accountMock)).when(target).findById(123456789L);
@@ -710,7 +708,7 @@ class AccountDaoSapientGeneratedTest {
             target.transfer(new BigDecimal("100.0"), 123456789L, 987654321L);
             //Assert statement(s)
             assertAll("result", () -> {
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target).findById(123456789L);
                 verify(accountMock).withdrawBalance(any());
                 verify(target).findById(987654321L);
@@ -738,7 +736,7 @@ class AccountDaoSapientGeneratedTest {
         Transaction transactionMock = mock(Transaction.class);
         Transaction transactionMock2 = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doNothing().when(accountMock).withdrawBalance(any());
@@ -759,7 +757,7 @@ class AccountDaoSapientGeneratedTest {
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target, times(2)).findById(0L);
                 verify(accountMock).withdrawBalance(any());
                 verify(accountMock2).depositBalance(any());
@@ -789,7 +787,7 @@ class AccountDaoSapientGeneratedTest {
         Transaction transactionMock = mock(Transaction.class);
         Transaction transactionMock2 = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doNothing().when(accountMock).withdrawBalance(any());
@@ -810,7 +808,7 @@ class AccountDaoSapientGeneratedTest {
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target, times(2)).findById(0L);
                 verify(accountMock).withdrawBalance(any());
                 verify(accountMock2).depositBalance(any());
@@ -839,7 +837,7 @@ class AccountDaoSapientGeneratedTest {
         Account accountMock2 = mock(Account.class);
         Transaction transactionMock = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doNothing().when(accountMock).withdrawBalance(any());
@@ -859,7 +857,7 @@ class AccountDaoSapientGeneratedTest {
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target, times(2)).findById(0L);
                 verify(accountMock).withdrawBalance(any());
                 verify(accountMock2).depositBalance(any());
@@ -883,7 +881,7 @@ class AccountDaoSapientGeneratedTest {
         Account accountMock = mock(Account.class);
         Transaction transactionMock = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(Optional.of(accountMock)).when(target).findById(123456789L);
@@ -894,7 +892,7 @@ class AccountDaoSapientGeneratedTest {
             target.withdraw(new BigDecimal("100.0"), 123456789L);
             //Assert statement(s)
             assertAll("result", () -> {
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target).findById(123456789L);
                 verify(accountMock).withdrawBalance(any());
                 verify(target).update(accountMock);
@@ -916,7 +914,7 @@ class AccountDaoSapientGeneratedTest {
         Account accountMock = mock(Account.class);
         Transaction transactionMock = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(Optional.of(accountMock)).when(target).findById(0L);
@@ -935,7 +933,7 @@ class AccountDaoSapientGeneratedTest {
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getCause(), is(instanceOf(daoException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target).findById(0L);
                 verify(accountMock).withdrawBalance(any());
                 verify(target).update(accountMock);
@@ -958,7 +956,7 @@ class AccountDaoSapientGeneratedTest {
         Account accountMock = mock(Account.class);
         Transaction transactionMock = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(Optional.of(accountMock)).when(target).findById(1234567890L);
@@ -969,7 +967,7 @@ class AccountDaoSapientGeneratedTest {
             target.deposit(new BigDecimal("100.0"), 1234567890L);
             //Assert statement(s)
             assertAll("result", () -> {
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target).findById(1234567890L);
                 verify(accountMock).depositBalance(any());
                 verify(target).update(accountMock);
@@ -992,7 +990,7 @@ class AccountDaoSapientGeneratedTest {
         Account accountMock = mock(Account.class);
         Transaction transactionMock = mock(Transaction.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = spy(new AccountDao());
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(Optional.of(accountMock)).when(target).findById(0L);
@@ -1011,7 +1009,7 @@ class AccountDaoSapientGeneratedTest {
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(target).findById(0L);
                 verify(accountMock).depositBalance(any());
                 verify(target).update(accountMock);
@@ -1036,7 +1034,7 @@ class AccountDaoSapientGeneratedTest {
         //Arrange Statement(s)
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("DELETE FROM account WHERE id = ?");
@@ -1050,7 +1048,7 @@ class AccountDaoSapientGeneratedTest {
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("DELETE FROM account WHERE id = ?");
                 verify(preparedStatementMock).setLong(1, 1L);
                 verify(preparedStatementMock).executeUpdate();
@@ -1071,13 +1069,13 @@ class AccountDaoSapientGeneratedTest {
          */
         //Arrange Statement(s)
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             //Act Statement(s)
             target.deleteById(12345L);
             //Assert statement(s)
-            assertAll("result", () -> connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1)));
+            assertAll("result", () -> connectionManager.verify(ConnectionManager::getConnection, atLeast(1)));
         }
     }
 
@@ -1094,7 +1092,7 @@ class AccountDaoSapientGeneratedTest {
         //Arrange Statement(s)
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("DELETE FROM account WHERE id = ?");
@@ -1112,7 +1110,7 @@ class AccountDaoSapientGeneratedTest {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getMessage(), equalTo(daoException.getMessage()));
                 assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("DELETE FROM account WHERE id = ?");
                 verify(preparedStatementMock).setLong(1, 1L);
                 verify(preparedStatementMock).executeUpdate();
@@ -1134,7 +1132,7 @@ class AccountDaoSapientGeneratedTest {
         //Arrange Statement(s)
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(() -> ConnectionManager.getConnection()).thenReturn(connectionMock);
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
             target = new AccountDao();
             autoCloseableMocks = MockitoAnnotations.openMocks(this);
             doReturn(preparedStatementMock).when(connectionMock).prepareStatement("DELETE FROM account WHERE id = ?");
@@ -1145,7 +1143,7 @@ class AccountDaoSapientGeneratedTest {
             target.deleteById(1L);
             //Assert statement(s)
             assertAll("result", () -> {
-                connectionManager.verify(() -> ConnectionManager.getConnection(), atLeast(1));
+                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
                 verify(connectionMock).prepareStatement("DELETE FROM account WHERE id = ?");
                 verify(preparedStatementMock).setLong(1, 1L);
                 verify(preparedStatementMock).executeUpdate();
