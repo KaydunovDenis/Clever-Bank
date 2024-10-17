@@ -67,3 +67,6 @@
 
 Приложение III Шаблон money statement:  
 ![money statement.png](img%2Fmoney%20statement.png)
+
+
+//todo read IoC spring, create Bean by id

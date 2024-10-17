@@ -45,7 +45,7 @@ public class PercentageProcessor {
         }
     }
 
-    public static double getPercentageFromYaml() {
+    public double getPercentageFromYaml() {
         Map<String, Object> yamlMap = YamlReader.readYaml(CONFIG_FILE_PATH);
         Object percentage = yamlMap.get(PERCENTAGE_PROPERTY);
         return Double.parseDouble(percentage.toString());

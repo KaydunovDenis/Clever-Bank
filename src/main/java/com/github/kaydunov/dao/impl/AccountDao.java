@@ -23,7 +23,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     public static final String SQL_CREATE = "INSERT INTO account (balance, bank_id, user_id, is_saving_account) VALUES (?, ?, ?, ?)";
     public static final String SQL_SELECT_BY_ID = "SELECT * FROM account WHERE id = ?";
-    public static final String SQL_SELECT_ALL = "SELECT * FROM account";
+    public static final String SQL_SELECT_ALL = "SELECT * FROM account ORDER BY id";
     public static final String SQL_UPDATE_BALANCE = "UPDATE account SET balance = ? WHERE id = ?";
     public static final String SQL_DELETE_BY_ID = "DELETE FROM account WHERE id = ?";
 
@@ -42,7 +42,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             statement.setBoolean(4, account.isSavingAccount());
             ResultSet resultSet = statement.executeQuery();
             account = mapResultSetToAccount(resultSet);
-            log.info("Account was created: " + account);
+            log.info(SQL_CREATE);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -57,7 +57,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             try (ResultSet resultSet = statement.executeQuery()) {
                 account = Optional.of(mapResultSetToAccount(resultSet));
             }
-            log.info("Account was found: " + account);
+            log.info(SQL_DELETE_BY_ID);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -74,7 +74,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
                     accounts.add(account);
                 }
             }
-            log.info("Accounts were found: " + accounts.stream().toList());
+            log.info(SQL_SELECT_ALL);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -90,7 +90,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
                     accounts.add(account);
                 }
             }
-            log.info("Accounts were found: " + accounts.stream().toList());
+            log.info(SQL_SELECT_ALL_SAVING_ACCOUNTS);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -103,7 +103,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getId());
             statement.executeUpdate();
-            log.info("Account was updated: " + account);
+            log.info(SQL_UPDATE_BALANCE);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }

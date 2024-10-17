@@ -42,16 +42,16 @@ class AccountDaoSapientGeneratedTest {
 
     private AutoCloseable autoCloseableMocks;
 
-    @InjectMocks()
+    @InjectMocks
     private AccountDao target;
 
-    @AfterEach()
+    @AfterEach
     public void afterTest() throws Exception {
         if (autoCloseableMocks != null)
             autoCloseableMocks.close();
     }
 
-    @Test()
+    @Test
     void createWhenDefaultBranchThrowsThrowable() throws SQLException {
         PreparedStatement preparedStatementMock = mock(PreparedStatement.class);
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {

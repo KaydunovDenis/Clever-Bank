@@ -23,7 +23,7 @@ public class ApplicationContext {
         scanAndRegisterBeans(clazz.getPackage().getName());
         injectDependencies();
     }
-//todo read IoC spring, create Bean by id
+
     public <T> T getBean(Class<T> clazz) {
         return clazz.cast(beanRegistry.get(clazz));
     }
