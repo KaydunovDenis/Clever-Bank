@@ -1,5 +1,6 @@
 package com.github.kaydunov.entity;
 
+import com.github.kaydunov.dto.Statement;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -54,6 +55,8 @@ public class StatementTest {
 
     public static Statement getStatement() {
         Statement statement = new Statement();
+        int notRealId = -1;
+        statement.setNumber(notRealId);
         statement.setClientName("Сотников Кирилл Артёмович ");
         statement.setAccountNumber("AS12 ASDG 1200 2132 ASDA 353A 2132");
         statement.setCurrency("BYN");

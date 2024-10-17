@@ -1,6 +1,6 @@
 package com.github.kaydunov.service;
 
-import com.github.kaydunov.entity.Check;
+import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.entity.CheckTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -15,15 +15,16 @@ class CheckServiceTest {
     private final CheckService target = new CheckService();
 
     @Test
-    void processCheckTest() {
-        File file = new File("check/check_-1.txt");
+    void process() {
+        Check check = CheckTest.getCheck();
+        String filename = "check/check_" + check.getNumber() + ".txt";
+        File file = new File(filename);
         if (file.exists()) {
             file.delete();
         }
         //Arrange Statement(s)
-        Check check = CheckTest.getCheck();
         //Act Statement(s)
-        target.processCheck(check);
+        target.process(check);
         assertTrue(file.exists());
     }
 

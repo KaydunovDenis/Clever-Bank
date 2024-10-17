@@ -1,5 +1,6 @@
 package com.github.kaydunov.entity;
 
+import com.github.kaydunov.dto.Check;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -37,16 +38,17 @@ public class CheckTest {
     }
 
     public static Check getCheck() {
-        Check target = new Check();
-        target.setNumber(-1);
-        target.setDate(new Timestamp(5000));
-        target.setAccountSourceId(1L);
-        target.setAccountDestinationId(2L);
-        target.setAmount(new BigDecimal("100.0"));
-        target.setSenderBankName("SenderBank");
-        target.setRecipientBankName("RecipientBank");
-        target.setType(TransactionType.PERCENT);
-        target.setCurrency("BYN");
-        return target;
+        Check object = new Check();
+        int notRealId = -1;
+        object.setNumber(notRealId);
+        object.setDate(new Timestamp(5000));
+        object.setAccountSourceId(1L);
+        object.setAccountDestinationId(2L);
+        object.setAmount(new BigDecimal("100.0"));
+        object.setSenderBankName("SenderBank");
+        object.setRecipientBankName("RecipientBank");
+        object.setType(TransactionType.PERCENT);
+        object.setCurrency("BYN");
+        return object;
     }
 }

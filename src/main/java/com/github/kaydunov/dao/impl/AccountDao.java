@@ -34,7 +34,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Override
     public Account create(Account account) {
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE)) {
-            statement.setBigDecimal(1, account.getBalance());//todo replace to BalanceIndex constant
+            statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getBankId());
             statement.setLong(3, account.getUserId());
             statement.setBoolean(4, account.isSavingAccount());

@@ -1,7 +1,9 @@
-package com.github.kaydunov.entity;
+package com.github.kaydunov.dto;
 
+import com.github.kaydunov.entity.TransactionType;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -27,7 +29,7 @@ import java.text.SimpleDateFormat;
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Check {
+public class Check implements TXT {
     int number;
     Timestamp date;
     TransactionType type;

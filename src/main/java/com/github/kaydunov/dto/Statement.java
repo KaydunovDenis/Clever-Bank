@@ -1,8 +1,10 @@
-package com.github.kaydunov.entity;
+package com.github.kaydunov.dto;
 
+import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -34,7 +36,8 @@ import java.util.List;
  */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Statement {
+public class Statement implements TXT{
+    int number;
     String clientName;
     String accountNumber;
     String currency;
