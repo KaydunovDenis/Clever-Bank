@@ -4,6 +4,7 @@ import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Component;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -17,7 +18,8 @@ public class AccountPercentDao {
             """;
 
     public void chargePercents(double percent) throws DaoException {
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CHARGE_PERCENTS)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CHARGE_PERCENTS)) {
             statement.setDouble(1, percent);
             statement.executeUpdate();
             log.info("Percents accrued on the accounts with savings status.");

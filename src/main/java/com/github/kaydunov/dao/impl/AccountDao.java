@@ -33,7 +33,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     @Override
     public Account create(Account account) {
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE)) {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getBankId());
             statement.setLong(3, account.getUserId());
@@ -50,12 +51,15 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Override
     public Optional<Account> findById(Long id) {
         Optional<Account> account;
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                account = Optional.of(mapResultSetToAccount(resultSet));
+                if (resultSet.next()) {
+                    account = Optional.of(mapResultSetToAccount(resultSet));
+                } else  account = Optional.empty();
             }
-            log.info(SQL_DELETE_BY_ID);
+            log.info(SQL_SELECT_BY_ID);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -65,12 +69,12 @@ public class AccountDao implements CrudRepository<Account, Long> {
     @Override
     public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Account account = mapResultSetToAccount(resultSet);
-                    accounts.add(account);
-                }
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Account account = mapResultSetToAccount(resultSet);
+                accounts.add(account);
             }
             log.info(SQL_SELECT_ALL);
         } catch (SQLException e) {
@@ -81,7 +85,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     public List<Account> findAllSavingAccounts() {
         List<Account> accounts = new ArrayList<>();
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL_SAVING_ACCOUNTS)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL_SAVING_ACCOUNTS)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Account account = mapResultSetToAccount(resultSet);
@@ -97,7 +102,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
 
     @Override
     public void update(Account account) {
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_UPDATE_BALANCE)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_BALANCE)) {
             statement.setBigDecimal(1, account.getBalance());
             statement.setLong(2, account.getId());
             statement.executeUpdate();
@@ -129,7 +135,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             log.info("Transfer %s from %s account to %s account was successfully completed.", amount, sourceAccount.getId(), destinationAccount.getId());
         } catch (SQLException e) {
             connection.rollback();
-            log.info("Transfer was automatically rolled back. Reason: " + e.getMessage());
+            log.info("Transfer was automatically rolled back. Reason: {}", e.getMessage());
             throw new SQLTransactionRollbackException(e.getMessage(), e);
         }
     }
@@ -151,7 +157,6 @@ public class AccountDao implements CrudRepository<Account, Long> {
         Transaction transaction = new Transaction(amount, createdAt, null, accountDestinationId, TransactionType.DEPOSIT);
         updateWithTransaction(destinationAccount, transaction);
     }
-
 
 
     private void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
