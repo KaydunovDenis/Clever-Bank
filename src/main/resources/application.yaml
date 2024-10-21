@@ -2,7 +2,7 @@ db:
   driver: org.postgresql.Driver
   user: root
   password: pass
-  poolsize: 32
+  poolsize: 10
   url: jdbc:postgresql://localhost:5432/bank_db
   useUnicode: true
   encoding: UTF-8
