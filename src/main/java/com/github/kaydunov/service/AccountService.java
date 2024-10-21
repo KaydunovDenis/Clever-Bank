@@ -22,11 +22,11 @@ public class AccountService {
         accountDao.transfer(amount, accountSourceId, accountDestinationId);
     }
 
-    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException {
+    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException, NotFoundException {
         accountDao.withdraw(amount, accountSourceId);
     }
 
-    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException {
+    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException, NotFoundException {
         accountDao.deposit(amount, accountDestinationId);
     }
 
@@ -40,5 +40,9 @@ public class AccountService {
 
     public void chargePercents(double percent) {
         accountPercentDao.chargePercents(percent);
+    }
+
+    public void deleteById(Long accountId) {
+        accountDao.deleteById(accountId);
     }
 }

@@ -8,6 +8,7 @@ import com.github.kaydunov.entity.TransactionType;
 import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -57,10 +58,12 @@ public class AccountDao implements CrudRepository<Account, Long> {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     account = Optional.of(mapResultSetToAccount(resultSet));
-                } else  account = Optional.empty();
+                } else {
+                    throw new NotFoundException("Could not find account");
+                }
             }
             log.info(SQL_SELECT_BY_ID);
-        } catch (SQLException e) {
+        } catch (SQLException | NotFoundException e) {
             throw new DaoException(e.getMessage(), e);
         }
         return account;
@@ -140,8 +143,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
         }
     }
 
-    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException {
-        Account sourceAccount = findById(accountSourceId).get();
+    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException, NotFoundException {
+        Account sourceAccount = findById(accountSourceId).orElseThrow(() -> new NotFoundException("Account not found: " + accountSourceId));
         sourceAccount.withdrawBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());
@@ -149,8 +152,8 @@ public class AccountDao implements CrudRepository<Account, Long> {
         updateWithTransaction(sourceAccount, transaction);
     }
 
-    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException {
-        Account destinationAccount = findById(accountDestinationId).get();
+    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException, NotFoundException {
+        Account destinationAccount = findById(accountDestinationId).orElseThrow(() -> new NotFoundException("Account now found"));
         destinationAccount.depositBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());

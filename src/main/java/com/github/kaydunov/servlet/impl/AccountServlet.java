@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-@WebServlet(value = "/account")
+@WebServlet("/account")
 public class AccountServlet extends ServletMarker {
     @Autowired
     private ObjectMapperWrapper mapper;
@@ -54,7 +54,6 @@ public class AccountServlet extends ServletMarker {
         return convertToJson(account);
     }
 
-
     private void prepareResponse(HttpServletResponse response, int status, String json) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -84,5 +83,18 @@ public class AccountServlet extends ServletMarker {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error: " + e.getMessage());
         }
+    }
+
+    @SneakyThrows
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+        String idParam = request.getParameter("id");
+        if (idParam == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        Long accountId = Long.parseLong(idParam);
+        accountService.deleteById(accountId);
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }

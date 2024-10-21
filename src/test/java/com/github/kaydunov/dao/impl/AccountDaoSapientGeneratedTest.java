@@ -1,5 +1,6 @@
 package com.github.kaydunov.dao.impl;
 
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.InjectMocks;
 import org.junit.jupiter.api.AfterEach;
@@ -872,7 +873,7 @@ class AccountDaoSapientGeneratedTest {
 
     //Sapient generated method id: ${withdrawTest}, hash: EB515DD11F9CE2942B9F487A58C293AF
     @Test()
-    void withdrawTest() throws SQLException {
+    void withdrawTest() throws SQLException, NotFoundException {
         /*
          * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
          *  The test code, including the assertion statements, has been successfully generated.
@@ -947,7 +948,7 @@ class AccountDaoSapientGeneratedTest {
 
     //Sapient generated method id: ${depositTest}, hash: 11A650AC5F20456F471D815D6943B284
     @Test()
-    void depositTest() throws SQLException {
+    void depositTest() throws SQLException, NotFoundException {
         /*
          * TODO: Help needed! Please adjust the input/test parameter values manually to satisfy the requirements of the given test scenario.
          *  The test code, including the assertion statements, has been successfully generated.
