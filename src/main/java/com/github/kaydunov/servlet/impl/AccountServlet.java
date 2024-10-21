@@ -10,8 +10,10 @@ import com.github.kaydunov.spring.Component;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import javassist.NotFoundException;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,13 +26,39 @@ public class AccountServlet extends ServletMarker {
     private AccountService accountService;
 
 
-    @SneakyThrows
+
+    @SneakyThrows(IOException.class)
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        String json;
+        int status;
+        String idParam = request.getParameter("id");
+        try {
+            json = idParam == null ? processAllAccounts() : processAccountById(idParam);
+            status = HttpServletResponse.SC_OK;
+        } catch (NotFoundException e) {
+            json = "Account not found";
+            status = HttpServletResponse.SC_NOT_FOUND;
+        }
+        prepareResponse(response, status, json);
+    }
+
+    private String processAllAccounts() {
         List<Account> accounts = accountService.getAll();
-        String json = convertToJson(accounts);
+        return convertToJson(accounts);
+    }
+
+    private String processAccountById(String id) throws NotFoundException {
+        Long accountId = Long.parseLong(id);
+        Account account = accountService.getById(accountId);
+        return convertToJson(account);
+    }
+
+
+    private void prepareResponse(HttpServletResponse response, int status, String json) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setStatus(status);
         response.getWriter().write(json);
     }
 

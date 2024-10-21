@@ -5,6 +5,7 @@ import com.github.kaydunov.dao.impl.AccountDao;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
+import javassist.NotFoundException;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -31,6 +32,10 @@ public class AccountService {
 
     public List<Account> getAll(){
         return accountDao.findAll();
+    }
+
+    public Account getById(Long accountId) throws NotFoundException {
+        return accountDao.findById(accountId).orElseThrow(() -> new NotFoundException("Account not found"));
     }
 
     public void chargePercents(double percent) {
