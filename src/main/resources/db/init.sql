@@ -34,10 +34,10 @@ CREATE TABLE transaction
 (
     id                     SERIAL PRIMARY KEY,
     amount                 DECIMAL(2),
+    transaction_type_id    INT,
+    account_source_id      INT NULL,
+    account_destination_id INT NULL,
     created_at             DATE,
-    transaction_type_id      INT,
-    account_source_id      INT,
-    account_destination_id INT,
     FOREIGN KEY (transaction_type_id) REFERENCES transaction_type (id),
     FOREIGN KEY (account_source_id) REFERENCES account (id),
     FOREIGN KEY (account_destination_id) REFERENCES account (id)
@@ -117,7 +117,8 @@ VALUES (5000.31, 1, 1, True),
 
 INSERT INTO transaction_type (type)
 VALUES ('DEPOSIT'),
-       ('WITHDRAW');
+       ('WITHDRAW'),
+       ('INTEREST')
 
 
 
