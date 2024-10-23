@@ -1,6 +1,35 @@
 ### Clever-Bank
+
+## Project description
 Clever-Bank is a console-based banking application designed to manage multiple banks, users, and accounts, facilitating secure transactions, interest calculations, and generating detailed receipts.   
 It adheres to SOLID principles and ensures asynchronous operations in a multi-threaded environment, with a focus on code quality and maintainability.
+
+### Main functions:
+
+1. Deposit and withdrawal of funds.
+2. Transfers between clients of Clever-Bank and clients of other banks.
+3. Automatic interest charge on accounts at the end of the month.
+4. Generation and saving of checks for each transaction.
+5. Multithreading and deadlock protection.
+
+## Technology stack
+
+- Java 17
+- Maven
+- PostgreSQL
+- JDBC
+- Lombok
+- Servlets 
+- Docker
+
+## Data structure
+
+The application operates with the following entities:
+- **Bank**: keeps accounts and users.
+- **User**: owns one or more accounts.
+- **Account**: used for money transactions.
+- **Transaction**: Record of any account transaction.
+
 
 ### Installation for Mac
 1. **Install Homebrew** (for installing other programs):
@@ -46,5 +75,7 @@ Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors.
 </plugin>
 ```
 
+
+[Documentation](docs/index.html)
 
 
