@@ -6,7 +6,7 @@ import com.github.kaydunov.spring.Component;
 import java.io.File;
 
 @Component
-public class StatementService implements Process<Statement> {
+public class StatementService implements FileProcessor<Statement> {
 
     private static final String PATH = "statement";
     private static final String FILE_EXTENSION = ".txt";
