@@ -23,7 +23,11 @@ public class ApplicationContext {
     }
 
     public <T> T getBean(Class<T> clazz) {
-        return clazz.cast(beanRegistry.get(clazz));
+        T t = clazz.cast(beanRegistry.get(clazz));
+        if (t == null) {
+            throw new NoSuchBeanDefinitionException("Bean not found: " + clazz.getName());
+        }
+        return t;
     }
 
     private void scanAndRegisterBeans(String basePackage) {

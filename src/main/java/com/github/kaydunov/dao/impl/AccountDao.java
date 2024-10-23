@@ -157,6 +157,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
         destinationAccount.depositBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());
+        //todo transactiom should save to database
         Transaction transaction = new Transaction(amount, createdAt, null, accountDestinationId, TransactionType.DEPOSIT);
         updateWithTransaction(destinationAccount, transaction);
     }

@@ -6,7 +6,7 @@ import com.github.kaydunov.spring.Component;
 import java.io.File;
 
 @Component
-public class CheckService implements Process<Check>{
+public class CheckService implements FileProcessor<Check> {
 
     private static final String PATH = "check";
     private static final String FILE_EXTENSION = ".txt";

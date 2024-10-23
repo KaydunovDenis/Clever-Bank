@@ -14,12 +14,10 @@ import java.util.Set;
 @Slf4j
 public class TomcatManager {
     private static final String CONTEXT_PATH = "/clever-bank";
-    private static final String SERVLETS_PACKAGE_NAME = "com.github.kaydunov.servlet";
+    private static final String SERVLETS_PACKAGE_NAME = "com.github.kaydunov.servlet.impl";
     public static final int PORT = 8080;
     public static final String TOMCAT_BASE_DIR = "temp";
     private static Context context;
-
-    private TomcatManager() {}
 
     public static void start(ApplicationContext applicationContext){
         Tomcat tomcat = initializeTomcat();
@@ -46,8 +44,8 @@ public class TomcatManager {
 
     private static void registerServlets(ApplicationContext applicationContext) {
         Set<Class<?>> servletClasses = ServletScanner.getServletClasses(SERVLETS_PACKAGE_NAME);
-        for (Class<?> implementation : servletClasses) {
-            HttpServlet servlet = (HttpServlet) applicationContext.getBean(implementation);
+        for (Class<?> servletClass : servletClasses) {
+            HttpServlet servlet = (HttpServlet) applicationContext.getBean(servletClass);
             registerServlet(servlet);
         }
     }
@@ -58,15 +56,17 @@ public class TomcatManager {
         if (annotation != null) {
             addServletToContext(servlet, annotation);
         } else {
-            throw new IllegalArgumentException("Servlet class " + servlet.getClass().getName() + " is missing @WebServlet annotation");
+            throw new TomCatException(servlet.getClass().getSimpleName() + " servlet class doesn't have @WebServlet annotation");
         }
     }
 
     private static void addServletToContext(HttpServlet servlet, WebServlet annotation) {
         String servletName = servlet.getClass().getName();
-        Tomcat.addServlet(context, servletName, servlet);
-        for (String urlPattern : annotation.value()) {
-            context.addServletMappingDecoded(urlPattern, servletName);
+        if (context.findChild(servletName) == null) {
+            Tomcat.addServlet(context, servletName, servlet);
+            for (String urlPattern : annotation.value()) {
+                context.addServletMappingDecoded(urlPattern, servletName);
+            }
         }
     }
 
