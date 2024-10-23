@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Clever-Bank API
+  description: API for managing users, banks, accounts, and transactions.
+  version: 1.0.0
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "johndoe@example.com"
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+
+    TransactionType:
+      type: string
+      enum:
+        - DEPOSIT
+        - WITHDRAW
+        - INTEREST
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1001
+        amount:
+          type: number
+          format: decimal
+          example: 500.75
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-10-14T10:15:30Z"
+        sourceAccountId:
+          type: integer
+          format: int64
+          example: 2001
+        destinationAccountId:
+          type: integer
+          format: int64
+          example: 2002
+        transactionType:
+          $ref: '#/components/schemas/TransactionType'
+
+    Bank:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Clever Bank"
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2001
+        balance:
+          type: number
+          format: decimal
+          example: 1500.00
+        bankId:
+          type: integer
+          format: int64
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        transactionsIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 1001
+        isSavingAccount:
+          type: boolean
+          example: true
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: A list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{userId}:
+    get:
+      summary: Get user information by ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /accounts:
+    get:
+      summary: Get all accounts
+      responses:
+        '200':
+          description: A list of all accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+
+  /transactions:
+    get:
+      summary: Get all transactions
+      responses:
+        '200':
+          description: A list of all transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
