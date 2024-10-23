@@ -15,8 +15,7 @@ import org.mockito.MockedStatic;
 
 import java.sql.Connection;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
 class ApplicationContextTest {
@@ -36,7 +35,7 @@ class ApplicationContextTest {
         assertNotNull(target.getBean(AccountDao.class));
         assertNotNull(target.getBean(TransactionDao.class));
         assertNotNull(target.getBean(UserDao.class));
-        assertNull(target.getBean(PercentageProcessor.class));
+        assertThrows(NoSuchBeanDefinitionException.class, () -> target.getBean(PercentageProcessor.class));
     }
 
     @Test

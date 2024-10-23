@@ -26,7 +26,7 @@ public class CheckTest {
                 |          Банковский Чек        |
                 | Чек:                        -1 |
                 | 01-01-1970            03:00:05 |
-                | Тип транзакции:        PERCENT |
+                | Тип транзакции:       INTEREST |
                 | Банк отправителя:   SenderBank |
                 | Банк получателя: RecipientBank |
                 | Счет отправителя:            1 |
@@ -47,7 +47,7 @@ public class CheckTest {
         object.setAmount(new BigDecimal("100.0"));
         object.setSenderBankName("SenderBank");
         object.setRecipientBankName("RecipientBank");
-        object.setType(TransactionType.PERCENT);
+        object.setType(TransactionType.INTEREST);
         object.setCurrency("BYN");
         return object;
     }
