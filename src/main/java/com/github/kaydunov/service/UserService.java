@@ -6,8 +6,6 @@ import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import javassist.NotFoundException;
 
-import java.util.Optional;
-
 @Component
 public class UserService {
     @Autowired
@@ -21,7 +19,7 @@ public class UserService {
         userDao.update(entity);
     }
 
-    public Optional<User> findById(Long id) throws NotFoundException {
+    public User findById(Long id) throws NotFoundException {
         return userDao.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
