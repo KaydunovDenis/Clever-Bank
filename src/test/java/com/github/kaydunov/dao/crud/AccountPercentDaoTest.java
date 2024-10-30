@@ -1,11 +1,9 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.AccountPercentDao;
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.exception.DaoException;
-import org.junit.jupiter.api.Assertions;
+import com.github.kaydunov.exception.DAOException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
@@ -64,6 +62,6 @@ class AccountPercentDaoTest {
                 .thenThrow(new SQLException("Test SQL Exception"));
 
         // Assert that the method throws DaoException
-        assertThrows(DaoException.class, () -> target.chargePercents(PERCENT));
+        assertThrows(DAOException.class, () -> target.chargePercents(PERCENT));
     }
 }

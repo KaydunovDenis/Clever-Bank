@@ -1,7 +1,7 @@
 package com.github.kaydunov.service;
 
 import com.github.kaydunov.dao.AccountPercentDao;
-import com.github.kaydunov.dao.impl.AccountDao;
+import com.github.kaydunov.dao.crud.AccountDao;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
@@ -18,15 +18,15 @@ public class AccountService {
     @Autowired
     private AccountPercentDao accountPercentDao;
 
-    public void transfer(BigDecimal amount, Long accountSourceId, Long accountDestinationId) throws SQLException {
+    public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId) throws SQLException {
         accountDao.transfer(amount, accountSourceId, accountDestinationId);
     }
 
-    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException, NotFoundException {
+    public void withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
         accountDao.withdraw(amount, accountSourceId);
     }
 
-    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException, NotFoundException {
+    public void deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
         accountDao.deposit(amount, accountDestinationId);
     }
 
@@ -34,7 +34,7 @@ public class AccountService {
         return accountDao.findAll();
     }
 
-    public Account getById(Long accountId) throws NotFoundException {
+    public Account getById(String accountId) throws NotFoundException {
         return accountDao.findById(accountId).orElseThrow(() -> new NotFoundException("Account not found"));
     }
 
@@ -42,7 +42,7 @@ public class AccountService {
         accountPercentDao.chargePercents(percent);
     }
 
-    public void deleteById(Long accountId) {
+    public void deleteById(String accountId) {
         accountDao.deleteById(accountId);
     }
 }

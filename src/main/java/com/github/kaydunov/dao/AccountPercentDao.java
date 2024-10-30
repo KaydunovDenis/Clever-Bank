@@ -1,6 +1,6 @@
 package com.github.kaydunov.dao;
 
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 import com.github.kaydunov.spring.Component;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,14 +17,14 @@ public class AccountPercentDao {
                 WHERE is_saving_account = true AND balance > 0
             """;
 
-    public void chargePercents(double percent) throws DaoException {
+    public void chargePercents(double percent) throws DAOException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CHARGE_PERCENTS)) {
             statement.setDouble(1, percent);
             statement.executeUpdate();
             log.info("Percents accrued on the accounts with savings status.");
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 }

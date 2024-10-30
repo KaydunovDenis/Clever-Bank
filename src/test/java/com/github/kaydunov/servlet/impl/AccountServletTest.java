@@ -30,6 +30,8 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 class AccountServletTest {
 
+    private final String accountSourceId = "1L";
+    private final String accountDestinationId = "2L";
     @Mock
     private AccountService accountService;
     @Mock
@@ -103,7 +105,7 @@ class AccountServletTest {
             verify(requestMock).getInputStream();
             verify(responseMock).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             verify(responseMock).getWriter();
-            verify(accountService, never()).transfer(any(), anyLong(), anyLong());
+            verify(accountService, never()).transfer(any(), anyString(), anyString());
         });
     }
 
@@ -126,7 +128,7 @@ class AccountServletTest {
             verify(requestMock).getInputStream();
             verify(responseMock).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             verify(responseMock).getWriter();
-            verify(accountService, never()).transfer(any(), anyLong(), anyLong());
+            verify(accountService, never()).transfer(any(), anyString(), anyString());
         });
     }
 
@@ -135,7 +137,7 @@ class AccountServletTest {
         // When
         when(requestMock.getInputStream()).thenReturn(servletInputStreamMock);
         when(objectMapper.readValue(servletInputStreamMock, Transaction.class)).thenReturn(getTransaction());
-        doNothing().when(accountService).transfer(any(BigDecimal.class), eq(1L), eq(2L));
+        doNothing().when(accountService).transfer(any(BigDecimal.class), eq(accountSourceId), eq(accountDestinationId));
 
         // Act
         target.doPost(requestMock, responseMock);
@@ -144,7 +146,7 @@ class AccountServletTest {
         assertAll("result", () -> {
             verify(requestMock).getInputStream();
             verify(objectMapper).readValue(any(InputStream.class), eq(Transaction.class));
-            verify(accountService).transfer(BigDecimal.valueOf(100), 1L,2L);
+            verify(accountService).transfer(BigDecimal.valueOf(100), accountSourceId, accountDestinationId);
             verify(responseMock).setStatus(HttpServletResponse.SC_OK);
         });
     }
@@ -155,8 +157,8 @@ class AccountServletTest {
         transaction.setAmount(BigDecimal.valueOf(100));
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         transaction.setCreatedAt(timestamp);
-        transaction.setSourceAccountId(1L);
-        transaction.setDestinationAccountId(2L);
+        transaction.setSourceAccountId(accountSourceId);
+        transaction.setDestinationAccountId(accountDestinationId);
         return transaction;
     }
 }

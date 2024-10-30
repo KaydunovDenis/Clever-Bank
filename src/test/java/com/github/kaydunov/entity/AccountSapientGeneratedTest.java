@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Timeout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -25,8 +24,7 @@ class AccountSapientGeneratedTest {
          * (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) : true
          */
          //Arrange Statement(s)
-        List<Long> transactionList = new ArrayList<>();
-        Account target = new Account(0L, new BigDecimal("1.0"), 0L, 0L, transactionList, true);
+        Account target = createAccount();
         //Act Statement(s)
         final InsufficientFundsException result = assertThrows(InsufficientFundsException.class, () -> target.withdrawBalance(new BigDecimal("2.0")));
         
@@ -41,9 +39,7 @@ class AccountSapientGeneratedTest {
          * (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) : false
          */
          //Arrange Statement(s)
-        List<Long> transactionList = new ArrayList<>();
-        Account target = new Account(0L, new BigDecimal("1.0"), 0L, 0L, transactionList, true);
-        
+        Account target = createAccount();
         //Act Statement(s)
         String money = "0.4";
         target.withdrawBalance(new BigDecimal(money));
@@ -55,14 +51,26 @@ class AccountSapientGeneratedTest {
     @Test()
     void depositBalanceTest() {
         //Arrange Statement(s)
-        List<Long> transactionList = new ArrayList<>();
-        Account target = new Account(0L, new BigDecimal("2.0"), 0L, 0L, transactionList, true);
-        
+        Account target = createAccount();
+
         //Act Statement(s)
         String money = "1.0";
         target.depositBalance(new BigDecimal(money));
         //Assert statement(s)
         Assertions.assertEquals(new BigDecimal("3.0"), target.getBalance());
 
+    }
+
+    private Account createAccount() {
+        Account account = new Account();
+        account.setId("0L");
+        account.setBalance(new BigDecimal("1.0"));
+        account.setCurrency("BYN");
+        account.setUserId(0L);
+        account.setBankId(0L);
+        account.setTransactionsIds(new ArrayList<>());
+        account.setSavingAccount(true);
+
+        return account;
     }
 }

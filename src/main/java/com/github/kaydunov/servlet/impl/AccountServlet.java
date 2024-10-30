@@ -48,8 +48,7 @@ public class AccountServlet extends ServletMarker {
         return convertToJson(accounts);
     }
 
-    private String processAccountById(String id) throws NotFoundException {
-        Long accountId = Long.parseLong(id);
+    private String processAccountById(String accountId) throws NotFoundException {
         Account account = accountService.getById(accountId);
         return convertToJson(account);
     }
@@ -75,8 +74,8 @@ public class AccountServlet extends ServletMarker {
 
             // Perform the requested operation
             BigDecimal amount = transaction.getAmount();
-            Long accountSourceId = transaction.getSourceAccountId();
-            Long accountDestinationId = transaction.getDestinationAccountId();
+            String accountSourceId = transaction.getSourceAccountId();
+            String accountDestinationId = transaction.getDestinationAccountId();
             accountService.transfer(amount, accountSourceId, accountDestinationId);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
@@ -88,12 +87,11 @@ public class AccountServlet extends ServletMarker {
     @SneakyThrows
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-        String idParam = request.getParameter("id");
-        if (idParam == null) {
+        String accountId = request.getParameter("id");
+        if (accountId == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        Long accountId = Long.parseLong(idParam);
         accountService.deleteById(accountId);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }

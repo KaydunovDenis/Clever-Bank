@@ -2,7 +2,7 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dao.AccountPercentDao;
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.dao.impl.AccountDao;
+import com.github.kaydunov.dao.crud.AccountDao;
 import com.github.kaydunov.entity.Account;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
@@ -26,8 +26,8 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 class AccountServiceTest {
     private final BigDecimal amount = new BigDecimal(10);
-    private final Long accountSourceId = 1L;
-    private final Long accountDestinationId = 2L;
+    private final String accountSourceId = "1L";
+    private final String accountDestinationId = "2L";
 
     @Mock
     private AccountDao accountDao;
@@ -104,10 +104,10 @@ class AccountServiceTest {
         // Given
         Account account = mock(Account.class);
         // When
-        when(accountDao.findById(1L)).thenReturn(Optional.of(account));
-        target.getById(1L);
+        when(accountDao.findById(accountSourceId)).thenReturn(Optional.of(account));
+        target.getById(accountSourceId);
         // Then
-        verify(accountDao).findById(1L);
+        verify(accountDao).findById(accountSourceId);
     }
 
     @Test
@@ -115,20 +115,20 @@ class AccountServiceTest {
         // Given
         Account account = mock(Account.class);
         // When
-        when(accountDao.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> target.getById(1L));
+        when(accountDao.findById(accountSourceId)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> target.getById(accountSourceId));
         // Then
-        verify(accountDao).findById(1L);
+        verify(accountDao).findById(accountSourceId);
     }
 
     @Test
     void deleteById() {
         // Given
         // When
-        doNothing().when(accountDao).deleteById(1L);
-        target.deleteById(1L);
+        doNothing().when(accountDao).deleteById(accountSourceId);
+        target.deleteById(accountSourceId);
         // Then
-        verify(accountDao).deleteById(1L);
+        verify(accountDao).deleteById(accountSourceId);
     }
 
 }

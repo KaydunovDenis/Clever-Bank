@@ -7,14 +7,16 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Account {
-    Long id;
+    String id;
     BigDecimal balance;
+    String currency;
     Long bankId;
     Long userId;
     List<Long> transactionsIds;

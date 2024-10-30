@@ -1,11 +1,10 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import javassist.NotFoundException;
@@ -20,7 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class AccountDao implements CrudRepository<Account, Long> {
+public class AccountDao implements CrudRepository<Account, String> {
 
     public static final String SQL_CREATE = "INSERT INTO account (balance, bank_id, user_id, is_saving_account) VALUES (?, ?, ?, ?)";
     public static final String SQL_SELECT_BY_ID = "SELECT * FROM account WHERE id = ?";
@@ -44,17 +43,17 @@ public class AccountDao implements CrudRepository<Account, Long> {
             account = mapResultSetToAccount(resultSet);
             log.info(SQL_CREATE);
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return account;
     }
 
     @Override
-    public Optional<Account> findById(Long id) {
+    public Optional<Account> findById(String id) {
         Optional<Account> account;
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
-            statement.setLong(1, id);
+            statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     account = Optional.of(mapResultSetToAccount(resultSet));
@@ -64,7 +63,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             }
             log.info(SQL_SELECT_BY_ID);
         } catch (SQLException | NotFoundException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return account;
     }
@@ -81,7 +80,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             }
             log.info(SQL_SELECT_ALL);
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return accounts;
     }
@@ -98,7 +97,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             }
             log.info(SQL_SELECT_ALL_SAVING_ACCOUNTS);
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return accounts;
     }
@@ -108,15 +107,15 @@ public class AccountDao implements CrudRepository<Account, Long> {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_BALANCE)) {
             statement.setBigDecimal(1, account.getBalance());
-            statement.setLong(2, account.getId());
+            statement.setString(2, account.getId());
             statement.executeUpdate();
             log.info(SQL_UPDATE_BALANCE);
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 
-    public void transfer(BigDecimal amount, Long accountSourceId, Long accountDestinationId) throws SQLException {
+    public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId) throws SQLException {
         Timestamp createdAt = Timestamp.from(Instant.now());
 
         Account sourceAccount = findById(accountSourceId).get();
@@ -143,7 +142,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
         }
     }
 
-    public void withdraw(BigDecimal amount, Long accountSourceId) throws SQLException, NotFoundException {
+    public void withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
         Account sourceAccount = findById(accountSourceId).orElseThrow(() -> new NotFoundException("Account not found: " + accountSourceId));
         sourceAccount.withdrawBalance(amount);
 
@@ -152,7 +151,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
         updateWithTransaction(sourceAccount, transaction);
     }
 
-    public void deposit(BigDecimal amount, Long accountDestinationId) throws SQLException, NotFoundException {
+    public void deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
         Account destinationAccount = findById(accountDestinationId).orElseThrow(() -> new NotFoundException("Account now found"));
         destinationAccount.depositBalance(amount);
 
@@ -171,7 +170,7 @@ public class AccountDao implements CrudRepository<Account, Long> {
             update(account);
             connection.commit();
             log.info(transaction + "was successfully completed");
-        } catch (DaoException e) {
+        } catch (DAOException e) {
             connection.rollback();
             log.info(transaction + "was automatically rolled back. Reason: " + e.getMessage());
             throw new SQLTransactionRollbackException(e.getMessage(), e);
@@ -182,18 +181,18 @@ public class AccountDao implements CrudRepository<Account, Long> {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_DELETE_BY_ID)) {
-            statement.setLong(1, id);
+            statement.setString(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 
     private Account mapResultSetToAccount(ResultSet resultSet) throws SQLException {
         Account account = new Account();
-        long id = resultSet.getLong("id");
+        String id = resultSet.getString("id");
         account.setId(id);
         account.setBalance(resultSet.getBigDecimal("balance"));
         account.setBankId(resultSet.getLong("bank_id"));
