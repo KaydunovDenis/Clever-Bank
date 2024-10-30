@@ -1,9 +1,8 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.User;
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 import com.github.kaydunov.spring.Component;
 
 import java.sql.*;
@@ -35,7 +34,7 @@ public class UserDao implements CrudRepository<User, Long> {
                 }
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return user;
     }
@@ -50,7 +49,7 @@ public class UserDao implements CrudRepository<User, Long> {
                 user = mapResultSetToUser(resultSet);
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return Optional.ofNullable(user);
     }
@@ -64,7 +63,7 @@ public class UserDao implements CrudRepository<User, Long> {
                 users.add(mapResultSetToUser(resultSet));
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return users;
     }
@@ -77,7 +76,7 @@ public class UserDao implements CrudRepository<User, Long> {
             statement.setLong(3, user.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 
@@ -87,7 +86,7 @@ public class UserDao implements CrudRepository<User, Long> {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 

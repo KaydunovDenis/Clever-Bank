@@ -1,6 +1,6 @@
 package com.github.kaydunov.servlet.impl;
 
-import com.github.kaydunov.convertor.HTMLFileToStringConverter;
+import com.github.kaydunov.util.HTMLFileToStringConverter;
 import com.github.kaydunov.servlet.ServletMarker;
 import com.github.kaydunov.spring.Component;
 import jakarta.servlet.annotation.WebServlet;

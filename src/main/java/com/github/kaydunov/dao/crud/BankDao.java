@@ -1,9 +1,8 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.Bank;
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,11 +11,11 @@ import java.util.Optional;
 
 public class BankDao implements CrudRepository<Bank, Long> {
 
-    private static final String SQL_CREATE = "INSERT INTO bank (name) VALUES (?)";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM bank WHERE id = ?";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM bank";
-    private static final String SQL_UPDATE = "UPDATE bank SET name = ? WHERE id = ?";
-    private static final String SQL_DELETE_BY_ID = "DELETE FROM bank WHERE id = ?";
+    public static final String SQL_CREATE = "INSERT INTO bank (name) VALUES (?)";
+    public static final String SQL_SELECT_BY_ID = "SELECT * FROM bank WHERE id = ?";
+    public static final String SQL_SELECT_ALL = "SELECT * FROM bank";
+    public static final String SQL_UPDATE = "UPDATE bank SET name = ? WHERE id = ?";
+    public static final String SQL_DELETE_BY_ID = "DELETE FROM bank WHERE id = ?";
 
     @Override
     public Bank create(Bank bank) {
@@ -36,7 +35,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 }
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return bank;
     }
@@ -51,7 +50,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 bank = mapResultSetToBank(resultSet);
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return Optional.ofNullable(bank);
     }
@@ -65,7 +64,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 banks.add(mapResultSetToBank(resultSet));
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return banks;
     }
@@ -77,7 +76,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
             statement.setLong(2, bank.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 
@@ -87,7 +86,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
 

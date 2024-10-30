@@ -1,4 +1,4 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import org.junit.jupiter.api.Timeout;
 import org.mockito.InjectMocks;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.sql.ResultSet;
 import org.mockito.MockitoAnnotations;
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Optional;
@@ -32,10 +32,10 @@ class UserDaoSapientGeneratedTest {
 
     private final Connection connectionMock = mock(Connection.class, "connection");
 
-    private AutoCloseable autoCloseableMocks;
-
     @InjectMocks()
     private UserDao target;
+
+    private AutoCloseable autoCloseableMocks;
 
     @AfterEach()
     public void afterTest() throws Exception {
@@ -187,9 +187,9 @@ class UserDaoSapientGeneratedTest {
         user.setId(1L);
         user.setEmail("email1");
         SQLException sQLException = new SQLException("message1", "message1", 0);
-        DaoException daoException = new DaoException("message1", sQLException);
+        DAOException daoException = new DAOException("message1", sQLException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.create(user);
         });
         //Assert statement(s)
@@ -292,9 +292,9 @@ class UserDaoSapientGeneratedTest {
         doReturn(false).when(resultSetMock).next();
         doNothing().when(preparedStatementMock).close();
         SQLException sQLException = new SQLException("message1", "message1", 0);
-        DaoException daoException = new DaoException("message1", sQLException);
+        DAOException daoException = new DAOException("message1", sQLException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.findById(1L);
         });
         //Assert statement(s)
@@ -424,9 +424,9 @@ class UserDaoSapientGeneratedTest {
         doReturn(true, false).when(resultSetMock).next();
         doNothing().when(preparedStatementMock).close();
         SQLException sQLException = new SQLException("message1", "message1", 0);
-        DaoException daoException = new DaoException("message1", sQLException);
+        DAOException daoException = new DAOException("message1", sQLException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.findAll();
         });
         //Assert statement(s)
@@ -560,9 +560,9 @@ class UserDaoSapientGeneratedTest {
         user.setId(1L);
         user.setEmail("email1");
         SQLException sQLException = new SQLException("message1", "message1", 0);
-        DaoException daoException = new DaoException("message1", sQLException);
+        DAOException daoException = new DAOException("message1", sQLException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.update(user);
         });
         //Assert statement(s)
@@ -684,9 +684,9 @@ class UserDaoSapientGeneratedTest {
         doReturn(0).when(preparedStatementMock).executeUpdate();
         doNothing().when(preparedStatementMock).close();
         SQLException sQLException = new SQLException("message1", "message1", 0);
-        DaoException daoException = new DaoException("message1", sQLException);
+        DAOException daoException = new DAOException("message1", sQLException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.deleteById(1L);
         });
         //Assert statement(s)

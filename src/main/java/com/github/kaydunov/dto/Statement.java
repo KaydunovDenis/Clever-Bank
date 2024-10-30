@@ -2,9 +2,7 @@ package com.github.kaydunov.dto;
 
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.util.StringUtils;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -34,10 +32,13 @@ import java.util.List;
  * | 08.10.2024 | Пополнение от Петрова |    638.02 BYN |
  *
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Statement implements TXT{
-    int number;
+    Long number;
     String clientName;
     String accountNumber;
     String currency;
@@ -50,19 +51,19 @@ public class Statement implements TXT{
 
     static final DateTimeFormatter onlyDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
-    static final int WITH = 65;
+    static final int LINE_WITH = 65;
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(StringUtils.centerStringLn("Выписка", WITH));
+        sb.append(StringUtils.centerStringLn("Выписка", LINE_WITH));
         fillAccountInfo(sb);
         fillAccountTransactionsInfo(sb);
         return sb.toString();
     }
 
     private void fillAccountInfo(StringBuilder sb) {
-        sb.append(StringUtils.centerStringLn("Clever-Bank", WITH));
+        sb.append(StringUtils.centerStringLn("Clever-Bank", LINE_WITH));
         sb.append(String.format(" Клиент                    | %-40s %n", clientName));
         sb.append(String.format(" Счет                      | %-40s %n", accountNumber));
         sb.append(String.format(" Валюта                    | %-40s %n", currency));
@@ -79,7 +80,7 @@ public class Statement implements TXT{
         final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         sb.append(String.format("%s| %-20s | %-10s %n", "    Дата    ", "Примечание", "Сумма"));
-        sb.append("-".repeat(WITH)).append("\n");
+        sb.append("-".repeat(LINE_WITH)).append("\n");
         for (Transaction transaction : transactions) {
             sb.append(String.format(" %-10s | %-20s | %-10.2f %s %n",
                     dateFormat.format(transaction.getCreatedAt()),

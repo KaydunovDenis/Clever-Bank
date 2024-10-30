@@ -1,21 +1,22 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
-import com.github.kaydunov.dao.ConnectionManager;
 import org.junit.jupiter.api.*;
 
 import java.sql.*;
 import java.util.List;
 
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 
 import java.util.Optional;
 import java.util.Properties;
 
 import com.github.kaydunov.entity.Bank;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import static com.github.kaydunov.dao.crud.BankDao.SQL_UPDATE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -25,25 +26,27 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 class BankDaoTest {
     @Mock
     private Connection connectionMock;
     @Mock
     private PreparedStatement preparedStatementMock;
+    @InjectMocks
     private BankDao target;
 
 
+    private AutoCloseable autoCloseable;
+
     @BeforeEach
-    void setUp() throws SQLException {
-        preparedStatementMock = mock(PreparedStatement.class);
-        connectionMock = mock(Connection.class);
+    void setUp() {
+        autoCloseable = openMocks(this);
     }
 
     @AfterEach
-    void tearDown() throws SQLException {
-        preparedStatementMock.close();
-        connectionMock.close();
+    void afterTest() throws Exception {
+        if (autoCloseable != null) autoCloseable.close();
     }
 
     @Test()
@@ -55,24 +58,20 @@ class BankDaoTest {
             when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
             when(connectionMock.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatementMock);
 
-            // Создаём тестируемый объект
-            target = new BankDao();
-
-
             Bank bank = new Bank();
             bank.setName("name1");
             SQLException sQLExceptionMock = mock(SQLException.class);
-            DaoException daoException = new DaoException("Creating bank failed, no rows affected.", sQLExceptionMock);
-            SQLException sQLException = new SQLException("Creating bank failed, no rows affected.");
+            DAOException daoException = new DAOException("Creating bank failed, no rows affected.", sQLExceptionMock);
+            SQLException sqlException = new SQLException("Creating bank failed, no rows affected.");
             //Act Statement(s)
-            final DaoException result = assertThrows(DaoException.class, () -> {
+            final DAOException result = assertThrows(DAOException.class, () -> {
                 target.create(bank);
             });
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
                 assertThat(result.getMessage(), equalTo(daoException.getMessage()));
-                assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
+                assertThat(result.getCause(), is(instanceOf(sqlException.getClass())));
             });
         }
     }
@@ -96,10 +95,10 @@ class BankDaoTest {
             Bank bank = new Bank();
             bank.setName("name1");
             SQLException sQLExceptionMock = mock(SQLException.class);
-            DaoException daoException = new DaoException("Creating bank failed, no rows affected.", sQLExceptionMock);
+            DAOException daoException = new DAOException("Creating bank failed, no rows affected.", sQLExceptionMock);
             SQLException sQLException = new SQLException("Creating bank failed, no rows affected.");
             //Act Statement(s)
-            final DaoException result = assertThrows(DaoException.class, () -> {
+            final DAOException result = assertThrows(DAOException.class, () -> {
                 target.create(bank);
             });
             //Assert statement(s)
@@ -130,7 +129,7 @@ class BankDaoTest {
             Bank bank = new Bank();
             bank.setName("name1");
             SQLException sQLExceptionMock = mock(SQLException.class);
-            DaoException daoException = new DaoException("Creating bank failed, no ID obtained.", sQLExceptionMock);
+            DAOException daoException = new DAOException("Creating bank failed, no ID obtained.", sQLExceptionMock);
             SQLException sQLException = new SQLException("Creating bank failed, no ID obtained.");
 
             doNothing().when(preparedStatementMock).setString(1, "name1");
@@ -138,7 +137,7 @@ class BankDaoTest {
             ResultSet resultSetMock = mock(ResultSet.class);
             doThrow(daoException).when(preparedStatementMock).getGeneratedKeys();
             //Act Statement(s)
-            final DaoException result = assertThrows(DaoException.class, () -> {
+            final DAOException result = assertThrows(DAOException.class, () -> {
                 target.create(bank);
             });
             //Assert statement(s)
@@ -153,7 +152,7 @@ class BankDaoTest {
     @Test()
     void createWhenAffectedRowsNotEquals0AndGeneratedKeysNotNextAndDefaultBranchAndDefaultBranchThrowsDaoException() throws SQLException {
         SQLException sQLExceptionMock = mock(SQLException.class);
-        DaoException daoException = new DaoException("Creating bank failed, no ID obtained.", sQLExceptionMock);
+        DAOException daoException = new DAOException("Creating bank failed, no ID obtained.", sQLExceptionMock);
         SQLException sQLException = new SQLException("Creating bank failed, no ID obtained.");
 
         doNothing().when(preparedStatementMock).setString(1, "name1");
@@ -164,7 +163,7 @@ class BankDaoTest {
         Bank bank = new Bank();
         bank.setName("name1");
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.create(bank);
         });
         //Assert statement(s)
@@ -172,7 +171,7 @@ class BankDaoTest {
             assertThat(result, is(notNullValue()));
             assertThat(result.getMessage(), equalTo(daoException.getMessage()));
             assertThat(result.getCause(), is(instanceOf(sQLException.getClass())));
-            verify(connectionMock).prepareStatement("INSERT INTO bank (name) VALUES (?)", 1);
+            verify(connectionMock).prepareStatement(SQL_UPDATE, 1);
             verify(preparedStatementMock).setString(1, "name1");
             verify(preparedStatementMock).executeUpdate();
             verify(preparedStatementMock).getGeneratedKeys();
@@ -183,7 +182,7 @@ class BankDaoTest {
     @Test()
     void createWhenAffectedRowsNotEquals0AndGeneratedKeysNotNextAndDefaultBranchAndDefaultBranch5ThrowsDaoException() throws SQLException {
         SQLException sQLExceptionMock = mock(SQLException.class);
-        DaoException daoException = new DaoException("Creating bank failed, no ID obtained.", sQLExceptionMock);
+        DAOException daoException = new DAOException("Creating bank failed, no ID obtained.", sQLExceptionMock);
         SQLException sQLException = new SQLException("Creating bank failed, no ID obtained.");
 
         doNothing().when(preparedStatementMock).setString(1, "name1");
@@ -195,7 +194,7 @@ class BankDaoTest {
         bank.setName("name1");
 
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.create(bank);
         });
         //Assert statement(s)
@@ -244,9 +243,9 @@ class BankDaoTest {
         doReturn(resultSetMock).when(preparedStatementMock).executeQuery();
         SQLException sqlException = new SQLException("message1", "message1", 0);
         doThrow(sqlException).when(resultSetMock).next();
-        DaoException daoException = new DaoException("message1", sqlException);
+        DAOException daoException = new DAOException("message1", sqlException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.findById(1L);
         });
         //Assert statement(s)
@@ -299,9 +298,9 @@ class BankDaoTest {
         doReturn(resultSetMock).when(preparedStatementMock).executeQuery();
         doReturn(true, false).when(resultSetMock).next();
         SQLException sqlException = new SQLException("message1", "message1", 0);
-        DaoException daoException = new DaoException("message1", sqlException);
+        DAOException daoException = new DAOException("message1", sqlException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.findAll();
         });
         //Assert statement(s)
@@ -341,9 +340,9 @@ class BankDaoTest {
         Bank bank = new Bank();
         bank.setName("name1");
         bank.setId(1L);
-        DaoException daoException = new DaoException("message1", sqlException);
+        DAOException daoException = new DAOException("message1", sqlException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.update(bank);
         });
         //Assert statement(s)
@@ -384,9 +383,9 @@ class BankDaoTest {
         SQLException sqlException = new SQLException("message1", "message1", 0);
         doThrow(sqlException).when(preparedStatementMock).executeUpdate();
 
-        DaoException daoException = new DaoException("message1", sqlException);
+        DAOException daoException = new DAOException("message1", sqlException);
         //Act Statement(s)
-        final DaoException result = assertThrows(DaoException.class, () -> {
+        final DAOException result = assertThrows(DAOException.class, () -> {
             target.deleteById(1L);
         });
         //Assert statement(s)

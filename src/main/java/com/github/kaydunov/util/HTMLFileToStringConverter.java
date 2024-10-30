@@ -1,4 +1,4 @@
-package com.github.kaydunov.convertor;
+package com.github.kaydunov.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,6 +1,6 @@
 package com.github.kaydunov.service;
 
-import com.github.kaydunov.dao.impl.BankDao;
+import com.github.kaydunov.dao.crud.BankDao;
 import com.github.kaydunov.entity.Bank;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;

@@ -18,7 +18,7 @@ public class StatementService implements FileProcessor<Statement> {
         saveToFile(statement, file);
     }
 
-    private File createFile(int number) {
+    private File createFile(Long number) {
         String fileName = FILE_PREFIX + number + FILE_EXTENSION;
         File directory = new File(PATH);
         if (!directory.exists()) {

@@ -2,10 +2,10 @@ package com.github.kaydunov.spring;
 
 import com.github.kaydunov.CleverBank;
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.dao.CrudRepository;
-import com.github.kaydunov.dao.impl.AccountDao;
-import com.github.kaydunov.dao.impl.TransactionDao;
-import com.github.kaydunov.dao.impl.UserDao;
+import com.github.kaydunov.dao.crud.CrudRepository;
+import com.github.kaydunov.dao.crud.AccountDao;
+import com.github.kaydunov.dao.crud.TransactionDao;
+import com.github.kaydunov.dao.crud.UserDao;
 import com.github.kaydunov.percentage_processor.PercentageProcessor;
 import com.github.kaydunov.servlet.ObjectMapperWrapper;
 import com.github.kaydunov.servlet.impl.AccountServlet;

@@ -1,4 +1,4 @@
-package com.github.kaydunov.dao;
+package com.github.kaydunov.dao.crud;
 
 import java.util.Optional;
 

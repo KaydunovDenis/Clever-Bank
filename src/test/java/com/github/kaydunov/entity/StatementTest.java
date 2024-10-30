@@ -55,7 +55,7 @@ public class StatementTest {
 
     public static Statement getStatement() {
         Statement statement = new Statement();
-        int notRealId = -1;
+        Long notRealId = -1L;
         statement.setNumber(notRealId);
         statement.setClientName("Сотников Кирилл Артёмович ");
         statement.setAccountNumber("AS12 ASDG 1200 2132 ASDA 353A 2132");
@@ -73,20 +73,20 @@ public class StatementTest {
         Transaction transaction1 = new Transaction(
                 BigDecimal.valueOf(1000),
                 new Timestamp(Date.valueOf("2024-10-08").getTime()),
-                1L,
-                2L,
+                "1L",
+                "2L",
                 TransactionType.WITHDRAW);
         Transaction transaction2 = new Transaction(
                 BigDecimal.valueOf(2512.72),
                 new Timestamp(Date.valueOf("2024-10-09").getTime()),
-                3L,
-                1L,
+                "3L",
+                "1L",
                 TransactionType.DEPOSIT);
         Transaction transaction3 = new Transaction(
                 BigDecimal.valueOf(512.72),
                 new Timestamp(Date.valueOf("2023-10-11").getTime()),
-                3L,
-                1L,
+                "3L",
+                "1L",
                 TransactionType.DEPOSIT);
         return List.of(transaction1, transaction2, transaction3);
     }

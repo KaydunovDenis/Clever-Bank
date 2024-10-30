@@ -1,6 +1,6 @@
 package com.github.kaydunov.service;
 
-import com.github.kaydunov.dao.impl.UserDao;
+import com.github.kaydunov.dao.crud.UserDao;
 import com.github.kaydunov.entity.User;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;

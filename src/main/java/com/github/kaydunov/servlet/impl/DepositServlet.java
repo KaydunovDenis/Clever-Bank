@@ -26,7 +26,7 @@ public class DepositServlet extends HttpServlet {
         int status = HttpServletResponse.SC_OK;
 
         try {
-            Long accountId = Long.parseLong(request.getParameter("accountId"));
+            String accountId = request.getParameter("accountId");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
 
             accountService.deposit(amount, accountId);
