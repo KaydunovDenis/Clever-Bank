@@ -1,9 +1,9 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.github.kaydunov.entity.TransactionType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -25,8 +26,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class TransactionDaoSapientGeneratedTest {
+class TransactionDaoTest {
 
+    private final String accountSource1Id = "1L";
+    private final String accountSource2Id = "2L";
+    private final String accountDestination1Id = "3L";
+    private final String accountDestination2Id = "4L";
+    private final long transaction1Id = 5L;
+    private final long transaction2Id = 6L;
     @InjectMocks
     private TransactionDao target;
 
@@ -60,15 +67,15 @@ class TransactionDaoSapientGeneratedTest {
         when(preparedStatementMock.executeUpdate()).thenReturn(1);
         when(preparedStatementMock.getGeneratedKeys()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(true);
-        when(resultSetMock.getLong(1)).thenReturn(1L);
-        Transaction transaction = new Transaction(BigDecimal.TEN, new Timestamp(System.currentTimeMillis()), 1L, 2L, TransactionType.DEPOSIT);
+        when(resultSetMock.getString(1)).thenReturn(accountSource1Id);
+        Transaction transaction = new Transaction(BigDecimal.TEN, new Timestamp(System.currentTimeMillis()), accountSource1Id, accountDestination1Id, DEPOSIT);
         Transaction result = target.create(transaction);
-        assertThat(result.getId(), is(1L));
+        assertThat(result.getId(), is(transaction1Id));
         verify(preparedStatementMock).setBigDecimal(1, transaction.getAmount());
         verify(preparedStatementMock).setTimestamp(2, transaction.getCreatedAt());
         verify(preparedStatementMock).setInt(3, transaction.getTransactionType().ordinal() + 1);
-        verify(preparedStatementMock).setLong(4, transaction.getSourceAccountId());
-        verify(preparedStatementMock).setLong(5, transaction.getDestinationAccountId());
+        verify(preparedStatementMock).setString(4, transaction.getSourceAccountId());
+        verify(preparedStatementMock).setString(5, transaction.getDestinationAccountId());
         verify(preparedStatementMock).executeUpdate();
         verify(preparedStatementMock).getGeneratedKeys();
         verify(resultSetMock).next();
@@ -78,23 +85,25 @@ class TransactionDaoSapientGeneratedTest {
     @Test
     void createWhenSQLExceptionThrown() throws SQLException {
         when(preparedStatementMock.executeUpdate()).thenThrow(new SQLException("Test exception"));
-        Transaction transaction = new Transaction(BigDecimal.TEN, new Timestamp(System.currentTimeMillis()), 1L, 2L, TransactionType.DEPOSIT);
-        assertThrows(DaoException.class, () -> target.create(transaction));
+        Transaction transaction = new Transaction(BigDecimal.TEN, new Timestamp(System.currentTimeMillis()), "1L", "2L", DEPOSIT);
+        assertThrows(DAOException.class, () -> target.create(transaction));
     }
 
     @Test
     void findByIdWhenTransactionExists() throws SQLException {
         when(resultSetMock.next()).thenReturn(true);
-        when(resultSetMock.getLong("id")).thenReturn(1L);
+        final String accountSourceId = "2L";
+        final String accountDestinationId = "3L";
+        when(resultSetMock.getLong("id")).thenReturn(transaction1Id);
         when(resultSetMock.getBigDecimal("amount")).thenReturn(BigDecimal.TEN);
         when(resultSetMock.getTimestamp("created_at")).thenReturn(new Timestamp(System.currentTimeMillis()));
         when(resultSetMock.getInt("transaction_type_id")).thenReturn(1);
-        when(resultSetMock.getLong("account_source_id")).thenReturn(1L);
-        when(resultSetMock.getLong("account_destination_id")).thenReturn(2L);
-        Optional<Transaction> result = target.findById(1L);
+        when(resultSetMock.getString("account_source_id")).thenReturn(accountSourceId);
+        when(resultSetMock.getString("account_destination_id")).thenReturn(accountDestinationId);
+        Optional<Transaction> result = target.findById(transaction1Id);
         assertTrue(result.isPresent());
-        assertThat(result.get().getId(), is(1L));
-        verify(preparedStatementMock).setLong(1, 1L);
+        assertThat(result.get().getId(), is(transaction1Id));
+        verify(preparedStatementMock).setLong(1, transaction1Id);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock).next();
     }
@@ -102,9 +111,9 @@ class TransactionDaoSapientGeneratedTest {
     @Test
     void findByIdWhenTransactionDoesNotExist() throws SQLException {
         when(resultSetMock.next()).thenReturn(false);
-        Optional<Transaction> result = target.findById(1L);
+        Optional<Transaction> result = target.findById(transaction1Id);
         assertFalse(result.isPresent());
-        verify(preparedStatementMock).setLong(1, 1L);
+        verify(preparedStatementMock).setLong(1, transaction1Id);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock).next();
     }
@@ -112,12 +121,12 @@ class TransactionDaoSapientGeneratedTest {
     @Test
     void findAllWhenTransactionsExist() throws SQLException {
         when(resultSetMock.next()).thenReturn(true, true, false);
-        when(resultSetMock.getLong("id")).thenReturn(1L, 2L);
+        when(resultSetMock.getLong("id")).thenReturn(transaction1Id, transaction2Id);
         when(resultSetMock.getBigDecimal("amount")).thenReturn(BigDecimal.TEN, BigDecimal.ONE);
         when(resultSetMock.getTimestamp("created_at")).thenReturn(new Timestamp(System.currentTimeMillis()));
         when(resultSetMock.getInt("transaction_type_id")).thenReturn(1, 2);
-        when(resultSetMock.getLong("account_source_id")).thenReturn(1L, 2L);
-        when(resultSetMock.getLong("account_destination_id")).thenReturn(2L, 3L);
+        when(resultSetMock.getString("account_source_id")).thenReturn(accountSource1Id, accountSource2Id);
+        when(resultSetMock.getString("account_destination_id")).thenReturn(accountDestination1Id, accountDestination2Id);
         List<Transaction> result = target.findAll();
         assertThat(result, hasSize(2));
         verify(preparedStatementMock).executeQuery();
@@ -131,35 +140,41 @@ class TransactionDaoSapientGeneratedTest {
 
     @Test
     void deleteByIdThrowsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> target.deleteById(1L));
+        assertThrows(UnsupportedOperationException.class, () -> target.deleteById(transaction1Id));
     }
 
     @Test
     void getTransactionsByAccountIdWhenTransactionsExist() throws SQLException {
+        //When
+        //Generate two transactions
         when(resultSetMock.next()).thenReturn(true, true, false);
-        when(resultSetMock.getLong("id")).thenReturn(1L, 2L);
+        when(resultSetMock.getLong("id")).thenReturn(transaction1Id, transaction2Id);
         when(resultSetMock.getBigDecimal("amount")).thenReturn(BigDecimal.TEN, BigDecimal.ONE);
         when(resultSetMock.getTimestamp("created_at")).thenReturn(new Timestamp(System.currentTimeMillis()));
-        when(resultSetMock.getInt("transaction_type_id")).thenReturn(1, 2);
-        when(resultSetMock.getLong("account_source_id")).thenReturn(1L, 2L);
-        when(resultSetMock.getLong("account_destination_id")).thenReturn(2L, 3L);
-        List<Transaction> result = target.getTransactionsByAccountId(1L);
+        when(resultSetMock.getInt("transaction_type_id")).thenReturn(WITHDRAW.ordinal(), DEPOSIT.ordinal());
+        when(resultSetMock.getString("account_source_id")).thenReturn(accountSource1Id, accountSource1Id);
+        when(resultSetMock.getString("account_destination_id")).thenReturn(accountSource1Id, accountDestination1Id);
+
+        //Action
+        List<Transaction> result = target.getTransactionsByAccountId(accountSource1Id);
+
+        //Assert
         assertThat(result, hasSize(2));
-        verify(preparedStatementMock).setLong(1, 1L);
-        verify(preparedStatementMock).setLong(2, 1L);
+        verify(preparedStatementMock).setString(1, accountSource1Id);
+        verify(preparedStatementMock).setString(2, accountSource1Id);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock, times(3)).next();
     }
 
     @ParameterizedTest
     @CsvSource({ "1,2", "3,4", "5,6" })
-    void getTransactionsIdsByAccountIdWhenTransactionsExist(long accountId, int expectedSize) throws SQLException {
+    void getTransactionsIdsByAccountId_When_TransactionsExist(String accountId, int expectedSize) throws SQLException {
         when(resultSetMock.next()).thenReturn(true, true, false);
-        when(resultSetMock.getLong("id")).thenReturn(1L, 2L);
+        when(resultSetMock.getLong("id")).thenReturn(transaction1Id, transaction2Id);
         List<Long> result = target.getTransactionsIdsByAccountId(accountId);
         assertThat(result, hasSize(expectedSize));
-        verify(preparedStatementMock).setLong(1, accountId);
-        verify(preparedStatementMock).setLong(2, accountId);
+        verify(preparedStatementMock).setString(1, accountId);
+        verify(preparedStatementMock).setString(2, accountId);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock, times(3)).next();
     }

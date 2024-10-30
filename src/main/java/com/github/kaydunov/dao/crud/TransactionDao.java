@@ -1,10 +1,9 @@
-package com.github.kaydunov.dao.impl;
+package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
-import com.github.kaydunov.dao.CrudRepository;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
-import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.exception.DAOException;
 import com.github.kaydunov.spring.Component;
 
 import java.sql.*;
@@ -27,8 +26,8 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
             statement.setBigDecimal(1, transaction.getAmount());
             statement.setTimestamp(2, transaction.getCreatedAt());
             statement.setInt(3, transaction.getTransactionType().ordinal() + 1); // Assuming the ordinal corresponds to the transaction_type_id
-            statement.setLong(4, transaction.getSourceAccountId());
-            statement.setLong(5, transaction.getDestinationAccountId());
+            statement.setString(4, transaction.getSourceAccountId());
+            statement.setString(5, transaction.getDestinationAccountId());
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows > 0) {
@@ -39,7 +38,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 }
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return transaction;
     }
@@ -54,7 +53,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 transaction = mapResultSetToOperation(resultSet);
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return Optional.ofNullable(transaction);
     }
@@ -68,7 +67,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 transactions.add(mapResultSetToOperation(resultSet));
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return transactions;
     }
@@ -83,32 +82,32 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         throw new UnsupportedOperationException();
     }
 
-    public List<Transaction> getTransactionsByAccountId(Long accountId) {
+    public List<Transaction> getTransactionsByAccountId(String accountId) {
         List<Transaction> transactions = new ArrayList<>();
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ACCOUNT_ID)) {
-            statement.setLong(1, accountId);
-            statement.setLong(2, accountId);
+            statement.setString(1, accountId);
+            statement.setString(2, accountId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 transactions.add(mapResultSetToOperation(resultSet));
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return transactions;
     }
 
-    public List<Long> getTransactionsIdsByAccountId(Long accountId) {
+    public List<Long> getTransactionsIdsByAccountId(String accountId) {
         List<Long> transactionsIds = new ArrayList<>();
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID)) {
-            statement.setLong(1, accountId);
-            statement.setLong(2, accountId);
+            statement.setString(1, accountId);
+            statement.setString(2, accountId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 transactionsIds.add(resultSet.getLong("id"));
             }
         } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
         return transactionsIds;
     }
@@ -119,8 +118,8 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         transaction.setAmount(resultSet.getBigDecimal("amount"));
         transaction.setCreatedAt(resultSet.getTimestamp("created_at"));
         transaction.setTransactionType(TransactionType.values()[resultSet.getInt("transaction_type_id") - 1]); // Assuming the transaction_type_id corresponds to the ordinal
-        transaction.setSourceAccountId(resultSet.getLong("account_source_id"));
-        transaction.setDestinationAccountId(resultSet.getLong("account_destination_id"));
+        transaction.setSourceAccountId(resultSet.getString("account_source_id"));
+        transaction.setDestinationAccountId(resultSet.getString("account_destination_id"));
         return transaction;
     }
 }

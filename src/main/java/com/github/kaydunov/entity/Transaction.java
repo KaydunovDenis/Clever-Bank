@@ -15,8 +15,8 @@ public class Transaction {
     Long id;
     BigDecimal amount;
     Timestamp createdAt;
-    Long sourceAccountId;
-    Long destinationAccountId;
+    String sourceAccountId;
+    String destinationAccountId;
     TransactionType transactionType;
 
     /**
@@ -28,7 +28,7 @@ public class Transaction {
      * @param destinationAccountId
      * @param transactionType
      */
-    public Transaction(BigDecimal amount, Timestamp createdAt, Long sourceAccountId, Long destinationAccountId, TransactionType transactionType) {
+    public Transaction(BigDecimal amount, Timestamp createdAt, String sourceAccountId, String destinationAccountId, TransactionType transactionType) {
         this.amount = amount;
         this.createdAt = createdAt;
         this.sourceAccountId = sourceAccountId;
