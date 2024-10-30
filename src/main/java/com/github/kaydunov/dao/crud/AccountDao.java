@@ -61,7 +61,7 @@ public class AccountDao implements CrudRepository<Account, String> {
                     throw new NotFoundException("Could not find account");
                 }
             }
-            log.info(SQL_SELECT_BY_ID);
+            log.info(SQL_SELECT_BY_ID + ", where id = " +  id);
         } catch (SQLException | NotFoundException e) {
             throw new DAOException(e.getMessage(), e);
         }
