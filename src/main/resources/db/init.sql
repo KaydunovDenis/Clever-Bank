@@ -17,6 +17,7 @@ CREATE TABLE account
 (
     id      SERIAL PRIMARY KEY,
     balance DECIMAL(10, 2),
+    currency VARCHAR NOT NULL,
     bank_id INT,
     user_id INT,
     is_saving_account BOOLEAN DEFAULT FALSE,
