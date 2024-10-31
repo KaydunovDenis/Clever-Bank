@@ -26,7 +26,6 @@ public class AccountServlet extends ServletMarker {
     private AccountService accountService;
 
 
-
     @SneakyThrows(IOException.class)
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -34,7 +33,11 @@ public class AccountServlet extends ServletMarker {
         int status;
         String idParam = request.getParameter("id");
         try {
-            json = idParam == null ? processAllAccounts() : processAccountById(idParam);
+            if (idParam == null) {
+                json = processAllAccounts();
+            } else {
+                json = processAccountById(idParam);
+            }
             status = HttpServletResponse.SC_OK;
         } catch (NotFoundException e) {
             json = "Account not found";

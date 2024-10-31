@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class AccountSapientGeneratedTest {
+public class AccountTest {
 
     //Sapient generated method id: ${withdrawBalanceWhenNewSourceBalanceCompareToBigDecimalZEROLessThan0ThrowsInsufficientFundsException}, hash: 7FD69B128B985A9942119E94EA39AFCE
     @Test()
@@ -23,11 +23,12 @@ class AccountSapientGeneratedTest {
         /* Branches:
          * (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) : true
          */
-         //Arrange Statement(s)
+        //Arrange Statement(s)
         Account target = createAccount();
+        final BigDecimal amount = new BigDecimal("2.0");
         //Act Statement(s)
-        final InsufficientFundsException result = assertThrows(InsufficientFundsException.class, () -> target.withdrawBalance(new BigDecimal("2.0")));
-        
+        final InsufficientFundsException result = assertThrows(InsufficientFundsException.class, () -> target.withdrawBalance(amount));
+
         //Assert statement(s)
         assertAll("result", () -> assertThat(result, is(notNullValue())));
     }
@@ -38,7 +39,7 @@ class AccountSapientGeneratedTest {
         /* Branches:
          * (newSourceBalance.compareTo(BigDecimal.ZERO) < 0) : false
          */
-         //Arrange Statement(s)
+        //Arrange Statement(s)
         Account target = createAccount();
         //Act Statement(s)
         String money = "0.4";
@@ -61,7 +62,7 @@ class AccountSapientGeneratedTest {
 
     }
 
-    private Account createAccount() {
+    public static Account createAccount() {
         Account account = new Account();
         account.setId("0L");
         account.setBalance(new BigDecimal("1.0"));

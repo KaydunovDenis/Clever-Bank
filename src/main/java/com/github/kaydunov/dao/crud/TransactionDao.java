@@ -3,7 +3,7 @@ package com.github.kaydunov.dao.crud;
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
-import com.github.kaydunov.exception.DAOException;
+import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Component;
 
 import java.sql.*;
@@ -38,7 +38,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 }
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return transaction;
     }
@@ -53,7 +53,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 transaction = mapResultSetToOperation(resultSet);
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return Optional.ofNullable(transaction);
     }
@@ -67,7 +67,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 transactions.add(mapResultSetToOperation(resultSet));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return transactions;
     }
@@ -92,7 +92,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 transactions.add(mapResultSetToOperation(resultSet));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return transactions;
     }
@@ -107,7 +107,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
                 transactionsIds.add(resultSet.getLong("id"));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return transactionsIds;
     }

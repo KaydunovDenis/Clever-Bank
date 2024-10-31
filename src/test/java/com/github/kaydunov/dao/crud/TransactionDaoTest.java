@@ -2,8 +2,7 @@ package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Transaction;
-import com.github.kaydunov.entity.TransactionType;
-import com.github.kaydunov.exception.DAOException;
+import com.github.kaydunov.exception.DaoException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ class TransactionDaoTest {
     }
 
     @AfterEach
-    void tearDown() throws Exception {
+    void tearDown() {
         verifyNoMoreInteractions(connectionMock, preparedStatementMock, resultSetMock);
     }
 
@@ -86,7 +85,7 @@ class TransactionDaoTest {
     void createWhenSQLExceptionThrown() throws SQLException {
         when(preparedStatementMock.executeUpdate()).thenThrow(new SQLException("Test exception"));
         Transaction transaction = new Transaction(BigDecimal.TEN, new Timestamp(System.currentTimeMillis()), "1L", "2L", DEPOSIT);
-        assertThrows(DAOException.class, () -> target.create(transaction));
+        assertThrows(DaoException.class, () -> target.create(transaction));
     }
 
     @Test
@@ -135,7 +134,8 @@ class TransactionDaoTest {
 
     @Test
     void updateThrowsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> target.update(new Transaction()));
+        Transaction transaction = new Transaction();
+        assertThrows(UnsupportedOperationException.class, () -> target.update(transaction));
     }
 
     @Test

@@ -2,7 +2,7 @@ package com.github.kaydunov.dao.crud;
 
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Bank;
-import com.github.kaydunov.exception.DAOException;
+import com.github.kaydunov.exception.DaoException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 }
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return bank;
     }
@@ -50,7 +50,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 bank = mapResultSetToBank(resultSet);
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return Optional.ofNullable(bank);
     }
@@ -64,7 +64,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 banks.add(mapResultSetToBank(resultSet));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return banks;
     }
@@ -76,7 +76,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
             statement.setLong(2, bank.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
     }
 
@@ -86,7 +86,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
     }
 
