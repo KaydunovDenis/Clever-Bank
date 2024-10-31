@@ -4,7 +4,7 @@ import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
-import com.github.kaydunov.exception.DAOException;
+import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import javassist.NotFoundException;
@@ -43,7 +43,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             account = mapResultSetToAccount(resultSet);
             log.info(SQL_CREATE);
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return account;
     }
@@ -63,7 +63,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             }
             log.info(SQL_SELECT_BY_ID + ", where id = " +  id);
         } catch (SQLException | NotFoundException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return account;
     }
@@ -80,7 +80,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             }
             log.info(SQL_SELECT_ALL);
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return accounts;
     }
@@ -97,7 +97,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             }
             log.info(SQL_SELECT_ALL_SAVING_ACCOUNTS);
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
         return accounts;
     }
@@ -111,7 +111,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             statement.executeUpdate();
             log.info(SQL_UPDATE_BALANCE);
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
     }
 
@@ -143,12 +143,12 @@ public class AccountDao implements CrudRepository<Account, String> {
     }
 
     public void withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
-        Account sourceAccount = findById(accountSourceId).orElseThrow(() -> new NotFoundException("Account not found: " + accountSourceId));
-        sourceAccount.withdrawBalance(amount);
+        Account account = findById(accountSourceId).orElseThrow(() -> new NotFoundException("Account not found: " + accountSourceId));
+        account.withdrawBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());
         Transaction transaction = new Transaction(amount, createdAt, accountSourceId, null, TransactionType.WITHDRAW);
-        updateWithTransaction(sourceAccount, transaction);
+        updateWithTransaction(account, transaction);
     }
 
     public void deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
@@ -170,7 +170,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             update(account);
             connection.commit();
             log.info(transaction + "was successfully completed");
-        } catch (DAOException e) {
+        } catch (DaoException e) {
             connection.rollback();
             log.info(transaction + "was automatically rolled back. Reason: " + e.getMessage());
             throw new SQLTransactionRollbackException(e.getMessage(), e);
@@ -186,7 +186,7 @@ public class AccountDao implements CrudRepository<Account, String> {
             statement.setString(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DaoException(e.getMessage(), e);
         }
     }
 
