@@ -19,8 +19,8 @@ public class Account {
     String currency;
     Long bankId;
     Long userId;
-    List<Long> transactionsIds;
     boolean isSavingAccount;
+    List<Long> transactionsIds;
 
     public void withdrawBalance(BigDecimal amount) {
         BigDecimal newSourceBalance = this.getBalance().subtract(amount);

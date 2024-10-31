@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -69,9 +69,9 @@ public class AccountTest {
         account.setCurrency("BYN");
         account.setUserId(0L);
         account.setBankId(0L);
-        account.setTransactionsIds(new ArrayList<>());
         account.setSavingAccount(true);
-
+        List<Long> transactionIds = List.of(1L, 2L);
+        account.setTransactionsIds(transactionIds);
         return account;
     }
 }

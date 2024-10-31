@@ -7,29 +7,27 @@ import org.junit.jupiter.api.Timeout;
 import org.mockito.InjectMocks;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import java.sql.SQLException;
+
+import java.sql.*;
 
 import com.github.kaydunov.dao.ConnectionManager;
 import org.mockito.Mock;
 
-import java.sql.SQLTransactionRollbackException;
 import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.entity.Transaction;
-import java.sql.Connection;
 import com.github.kaydunov.entity.Account;
-import java.sql.PreparedStatement;
 import org.mockito.MockedStatic;
 
+import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.*;
@@ -58,6 +56,49 @@ class AccountDaoTest {
             autoCloseableMocks.close();
     }
 
+
+    @Test
+    void findAll_checkThatAllFieldsMappedCorrectly() throws SQLException {
+        try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
+            //Arrange Statement(s)
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
+            when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+            ResultSet resultSet =  mock(ResultSet.class);
+            when(preparedStatementMock.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(true, false);
+
+            final Account account = AccountTest.createAccount();
+            String accountId = account.getId();
+            when(resultSet.getString("id")).thenReturn(accountId);
+            when(resultSet.getBigDecimal("balance")).thenReturn(account.getBalance());
+            when(resultSet.getString("currency")).thenReturn(account.getCurrency());
+            when(resultSet.getLong("bank_id")).thenReturn(account.getBankId());
+            when(resultSet.getLong("user_id")).thenReturn(account.getUserId());
+            when(resultSet.getBoolean("is_saving_account")).thenReturn(account.isSavingAccount());
+
+            final List<Long> transactions = account.getTransactionsIds();
+            when(transactionDao.getTransactionsIdsByAccountId(accountId)).thenReturn(transactions);
+
+            //Act Statement(s)
+            List<Account> accounts = target.findAll();
+
+            //Assert statement(s)
+            verify(connectionMock).prepareStatement(anyString());
+            verify(preparedStatementMock).executeQuery();
+            verify(resultSet, times(2)).next();
+            assertNotNull(accounts);
+            assertEquals(1, accounts.size());
+            Account result = accounts.getFirst();
+            assertEquals(accountId, result.getId());
+            assertEquals(account.getBalance(), result.getBalance());
+            assertEquals(account.getCurrency(), result.getCurrency());
+            assertEquals(account.getBankId(), result.getBankId());
+            assertEquals(account.getUserId(), result.getUserId());
+            assertEquals(account.isSavingAccount(), result.isSavingAccount());
+            assertEquals(account.getTransactionsIds(), result.getTransactionsIds());
+        }
+    }
+
     @Test
     void create_whenThrowsThrowable() throws SQLException {
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
@@ -65,9 +106,7 @@ class AccountDaoTest {
             when(connectionMock.prepareStatement(anyString())).thenThrow(new SQLException());
             final Account account = AccountTest.createAccount();
             //Act Statement(s)
-            DaoException result = assertThrows(DaoException.class, () -> {
-                target.create(account);
-            });
+            DaoException result = assertThrows(DaoException.class, () -> target.create(account));
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
@@ -117,7 +156,7 @@ class AccountDaoTest {
             doNothing().when(accountMock2).depositBalance(any());
             doNothing().when(target).update(accountMock);
             doNothing().when(target).update(accountMock2);
-            doReturn(transactionMock, transactionMock2).when(transactionDao).create((Transaction) any());
+            doReturn(transactionMock, transactionMock2).when(transactionDao).create(any());
             //Act Statement(s)
             target.transfer(new BigDecimal("100.0"), "1", "987654321");
             //Assert statement(s)
@@ -129,7 +168,7 @@ class AccountDaoTest {
                 verify(accountMock2).depositBalance(any());
                 verify(target).update(accountMock);
                 verify(target).update(accountMock2);
-                verify(transactionDao, atLeast(2)).create((Transaction) any());
+                verify(transactionDao, atLeast(2)).create(any());
             });
         }
     }
@@ -145,7 +184,7 @@ class AccountDaoTest {
             doReturn(Optional.of(accountMock)).when(target).findById("1");
             doNothing().when(accountMock).withdrawBalance(any());
             doNothing().when(target).update(accountMock);
-            doReturn(transactionMock).when(transactionDao).create((Transaction) any());
+            doReturn(transactionMock).when(transactionDao).create(any());
             //Act Statement(s)
             target.withdraw(new BigDecimal("100.0"), "1");
             //Assert statement(s)
@@ -154,7 +193,7 @@ class AccountDaoTest {
                 verify(target).findById("1");
                 verify(accountMock).withdrawBalance(any());
                 verify(target).update(accountMock);
-                verify(transactionDao).create((Transaction) any());
+                verify(transactionDao).create(any());
             });
         }
     }
@@ -174,9 +213,8 @@ class AccountDaoTest {
             doThrow(daoException).when(connectionMock).setAutoCommit(false);
             doNothing().when(connectionMock).rollback();
             //Act Statement(s)
-            final SQLTransactionRollbackException result = assertThrows(SQLTransactionRollbackException.class, () -> {
-                target.withdraw(new BigDecimal("0"), accountId);
-            });
+            final SQLTransactionRollbackException result = assertThrows(SQLTransactionRollbackException.class,
+                    () -> target.withdraw(new BigDecimal("0"), accountId));
             //Assert statement(s)
             assertAll("result", () -> {
                 assertThat(result, is(notNullValue()));
@@ -185,7 +223,7 @@ class AccountDaoTest {
                 verify(target).findById(accountId);
                 verify(accountMock).withdrawBalance(any());
                 verify(connectionMock).setAutoCommit(false);
-                verify(transactionDao, never()).create((Transaction) any());
+                verify(transactionDao, never()).create(any());
                 verify(connectionMock, never()).commit();
                 verify(connectionMock).rollback();
             });
@@ -204,7 +242,7 @@ class AccountDaoTest {
             doReturn(Optional.of(accountMock)).when(target).findById("2");
             doNothing().when(accountMock).depositBalance(any());
             doNothing().when(target).update(accountMock);
-            doReturn(transactionMock).when(transactionDao).create((Transaction) any());
+            doReturn(transactionMock).when(transactionDao).create(any());
             //Act Statement(s)
             target.deposit(new BigDecimal("100.0"), "2");
             //Assert statement(s)
@@ -213,12 +251,12 @@ class AccountDaoTest {
                 verify(target).findById("2");
                 verify(accountMock).depositBalance(any());
                 verify(target).update(accountMock);
-                verify(transactionDao).create((Transaction) any());
+                verify(transactionDao).create(any());
             });
         }
     }
 
-    @Test()
+    @Test
     void deleteByIdWhenDefaultBranch() throws SQLException {
         //Arrange Statement(s)
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
