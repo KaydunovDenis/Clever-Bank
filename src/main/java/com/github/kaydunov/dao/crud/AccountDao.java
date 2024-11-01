@@ -62,7 +62,7 @@ public class AccountDao implements CrudRepository<Account, String> {
                     throw new NotFoundException("Could not find account");
                 }
             }
-            log.info(SQL_SELECT_BY_ID + ", where id = " +  id);
+            log.info(SQL_SELECT_BY_ID + ", where id = " + id);
         } catch (SQLException | NotFoundException e) {
             throw new DaoException(e.getMessage(), e);
         }
@@ -71,32 +71,23 @@ public class AccountDao implements CrudRepository<Account, String> {
 
     @Override
     public List<Account> findAll() {
+        return findAllAccordingSqlQuery(SQL_SELECT_ALL);
+    }
+
+    public List<Account> findAllSavingAccounts() {
+        return findAllAccordingSqlQuery(SQL_SELECT_ALL_SAVING_ACCOUNTS);
+    }
+
+    private List<Account> findAllAccordingSqlQuery(String sqlQuery) {
         List<Account> accounts = new ArrayList<>();
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
+             PreparedStatement statement = connection.prepareStatement(sqlQuery);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 Account account = mapResultSetToAccount(resultSet);
                 accounts.add(account);
             }
             log.info(SQL_SELECT_ALL);
-        } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
-        }
-        return accounts;
-    }
-
-    public List<Account> findAllSavingAccounts() {
-        List<Account> accounts = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL_SAVING_ACCOUNTS)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Account account = mapResultSetToAccount(resultSet);
-                    accounts.add(account);
-                }
-            }
-            log.info(SQL_SELECT_ALL_SAVING_ACCOUNTS);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }

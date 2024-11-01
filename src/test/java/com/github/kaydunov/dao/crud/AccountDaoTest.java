@@ -100,6 +100,49 @@ class AccountDaoTest {
     }
 
     @Test
+    void findAllSavingAccounts() throws SQLException {
+        try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
+            //Arrange Statement(s)
+            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
+            when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+            ResultSet resultSet =  mock(ResultSet.class);
+            when(preparedStatementMock.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(true, false);
+
+            final Account account = AccountTest.createAccount();
+            String accountId = account.getId();
+            when(resultSet.getString("id")).thenReturn(accountId);
+            when(resultSet.getBigDecimal("balance")).thenReturn(account.getBalance());
+            when(resultSet.getString("currency")).thenReturn(account.getCurrency());
+            when(resultSet.getLong("bank_id")).thenReturn(account.getBankId());
+            when(resultSet.getLong("user_id")).thenReturn(account.getUserId());
+            when(resultSet.getBoolean("is_saving_account")).thenReturn(account.isSavingAccount());
+
+            final List<Long> transactions = account.getTransactionsIds();
+            when(transactionDao.getTransactionsIdsByAccountId(accountId)).thenReturn(transactions);
+
+            //Act Statement(s)
+            List<Account> accounts = target.findAllSavingAccounts();
+
+            //Assert statement(s)
+            verify(connectionMock).prepareStatement(anyString());
+            verify(preparedStatementMock).executeQuery();
+            verify(resultSet, times(2)).next();
+            assertNotNull(accounts);
+            assertEquals(1, accounts.size());
+            Account result = accounts.getFirst();
+            assertEquals(accountId, result.getId());
+            assertEquals(account.getBalance(), result.getBalance());
+            assertEquals(account.getCurrency(), result.getCurrency());
+            assertEquals(account.getBankId(), result.getBankId());
+            assertEquals(account.getUserId(), result.getUserId());
+            assertEquals(account.isSavingAccount(), result.isSavingAccount());
+            assertEquals(account.getTransactionsIds(), result.getTransactionsIds());
+        }
+    }
+
+
+    @Test
     void create_whenThrowsThrowable() throws SQLException {
         try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
             connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
