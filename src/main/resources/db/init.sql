@@ -38,7 +38,7 @@ CREATE TABLE account
 (
     id      VARCHAR PRIMARY KEY DEFAULT generate_iban(),
     balance DECIMAL(10, 2),
-    currency VARCHAR NOT NULL,
+    currency VARCHAR(3) NOT NULL,
     bank_id INT,
     user_id INT,
     is_saving_account BOOLEAN DEFAULT FALSE,
@@ -55,11 +55,11 @@ CREATE TABLE transaction_type
 CREATE TABLE transaction
 (
     id                     SERIAL PRIMARY KEY,
-    amount                 DECIMAL(2) NOT NULL,
+    amount                 DECIMAL(10,2) NOT NULL,
     transaction_type_id    INT NOT NULL,
     account_source_id      VARCHAR NULL,
     account_destination_id VARCHAR NULL,
-    created_at             DATE,
+    created_at             TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (transaction_type_id) REFERENCES transaction_type (id),
     FOREIGN KEY (account_source_id) REFERENCES account (id),
     FOREIGN KEY (account_destination_id) REFERENCES account (id)
