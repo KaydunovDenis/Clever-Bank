@@ -3,5 +3,9 @@ package com.github.kaydunov.entity;
 public enum TransactionType {
     DEPOSIT,
     WITHDRAW,
-    INTEREST
+    INTEREST;
+
+    public static TransactionType getByOrdinal(int ordinal) {
+        return TransactionType.values()[ordinal];
+    }
 }

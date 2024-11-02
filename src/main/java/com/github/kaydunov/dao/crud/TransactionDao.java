@@ -18,6 +18,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM transaction WHERE id = ?";
     private static final String SQL_SELECT_ALL = "SELECT * FROM transaction";
     private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
+    private static final String SQL_SELECT_BY_ACCOUNT_ID_AND_DATA = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ? AND created_at > ?";
     private static final String SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID = "SELECT id FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
 
     @Override
@@ -59,20 +60,6 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     }
 
     @Override
-    public List<Transaction> findAll() {
-        List<Transaction> transactions = new ArrayList<>();
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                transactions.add(mapResultSetToOperation(resultSet));
-            }
-        } catch (SQLException e) {
-            throw new DaoException(e.getMessage(), e);
-        }
-        return transactions;
-    }
-
-    @Override
     public void update(Transaction transaction) {
         throw new UnsupportedOperationException();
     }
@@ -83,6 +70,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     }
 
     public List<Transaction> getTransactionsByAccountId(String accountId) {
+        //todo reuse method
         List<Transaction> transactions = new ArrayList<>();
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ACCOUNT_ID)) {
             statement.setString(1, accountId);
@@ -112,14 +100,60 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         return transactionsIds;
     }
 
+    @Override
+    public List<Transaction> findAll() {
+        //todo refactor reuse method
+        List<Transaction> transactions = new ArrayList<>();
+        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                transactions.add(mapResultSetToOperation(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e.getMessage(), e);
+        }
+        return transactions;
+    }
+
+    //todo implement
+    public List<Transaction> findByAccountIdAndYear(String accountId, String year) throws DaoException {
+        return new ArrayList<>();
+    }
+
+    //todo implement
+    public List<Transaction> findByAccountIdAndMonth(String accountId, String month) {
+        return new ArrayList<>();
+    }
+
+    //todo implement
+    public List<Transaction> findByAccountIdAndData(String accountId, Timestamp date) {
+        List<Transaction> transactions = new ArrayList<>();
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ACCOUNT_ID_AND_DATA)) {
+            statement.setString(1, accountId);
+            statement.setString(2, accountId);
+            statement.setTimestamp(3, date);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                transactions.add(mapResultSetToOperation(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e.getMessage(), e);
+        }
+        return transactions;
+    }
+
     private Transaction mapResultSetToOperation(ResultSet resultSet) throws SQLException {
         Transaction transaction = new Transaction();
         transaction.setId(resultSet.getLong("id"));
         transaction.setAmount(resultSet.getBigDecimal("amount"));
         transaction.setCreatedAt(resultSet.getTimestamp("created_at"));
-        transaction.setTransactionType(TransactionType.values()[resultSet.getInt("transaction_type_id") - 1]); // Assuming the transaction_type_id corresponds to the ordinal
         transaction.setSourceAccountId(resultSet.getString("account_source_id"));
         transaction.setDestinationAccountId(resultSet.getString("account_destination_id"));
+
+        int transactionOrdinal = resultSet.getInt("transaction_type_id");
+        TransactionType transactionType = TransactionType.getByOrdinal(transactionOrdinal);
+        transaction.setTransactionType(transactionType);
         return transaction;
     }
 }
