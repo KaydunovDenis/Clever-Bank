@@ -44,31 +44,34 @@ public class StatementDao {
             statement.setCurrency(account.getCurrency());
 
 
-
             statements.add(statement);
         }
         return statements;
     }
 
     //todo write test
-   public List<Statement> findAllByAccountIdAndYear(String accountId, int year) throws NotFoundException {
-    Account account = accountService.getById(accountId);
-    Timestamp date = Timestamp.valueOf(Integer.toString(year));
-    List<Transaction> accountTransactions = transactionDao.findByAccountIdAndData(accountId, date);
-    Long userId = account.getUserId();
-    User user = userService.findById(userId);
+    public List<Statement> findAllByAccountIdAndYear(String accountId, int year) throws NotFoundException {
+        Account account = accountService.getById(accountId);
+        Timestamp date = Timestamp.valueOf(Integer.toString(year));
+        List<Transaction> accountTransactions = transactionDao.findByAccountIdAndData(accountId, date);
+        Long userId = account.getUserId();
+        User user = userService.findById(userId);
 
-    List<Statement> statements = new ArrayList<>();
-    for (Transaction transaction : accountTransactions) {
-        Statement statement = new Statement();
-        statement.setNumber(transaction.getId());
-        statement.setClientName(user.getName());
-        statement.setAccountNumber(accountId);
-        statement.setCurrency(account.getCurrency());
+        List<Statement> statements = new ArrayList<>();
+        for (Transaction transaction : accountTransactions) {
+            Statement statement = new Statement();
+            statement.setNumber(transaction.getId());
+            statement.setClientName(user.getName());
+            statement.setAccountNumber(accountId);
+            statement.setCurrency(account.getCurrency());
 
-        statements.add(statement);
+            statements.add(statement);
+        }
+        return statements;
     }
-    return statements;
-}
-    
+
+    public List<Statement> findAllByAccountIdAndMonth(String accountId, String month) {
+        //todo
+    }
+
 }
