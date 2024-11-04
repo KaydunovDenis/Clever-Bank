@@ -53,7 +53,7 @@ public class AccountTest {
     void depositBalanceTest() {
         //Arrange Statement(s)
         Account target = createAccount();
-        target.setBalance("1.0");
+        target.setValueAsBalance("1.0");
         //Act Statement(s)
         String money = "1.0";
         target.depositBalance(new BigDecimal(money));
@@ -65,7 +65,7 @@ public class AccountTest {
     public static Account createAccount() {
         Account account = new Account();
         account.setId("0L");
-        account.setBalance(new BigDecimal("1.0"));
+        account.setValueAsBalance("1.0");
         account.setCurrency("BYN");
         account.setUserId(0L);
         account.setBankId(0L);

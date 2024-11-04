@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -37,11 +38,11 @@ public class Account {
         this.setBalance(newSourceBalance);
     }
 
-    public void setBalance(String balance) {
+    public void setValueAsBalance(String balance) {
         this.balance = new BigDecimal(balance);
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public LocalDate getCreatedAtAsLocalDate() {
+        return createdAt.toLocalDateTime().toLocalDate();
     }
 }
