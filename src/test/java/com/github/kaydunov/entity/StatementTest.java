@@ -1,7 +1,6 @@
 package com.github.kaydunov.entity;
 
 import com.github.kaydunov.dto.Statement;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -46,23 +45,14 @@ public class StatementTest {
         assertEquals(expectedCheck, result);
     }
 
-    @Disabled("Manual")
-    @Test
-    void test() {
-        System.out.println(getStatement());
-    }
-
-
     public static Statement getStatement() {
         Statement statement = new Statement();
-        Long notRealId = -1L;
-        statement.setNumber(notRealId);
         statement.setClientName("Сотников Кирилл Артёмович ");
         statement.setAccountNumber("AS12 ASDG 1200 2132 ASDA 353A 2132");
         statement.setCurrency("BYN");
         statement.setAccountOpeningDate(LocalDate.of(1970, 1, 1));
-        statement.setPeriodStartDate(LocalDate.of(1970, 1, 1));
-        statement.setPeriodEndDate(LocalDate.of(2024, 10, 8));
+        statement.setStartOfPeriod(LocalDate.of(1970, 1, 1));
+        statement.setEndOfPeriod(LocalDate.of(2024, 10, 8));
         statement.setGenerationDate(LocalDateTime.of(2024, 11, 1, 14, 47));
         statement.setBalance(BigDecimal.valueOf(10000));
         statement.setTransactions(getTransactions());

@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public interface FileProcessor<T extends TXT> {
-    void process(T object);
+    File process(T object);
 
     default void saveToFile(T object, File file) {
         try (FileWriter writer = new FileWriter(file)) {

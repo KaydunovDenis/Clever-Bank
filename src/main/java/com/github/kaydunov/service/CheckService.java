@@ -13,9 +13,10 @@ public class CheckService implements FileProcessor<Check> {
     private static final String FILE_PREFIX = "check_";
 
     @Override
-    public void process(Check check) {
+    public File process(Check check) {
         File file = createFile(check.getNumber());
         saveToFile(check, file);
+        return file;
     }
 
     private File createFile(int number) {

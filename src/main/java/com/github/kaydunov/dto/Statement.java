@@ -38,13 +38,12 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Statement implements TXT{
-    Long number;
     String clientName;
     String accountNumber;
     String currency;
     LocalDate accountOpeningDate;
-    LocalDate periodStartDate;
-    LocalDate periodEndDate;
+    LocalDate startOfPeriod;
+    LocalDate endOfPeriod;
     LocalDateTime generationDate;
     BigDecimal balance;
     List<Transaction> transactions;
@@ -69,8 +68,8 @@ public class Statement implements TXT{
         sb.append(String.format(" Валюта                    | %-40s %n", currency));
         sb.append(String.format(" Дата открытия             | %-40s %n", accountOpeningDate.format(onlyDateFormat)));
         sb.append(String.format(" Период                    | %s - %-27s %n",
-                periodStartDate.format(onlyDateFormat),
-                periodEndDate.format(onlyDateFormat)));
+                startOfPeriod.format(onlyDateFormat),
+                endOfPeriod.format(onlyDateFormat)));
         sb.append(String.format(" Дата и время формирования | %-40s %n",
                 generationDate.format(dateTimeFormatter)));
         sb.append(String.format(" Остаток                   | %,.2f %-30s %n", balance, currency));
