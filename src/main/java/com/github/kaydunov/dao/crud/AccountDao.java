@@ -191,6 +191,7 @@ public class AccountDao implements CrudRepository<Account, String> {
         account.setBankId(resultSet.getLong("bank_id"));
         account.setUserId(resultSet.getLong("user_id"));
         account.setSavingAccount(resultSet.getBoolean("is_saving_account"));
+        account.setCreatedAt(resultSet.getTimestamp("created_at"));
         List<Long> transactions = transactionDao.getTransactionsIdsByAccountId(id);
         account.setTransactionsIds(transactions);
         return account;

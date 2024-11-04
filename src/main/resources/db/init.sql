@@ -42,6 +42,7 @@ CREATE TABLE account
     bank_id INT,
     user_id INT,
     is_saving_account BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (bank_id) REFERENCES bank (id),
     FOREIGN KEY (user_id) REFERENCES user_ (id)
 );

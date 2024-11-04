@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Builder
@@ -21,6 +22,7 @@ public class Account {
     Long userId;
     boolean isSavingAccount;
     List<Long> transactionsIds;
+    Timestamp createdAt;
 
     public void withdrawBalance(BigDecimal amount) {
         BigDecimal newSourceBalance = this.getBalance().subtract(amount);
@@ -33,5 +35,13 @@ public class Account {
     public void depositBalance(BigDecimal amount) {
         BigDecimal newSourceBalance = this.getBalance().add(amount);
         this.setBalance(newSourceBalance);
+    }
+
+    public void setBalance(String balance) {
+        this.balance = new BigDecimal(balance);
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }

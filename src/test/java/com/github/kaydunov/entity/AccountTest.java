@@ -53,12 +53,12 @@ public class AccountTest {
     void depositBalanceTest() {
         //Arrange Statement(s)
         Account target = createAccount();
-
+        target.setBalance("1.0");
         //Act Statement(s)
         String money = "1.0";
         target.depositBalance(new BigDecimal(money));
         //Assert statement(s)
-        Assertions.assertEquals(new BigDecimal("3.0"), target.getBalance());
+        Assertions.assertEquals(new BigDecimal("2.0"), target.getBalance());
 
     }
 
