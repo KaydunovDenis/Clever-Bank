@@ -2,14 +2,15 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Statement;
 import com.github.kaydunov.entity.StatementTest;
+import com.github.kaydunov.file_processor.StatementFileProcessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class StatementServiceTest {
+class StatementFileProcessorTest {
 
-    private final StatementService target = new StatementService();
+    private final StatementFileProcessor target = new StatementFileProcessor();
 
     @Test
     void process() {

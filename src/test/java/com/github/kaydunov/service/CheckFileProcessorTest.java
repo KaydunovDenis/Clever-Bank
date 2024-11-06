@@ -3,6 +3,7 @@ package com.github.kaydunov.service;
 import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.entity.CheckTest;
 import com.github.kaydunov.exception.FileProcessorException;
+import com.github.kaydunov.file_processor.CheckFileProcessor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -15,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class CheckServiceTest {
+class CheckFileProcessorTest {
 
-    private final CheckService target = new CheckService();
+    private final CheckFileProcessor target = new CheckFileProcessor();
 
     @Test
     void process() {

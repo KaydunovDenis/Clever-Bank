@@ -1,4 +1,4 @@
-package com.github.kaydunov.service;
+package com.github.kaydunov.file_processor;
 
 import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.spring.Component;
@@ -6,7 +6,7 @@ import com.github.kaydunov.spring.Component;
 import java.io.File;
 
 @Component
-public class CheckService implements FileProcessor<Check> {
+public class CheckFileProcessor implements FileProcessor<Check> {
 
     private static final String PATH = "check";
     private static final String FILE_EXTENSION = ".txt";

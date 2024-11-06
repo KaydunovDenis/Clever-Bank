@@ -1,4 +1,4 @@
-package com.github.kaydunov.service;
+package com.github.kaydunov.file_processor;
 
 import com.github.kaydunov.dto.TXT;
 import com.github.kaydunov.exception.FileProcessorException;
