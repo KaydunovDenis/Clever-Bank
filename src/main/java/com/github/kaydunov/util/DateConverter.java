@@ -40,4 +40,14 @@ public class DateConverter {
     public static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }
+
+    /**
+     * Converts a Timestamp to a LocalDate.
+     *
+     * @param timestamp The Timestamp to convert.
+     * @return LocalDate corresponding to the given Timestamp.
+     */
+    public static LocalDate toLocalDate(Timestamp timestamp) {
+        return timestamp.toLocalDateTime().toLocalDate();
+    }
 }

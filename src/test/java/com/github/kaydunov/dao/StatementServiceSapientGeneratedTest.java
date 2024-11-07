@@ -9,6 +9,7 @@ import com.github.kaydunov.service.AccountService;
 import com.github.kaydunov.service.StatementService;
 import com.github.kaydunov.service.TransactionService;
 import com.github.kaydunov.service.UserService;
+import com.github.kaydunov.util.DateConverter;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,12 +63,13 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void testFindByAccountId() throws NotFoundException {
+    void testCreateByAccountId() throws NotFoundException {
         String accountId = "123";
         when(accountService.getById(accountId)).thenReturn(account);
-        when(transactionService.getFullPeriodStatement(accountId)).thenReturn(transactions);
+        when(transactionService.findByAccountIdAndDateRange(accountId, any(), any()))
+                .thenReturn(transactions);
         when(userService.findById(1L)).thenReturn(user);
-        Statement result = statementService.findByAccountId(accountId);
+        Statement result = statementService.createByAccountId(accountId);
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
         assertEquals(accountId, result.getAccountNumber());
@@ -78,91 +80,86 @@ class StatementServiceSapientGeneratedTest {
         assertNotNull(result.getGenerationDate());
         assertEquals(transactions, result.getTransactions());
         verify(accountService).getById(accountId);
-        verify(transactionService).getFullPeriodStatement(accountId);
+        verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
         verify(userService).findById(1L);
     }
 
     @Test
-    void testFindByAccountIdThrowsNotFoundException() throws NotFoundException {
+    void testCreateByAccountIdThrowsNotFoundException() throws NotFoundException {
         //Arrange
         String accountId = "123";
         when(accountService.getById(accountId)).thenThrow(new NotFoundException("Account not found"));
         //Act
-        assertThrows(NotFoundException.class, () -> statementService.findByAccountId(accountId));
+        assertThrows(NotFoundException.class, () -> statementService.createByAccountId(accountId));
         //Assert
         verify(accountService).getById(accountId);
-        verify(transactionService).getFullPeriodStatement(accountId);
+        verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
         verifyNoInteractions(userService);
     }
 
     @Test
-    void testFindByAccountIdByAccountIdAndYear() throws NotFoundException {
+    void testCreateByAccountIdByAccountIdAndYear() throws NotFoundException {
         String accountId = "123";
         int year = 2023;
         Timestamp startDate = Timestamp.valueOf(year + "-01-01 00:00:00");
         when(accountService.getById(accountId)).thenReturn(account);
-        when(transactionService.getYearlyStatement(accountId, year)).thenReturn(transactions);
+        when(transactionService.findByAccountIdAndDateRange(accountId, any(), any())).thenReturn(transactions);
         when(userService.findById(1L)).thenReturn(user);
-        Statement result = statementService.findByAccountIdAndYear(accountId, year);
+        Statement result = statementService.createByAccountIdAndYear(accountId, year);
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
         assertEquals(accountId, result.getAccountNumber());
         assertEquals("USD", result.getCurrency());
         verify(accountService).getById(accountId);
-        verify(transactionService).getYearlyStatement(accountId, year);
+        verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
         verify(userService).findById(1L);
     }
 
     @Test
-    void findByAccountIdAndYear_ThrowsNotFoundException() throws NotFoundException {
+    void createByAccountIdAndYear_ThrowsNotFoundException() throws NotFoundException {
         //Arrange
         String accountId = "123";
         int year = 2023;
         when(accountService.getById(accountId)).thenThrow(new NotFoundException("Account not found"));
         //Act
-        assertThrows(NotFoundException.class, () -> statementService.findByAccountIdAndYear(accountId, year));
+        assertThrows(NotFoundException.class, () -> statementService.createByAccountIdAndYear(accountId, year));
         //Assert
         verify(accountService).getById(accountId);
-        verify(transactionService).getYearlyStatement(accountId, year);
+        verify(transactionService, never()).findByAccountIdAndDateRange(accountId, any(Timestamp.class), any(Timestamp.class));
         verifyNoInteractions(userService);
     }
 
     @Test
-    void testFindByAccountIdByAccountIdAndMonth() throws NotFoundException {
+    void testCreateByAccountIdByAccountIdAndMonth() throws NotFoundException {
         //Arrange
         String accountId = "123";
         int year = 2024;
         int month = 1;
 
-        when(transactionService.getMonthlyStatement(accountId, year, month))
+        when(transactionService.findByAccountIdAndDateRange(anyString(), any(), any()))
                 .thenReturn(transactions);
         when(accountService.getById(accountId)).thenReturn(account);
         Long userId = account.getUserId();
         when(userService.findById(userId)).thenReturn(user);
         //Act
-        Statement result = statementService.findByAccountIdAndMonth(accountId, year, month);
+        Statement result = statementService.createByAccountIdAndMonth(accountId, year, month);
         //Assert
-        verify(transactionService).getMonthlyStatement(accountId, year, month);
+        verify(transactionService).findByAccountIdAndDateRange(eq(accountId), any(), any());
         verify(accountService).getById(accountId);
         verify(userService).findById(userId);
 
-//        statement.setClientName(user.getName());
-//        statement.setAccountNumber(accountId);
-//        statement.setCurrency(account.getCurrency());
-//        statement.setBalance(account.getBalance());
-//        statement.setAccountOpeningDate(account.getCreatedAtAsLocalDate());
-//        statement.setStartOfPeriod(account.getCreatedAtAsLocalDate());
-//        statement.setEndOfPeriod(LocalDate.now());
-//        statement.setGenerationDate(LocalDateTime.now());
-//        statement.setTransactions(transactions);
         assertEquals(result.getClientName(), user.getName());
         assertEquals(result.getAccountNumber(), accountId);
         assertEquals(result.getCurrency(), account.getCurrency());
         assertEquals(result.getBalance(), account.getBalance());
-        assertEquals(result.getAccountOpeningDate(), account.getCreatedAtAsLocalDate());
-        assertEquals(result.getEndOfPeriod(), LocalDate.now());
-        assertEquals(result.getGenerationDate(), LocalDate.now());
+        assertEquals(result.getAccountOpeningDate(), DateConverter.toLocalDate(account.getCreatedAt()));
 
+        LocalDate startOfPeriod = result.getStartOfPeriod();
+        LocalDate endOfPeriod = result.getEndOfPeriod();
+        assertNotNull(startOfPeriod);
+        assertNotNull(endOfPeriod);
+        assertTrue(startOfPeriod.isBefore(endOfPeriod));
+        assertEquals(result.getGenerationDate().toLocalDate(), LocalDate.now());
         assertEquals(result.getTransactions(), transactions);
     }
 }

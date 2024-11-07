@@ -6,9 +6,10 @@ import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.User;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
+import com.github.kaydunov.util.DateConverter;
 import javassist.NotFoundException;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,42 +22,59 @@ public class StatementService {
     @Autowired
     private UserService userService;
 
-    public Statement findByAccountId(String accountId) throws NotFoundException {
-        List<Transaction> accountTransactions = transactionService.getFullPeriodStatement(accountId);
-        return createStatement(accountId, accountTransactions);
-    }
-
-    public Statement findByAccountIdAndYear(String accountId, int year) throws NotFoundException {
-        List<Transaction> accountTransactions = transactionService.getYearlyStatement(accountId, year);
-        return createStatement(accountId, accountTransactions);
+    /**
+     * Creates a statement with the specified account id and
+     * the current date.
+     */
+    public Statement createByAccountId(String accountId) throws NotFoundException {
+        Account account = accountService.getById(accountId);
+        Timestamp startDate = account.getCreatedAt();
+        Timestamp endDate = DateConverter.getCurrentTimestamp();
+        return createStatement(accountId, startDate, endDate);
     }
 
     /**
+     * Creates a statement with the specified account id and
+     * the current year.
+     *
+     * @param accountId
+     * @param year
+     */
+    public Statement createByAccountIdAndYear(String accountId, int year) throws NotFoundException {
+        Timestamp startDate = DateConverter.toTimestamp(year);
+        Timestamp endDate = DateConverter.toTimestamp(++year);
+        return createStatement(accountId, startDate, endDate);
+    }
+
+    /**
+     * Creates a statement with the specified account id and
+     * the specified date range.
      *
      * @param accountId
      * @param month of year 1-12
      */
-    public Statement findByAccountIdAndMonth(String accountId, int year, int month) throws NotFoundException {
-        List<Transaction> accountTransactions = transactionService.getMonthlyStatement(accountId, year, month);
-        return createStatement(accountId, accountTransactions);
+    public Statement createByAccountIdAndMonth(String accountId, int year, int month) throws NotFoundException {
+        Timestamp startDate = DateConverter.toTimestamp(year, month);
+        Timestamp endDate = DateConverter.toTimestamp(year, ++month);
+        return createStatement(accountId, startDate, endDate);
     }
 
-    private Statement createStatement(String accountId, List<Transaction> transactions) throws NotFoundException {
+    private Statement createStatement(String accountId, Timestamp startDate, Timestamp endDate) throws NotFoundException {
         Account account = accountService.getById(accountId);
         Long userId = account.getUserId();
         User user = userService.findById(userId);
+        List<Transaction> transactions = transactionService.findByAccountIdAndDateRange(accountId, startDate, endDate);
 
         Statement statement = new Statement();
         statement.setClientName(user.getName());
         statement.setAccountNumber(accountId);
         statement.setCurrency(account.getCurrency());
         statement.setBalance(account.getBalance());
-        statement.setAccountOpeningDate(account.getCreatedAtAsLocalDate());
-        statement.setStartOfPeriod(account.getCreatedAtAsLocalDate());
-        statement.setEndOfPeriod(LocalDate.now());//todo
-        statement.setGenerationDate(LocalDateTime.now());//todo
+        statement.setAccountOpeningDate(DateConverter.toLocalDate(account.getCreatedAt()));
+        statement.setStartOfPeriod(DateConverter.toLocalDate(startDate));
+        statement.setEndOfPeriod(DateConverter.toLocalDate(endDate));
+        statement.setGenerationDate(LocalDateTime.now());
         statement.setTransactions(transactions);
-
         return statement;
     }
 }

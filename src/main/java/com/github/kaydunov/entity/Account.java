@@ -38,12 +38,8 @@ public class Account {
         this.setBalance(newSourceBalance);
     }
 
-    //todo make a private
+    //TODO may be need to make as private?
     public void setValueAsBalance(String balance) {
         this.balance = new BigDecimal(balance);
-    }
-
-    public LocalDate getCreatedAtAsLocalDate() {
-        return createdAt.toLocalDateTime().toLocalDate();
     }
 }
