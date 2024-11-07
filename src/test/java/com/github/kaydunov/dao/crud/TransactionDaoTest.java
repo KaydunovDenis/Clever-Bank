@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class TransactionDaoTest {
+public class TransactionDaoTest {
 
     private final String accountSource1Id = "1L";
     private final String accountSource2Id = "2L";
@@ -44,7 +44,7 @@ class TransactionDaoTest {
     private TransactionDao target;
 
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() {
         openMocks(this);
 
     }
@@ -168,9 +168,10 @@ class TransactionDaoTest {
     }
 
     @Test
-    void findByAccountIdAndDate() throws SQLException {
+    void findByAccountIdAndDateRange() throws SQLException {
         //Arrange
-        final Timestamp date = Timestamp.valueOf("2024-11-21 00:00:00");
+        final Timestamp startDate = Timestamp.valueOf("2024-01-01 00:00:00");
+        final Timestamp endDate = Timestamp.valueOf("2025-01-01 00:00:00");
         final Transaction expectedTransaction = createTransaction(); // создаем тестовую транзакцию
         List<Transaction> result;
 
@@ -194,13 +195,14 @@ class TransactionDaoTest {
 
 
             //Act
-            result = target.findByAccountIdAndData(accountDestination1Id, date);
+            result = target.findByAccountIdAndDateRange(accountDestination1Id, startDate, endDate);
         }
         //Assert
         verify(connectionMock).prepareStatement(anyString());
         verify(preparedStatementMock).setString(1, accountDestination1Id);
         verify(preparedStatementMock).setString(2, accountDestination1Id);
-        verify(preparedStatementMock).setTimestamp(3, date);
+        verify(preparedStatementMock).setTimestamp(3, startDate);
+        verify(preparedStatementMock).setTimestamp(4, endDate);
         verify(preparedStatementMock).executeQuery();
         verify(resultSetMock, times(2)).next();
         assertNotNull(result);
@@ -217,7 +219,7 @@ class TransactionDaoTest {
         assertEquals(expected.getTransactionType(), result.getTransactionType());
     }
 
-    private Transaction createTransaction() {
+    public static Transaction createTransaction() {
         Transaction transaction = new Transaction();
         transaction.setId(1L);
         transaction.setAmount(new BigDecimal("100.23"));

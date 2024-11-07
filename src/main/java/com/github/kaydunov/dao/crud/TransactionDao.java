@@ -18,7 +18,11 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM transaction WHERE id = ?";
     private static final String SQL_SELECT_ALL = "SELECT * FROM transaction";
     private static final String SQL_SELECT_BY_ACCOUNT_ID = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
-    private static final String SQL_SELECT_BY_ACCOUNT_ID_AND_DATA = "SELECT * FROM transaction WHERE account_source_id = ? OR account_destination_id = ? AND created_at > ?";
+    private static final String SQL_SELECT_BY_ACCOUNT_ID_AND_DATA = """
+            SELECT * FROM transaction 
+            WHERE account_source_id = ? OR account_destination_id = ? 
+            AND (created_at >= ? AND created_at < ?)
+            """;
     private static final String SQL_SELECT_TRANSACTIONS_IDS_BY_ACCOUNT_ID = "SELECT id FROM transaction WHERE account_source_id = ? OR account_destination_id = ?";
 
     @Override
@@ -70,7 +74,6 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
     }
 
     public List<Transaction> getTransactionsByAccountId(String accountId) {
-        //todo reuse method
         List<Transaction> transactions = new ArrayList<>();
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_BY_ACCOUNT_ID)) {
             statement.setString(1, accountId);
@@ -102,7 +105,6 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
 
     @Override
     public List<Transaction> findAll() {
-        //todo refactor reuse method
         List<Transaction> transactions = new ArrayList<>();
         try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_SELECT_ALL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -115,24 +117,14 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         return transactions;
     }
 
-    //todo implement
-    public List<Transaction> findByAccountIdAndYear(String accountId, String year) throws DaoException {
-        return new ArrayList<>();
-    }
-
-    //todo implement
-    public List<Transaction> findByAccountIdAndMonth(String accountId, String month) {
-        return new ArrayList<>();
-    }
-
-    //todo implement
-    public List<Transaction> findByAccountIdAndData(String accountId, Timestamp date) {
+    public List<Transaction> findByAccountIdAndDateRange(String accountId, Timestamp startDate, Timestamp endDate) {
         List<Transaction> transactions = new ArrayList<>();
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ACCOUNT_ID_AND_DATA)) {
             statement.setString(1, accountId);
             statement.setString(2, accountId);
-            statement.setTimestamp(3, date);
+            statement.setTimestamp(3, startDate);
+            statement.setTimestamp(4, endDate);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 transactions.add(mapResultSetToOperation(resultSet));
@@ -157,4 +149,3 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         return transaction;
     }
 }
-
