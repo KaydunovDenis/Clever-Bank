@@ -38,6 +38,7 @@ public class Account {
         this.setBalance(newSourceBalance);
     }
 
+    //todo make a private
     public void setValueAsBalance(String balance) {
         this.balance = new BigDecimal(balance);
     }
