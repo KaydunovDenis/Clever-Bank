@@ -41,11 +41,11 @@ public class Statement implements TXT{
     String clientName;
     String accountNumber;
     String currency;
+    BigDecimal balance;
     LocalDate accountOpeningDate;
     LocalDate startOfPeriod;
     LocalDate endOfPeriod;
     LocalDateTime generationDate;
-    BigDecimal balance;
     List<Transaction> transactions;
 
     static final DateTimeFormatter onlyDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
