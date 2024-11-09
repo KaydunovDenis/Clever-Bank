@@ -2,24 +2,25 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Statement;
 import com.github.kaydunov.entity.StatementTest;
-import com.github.kaydunov.file_processor.StatementFileProcessor;
+import com.github.kaydunov.exporter.FileExporter;
+import com.github.kaydunov.exporter.TxtExporter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class StatementFileProcessorTest {
+class TxtExporterTest {
 
-    private final StatementFileProcessor target = new StatementFileProcessor();
+    private final FileExporter target = new TxtExporter();
 
     @Test
-    void process() {
+    void export() {
         //Arrange Statement(s)
         Statement statement = StatementTest.getStatement();
 
         //Act Statement(s)
-        File file1 = target.process(statement);
-        File file2 = target.process(statement);
+        File file1 = target.export(statement);
+        File file2 = target.export(statement);
 
         //Assert statement(s)
         Assertions.assertTrue(file1.exists());
@@ -38,7 +39,8 @@ class StatementFileProcessorTest {
         }
     }
 
-    public static int getFileNumberFromName(File file) {
+
+    private static int getFileNumberFromName(File file) {
         String fileName = file.getName();
         // Проверяем, что имя файла соответствует формату
         if (fileName.matches("statement_\\d+\\.txt")) {
@@ -49,6 +51,5 @@ class StatementFileProcessorTest {
             throw new IllegalArgumentException("Неверный формат имени файла: " + fileName);
         }
     }
-
 
 }

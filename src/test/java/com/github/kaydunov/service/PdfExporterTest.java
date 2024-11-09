@@ -2,8 +2,9 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.entity.CheckTest;
-import com.github.kaydunov.exception.FileProcessorException;
-import com.github.kaydunov.file_processor.CheckFileProcessor;
+import com.github.kaydunov.exception.FileExporterException;
+import com.github.kaydunov.exporter.FileExporter;
+import com.github.kaydunov.exporter.PdfExporter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -16,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class CheckFileProcessorTest {
+class PdfExporterTest {
 
-    private final CheckFileProcessor target = new CheckFileProcessor();
+    private final FileExporter target = new PdfExporter();
 
     @Test
-    void process() {
+    void export() {
         Check check = CheckTest.getCheck();
         String filename = "check/check_" + check.getNumber() + ".txt";
         File file = new File(filename);
@@ -30,13 +31,13 @@ class CheckFileProcessorTest {
         }
         //Arrange Statement(s)
         //Act Statement(s)
-        target.process(check);
+        target.export(check);
         assertTrue(file.exists());
     }
 
 
     @Test
-    void saveToFile_shouldThrowFileProcessorException_whenIOExceptionOccurs() throws IOException {
+    void saveAsTXTFile_shouldThrowProcessorException_whenIOExceptionOccurs() throws IOException {
         // Arrange: создаем невалидный файл (который не может быть записан)
         File invalidFile = mock(File.class);
         when(invalidFile.getPath()).thenReturn("invalid/path");
@@ -45,8 +46,8 @@ class CheckFileProcessorTest {
         doThrow(new IOException("Test exception")).when(invalidFile).createNewFile();
 
         // Act & Assert: ожидаем выброс исключения FileProcessorException
-        FileProcessorException thrown = assertThrows(FileProcessorException.class, () -> {
-            target.saveToFile(CheckTest.getCheck(), invalidFile);
+        FileExporterException thrown = assertThrows(FileExporterException.class, () -> {
+            target.export(CheckTest.getCheck());
         });
 
         assertEquals("Exception saving to file: invalid/path", thrown.getMessage(), "The exception message should contain the file path.");

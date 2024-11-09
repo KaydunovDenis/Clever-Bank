@@ -37,7 +37,8 @@ import java.util.List;
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Statement implements TXT{
+public class Statement extends Report {
+
     String clientName;
     String accountNumber;
     String currency;
@@ -90,4 +91,3 @@ public class Statement implements TXT{
     }
 
 }
-
