@@ -28,6 +28,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 class StatementServiceSapientGeneratedTest {
 
+    private static final long USER_ID = 1L;
     @Mock
     private TransactionService transactionService;
 
@@ -50,7 +51,7 @@ class StatementServiceSapientGeneratedTest {
     void setUp() {
         openMocks(this);
         account = new Account();
-        account.setUserId(1L);
+        account.setUserId(USER_ID);
         account.setCurrency("USD");
         account.setValueAsBalance("1000.0");
         account.setCreatedAt(Timestamp.valueOf(LocalDateTime.now().minusDays(30)));
@@ -66,9 +67,9 @@ class StatementServiceSapientGeneratedTest {
     void testCreateByAccountId() throws NotFoundException {
         String accountId = "123";
         when(accountService.getById(accountId)).thenReturn(account);
-        when(transactionService.findByAccountIdAndDateRange(accountId, any(), any()))
+        when(transactionService.findByAccountIdAndDateRange(eq(accountId), any(), any()))
                 .thenReturn(transactions);
-        when(userService.findById(1L)).thenReturn(user);
+        when(userService.findById(USER_ID)).thenReturn(user);
         Statement result = statementService.createByAccountId(accountId);
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
@@ -79,9 +80,9 @@ class StatementServiceSapientGeneratedTest {
         assertEquals(LocalDate.now(), result.getEndOfPeriod());
         assertNotNull(result.getGenerationDate());
         assertEquals(transactions, result.getTransactions());
-        verify(accountService).getById(accountId);
-        verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
-        verify(userService).findById(1L);
+        verify(accountService, times(2)).getById(accountId);//TODO it is OK or not?
+        verify(transactionService).findByAccountIdAndDateRange(eq(accountId), any(), any());
+        verify(userService).findById(USER_ID);
     }
 
     @Test
@@ -104,7 +105,7 @@ class StatementServiceSapientGeneratedTest {
         Timestamp startDate = Timestamp.valueOf(year + "-01-01 00:00:00");
         when(accountService.getById(accountId)).thenReturn(account);
         when(transactionService.findByAccountIdAndDateRange(accountId, any(), any())).thenReturn(transactions);
-        when(userService.findById(1L)).thenReturn(user);
+        when(userService.findById(USER_ID)).thenReturn(user);
         Statement result = statementService.createByAccountIdAndYear(accountId, year);
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
@@ -112,7 +113,7 @@ class StatementServiceSapientGeneratedTest {
         assertEquals("USD", result.getCurrency());
         verify(accountService).getById(accountId);
         verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
-        verify(userService).findById(1L);
+        verify(userService).findById(USER_ID);
     }
 
     @Test
