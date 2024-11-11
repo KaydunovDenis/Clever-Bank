@@ -3,12 +3,14 @@ package com.github.kaydunov.dao.crud;
 import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Bank;
 import com.github.kaydunov.exception.DaoException;
+import com.github.kaydunov.spring.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class BankDao implements CrudRepository<Bank, Long> {
 
     public static final String SQL_CREATE = "INSERT INTO bank (name) VALUES (?)";
