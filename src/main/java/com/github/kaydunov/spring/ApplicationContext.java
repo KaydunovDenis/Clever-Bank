@@ -4,9 +4,7 @@ import com.github.kaydunov.exception.ApplicationContextException;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A simple Spring-like application context.
@@ -30,6 +28,7 @@ public class ApplicationContext {
         return t;
     }
 
+
     private void scanAndRegisterBeans(String basePackage) {
         Reflections reflections = new Reflections(basePackage);
         Set<Class<?>> componentClasses = reflections.getTypesAnnotatedWith(Component.class);
@@ -52,17 +51,49 @@ public class ApplicationContext {
         for (Object bean : beanRegistry.values()) {
             for (Field field : bean.getClass().getDeclaredFields()) {
                 if (field.isAnnotationPresent(Autowired.class)) {
-                    Object dependency = beanRegistry.get(field.getType());
-                    if (dependency != null) {
-                        field.setAccessible(true);
-                        try {
-                            field.set(bean, dependency);
-                        } catch (IllegalAccessException e) {
-                            throw new ApplicationContextException("Failed to inject dependency for " + field.getName(), e);
-                        }
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        injectListDependency(bean, field);
+                    } else {
+                        injectFieldDependency(bean, field);
                     }
                 }
             }
         }
     }
+
+    private void injectFieldDependency(Object bean, Field field) {
+        try {
+            Class<?> fieldType = field.getType();
+            Object dependency = beanRegistry.get(fieldType);
+            if (dependency == null) {
+                throw new ApplicationContextException("No bean found for type: " + fieldType.getName());
+            }
+            field.setAccessible(true);
+            field.set(bean, dependency);
+        } catch (IllegalAccessException e) {
+            throw new ApplicationContextException("Failed to inject dependency for " + field.getName(), e);
+        }
+    }
+
+    private void injectListDependency(Object bean, Field field) {
+        try {
+            // Определяем тип элементов в списке
+            Class<?> genericType = (Class<?>) ((java.lang.reflect.ParameterizedType) field.getGenericType())
+                    .getActualTypeArguments()[0];
+
+            // Находим все бины, которые являются наследниками genericType
+            List<Object> dependencies = new ArrayList<>();
+            for (Object candidate : beanRegistry.values()) {
+                if (genericType.isAssignableFrom(candidate.getClass())) {
+                    dependencies.add(candidate);
+                }
+            }
+
+            field.setAccessible(true);
+            field.set(bean, dependencies);
+        } catch (IllegalAccessException e) {
+            throw new ApplicationContextException("Failed to inject list dependency for " + field.getName(), e);
+        }
+    }
+
 }
