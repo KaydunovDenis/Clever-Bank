@@ -4,10 +4,10 @@ import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.service.AccountService;
 import com.github.kaydunov.servlet.ObjectMapperWrapper;
-import com.github.kaydunov.servlet.ServletMarker;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javassist.NotFoundException;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @Component
 @WebServlet("/account")
-public class AccountServlet extends ServletMarker {
+public class AccountServlet extends HttpServlet {
     @Autowired
     private ObjectMapperWrapper mapper;
     @Autowired
