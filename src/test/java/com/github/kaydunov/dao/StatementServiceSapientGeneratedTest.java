@@ -86,7 +86,7 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void testCreateByAccountIdThrowsNotFoundException() throws NotFoundException {
+    void testCreateByAccountId_throwsException() throws NotFoundException {
         //Arrange
         String accountId = "123";
         when(accountService.getById(accountId)).thenThrow(new NotFoundException("Account not found"));
@@ -94,25 +94,28 @@ class StatementServiceSapientGeneratedTest {
         assertThrows(NotFoundException.class, () -> statementService.createByAccountId(accountId));
         //Assert
         verify(accountService).getById(accountId);
-        verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
+        verify(userService, never()).findById(any());
+        verify(transactionService,never()).findByAccountIdAndDateRange(eq(accountId), any(), any());
         verifyNoInteractions(userService);
     }
 
     @Test
     void testCreateByAccountIdByAccountIdAndYear() throws NotFoundException {
+        //Arrange
         String accountId = "123";
         int year = 2023;
-        Timestamp startDate = Timestamp.valueOf(year + "-01-01 00:00:00");
         when(accountService.getById(accountId)).thenReturn(account);
-        when(transactionService.findByAccountIdAndDateRange(accountId, any(), any())).thenReturn(transactions);
         when(userService.findById(USER_ID)).thenReturn(user);
+        when(transactionService.findByAccountIdAndDateRange(eq(accountId), any(Timestamp.class), any(Timestamp.class))).thenReturn(transactions);
+        //Act
         Statement result = statementService.createByAccountIdAndYear(accountId, year);
+        //Assert
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
         assertEquals(accountId, result.getAccountNumber());
         assertEquals("USD", result.getCurrency());
         verify(accountService).getById(accountId);
-        verify(transactionService).findByAccountIdAndDateRange(accountId, any(), any());
+        verify(transactionService).findByAccountIdAndDateRange(eq(accountId), any(), any());
         verify(userService).findById(USER_ID);
     }
 
@@ -126,7 +129,8 @@ class StatementServiceSapientGeneratedTest {
         assertThrows(NotFoundException.class, () -> statementService.createByAccountIdAndYear(accountId, year));
         //Assert
         verify(accountService).getById(accountId);
-        verify(transactionService, never()).findByAccountIdAndDateRange(accountId, any(Timestamp.class), any(Timestamp.class));
+        verify(userService, never()).findById(any());
+        verify(transactionService, never()).findByAccountIdAndDateRange(any(), any(Timestamp.class), any(Timestamp.class));
         verifyNoInteractions(userService);
     }
 
