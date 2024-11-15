@@ -46,28 +46,6 @@ public class AccountServlet extends HttpServlet {
         prepareResponse(response, status, json);
     }
 
-    private String processAllAccounts() {
-        List<Account> accounts = accountService.getAll();
-        return convertToJson(accounts);
-    }
-
-    private String processAccountById(String accountId) throws NotFoundException {
-        Account account = accountService.getById(accountId);
-        return convertToJson(account);
-    }
-
-    private void prepareResponse(HttpServletResponse response, int status, String json) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(status);
-        response.getWriter().write(json);
-    }
-
-    @SneakyThrows
-    private String convertToJson(Object object) {
-        return mapper.writeValueAsString(object);
-    }
-
     @SneakyThrows
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -97,5 +75,27 @@ public class AccountServlet extends HttpServlet {
         }
         accountService.deleteById(accountId);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    }
+
+    private String processAllAccounts() {
+        List<Account> accounts = accountService.getAll();
+        return convertToJson(accounts);
+    }
+
+    private String processAccountById(String accountId) throws NotFoundException {
+        Account account = accountService.getById(accountId);
+        return convertToJson(account);
+    }
+
+    private void prepareResponse(HttpServletResponse response, int status, String json) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(status);
+        response.getWriter().write(json);
+    }
+
+    @SneakyThrows
+    private String convertToJson(Object object) {
+        return mapper.writeValueAsString(object);
     }
 }

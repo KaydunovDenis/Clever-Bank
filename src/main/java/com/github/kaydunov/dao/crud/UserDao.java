@@ -21,7 +21,8 @@ public class UserDao implements CrudRepository<User, Long> {
 
     @Override
     public User create(User user) {
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getName());
             statement.setString(2, user.getEmail());
             int affectedRows = statement.executeUpdate();

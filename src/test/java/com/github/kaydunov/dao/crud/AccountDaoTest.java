@@ -41,6 +41,8 @@ class AccountDaoTest {
     private TransactionDao transactionDao;
     @Mock
     private PreparedStatement preparedStatementMock;
+    @Mock
+    private ResultSet resultSetMock;
     @InjectMocks
     private AccountDao target;
     private AutoCloseable autoCloseableMocks;
