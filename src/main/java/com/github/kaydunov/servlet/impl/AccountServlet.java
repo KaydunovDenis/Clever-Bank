@@ -20,6 +20,7 @@ import java.util.List;
 @Component
 @WebServlet("/account")
 public class AccountServlet extends HttpServlet {
+    private static final String ACCOUNT_NOT_FOUND = "Account not found";
     @Autowired
     private ObjectMapperWrapper mapper;
     @Autowired
@@ -40,7 +41,7 @@ public class AccountServlet extends HttpServlet {
             }
             status = HttpServletResponse.SC_OK;
         } catch (NotFoundException e) {
-            json = "Account not found";
+            json = ACCOUNT_NOT_FOUND;
             status = HttpServletResponse.SC_NOT_FOUND;
         }
         prepareResponse(response, status, json);

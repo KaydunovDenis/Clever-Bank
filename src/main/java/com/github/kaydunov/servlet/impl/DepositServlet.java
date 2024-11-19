@@ -3,6 +3,7 @@ package com.github.kaydunov.servlet.impl;
 import com.github.kaydunov.service.AccountService;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
+import com.google.gson.Gson;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,43 +13,49 @@ import javassist.NotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.Map;
 
 @Component
 @WebServlet("/account/deposit")
 public class DepositServlet extends HttpServlet {
 
+    private static final String ACCOUNT_NOT_FOUND = "Account not foun";
+    private static final String INVALID_INPUT = "Invalid input";
+    private static final String DATABASE_ERROR = "Database error";
+    private static final String DEPOSIT_WAS_SUCCESSFUL = "Deposit was successful";
     @Autowired
     private AccountService accountService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String jsonResponse;
-        int status = HttpServletResponse.SC_OK;
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
         try {
             String accountId = request.getParameter("accountId");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
 
             accountService.deposit(amount, accountId);
-            jsonResponse = "{\"message\":\"Deposit successful\"}";
-
+            sendResponse(response, HttpServletResponse.SC_OK, Map.of("message", DEPOSIT_WAS_SUCCESSFUL));
         } catch (NumberFormatException e) {
-            status = HttpServletResponse.SC_BAD_REQUEST;
-            jsonResponse = "{\"error\":\"Invalid input\"}";
+            handleError(response, HttpServletResponse.SC_BAD_REQUEST, INVALID_INPUT);
         } catch (NotFoundException e) {
-            status = HttpServletResponse.SC_NOT_FOUND;
-            jsonResponse = "{\"error\":\"Account not found\"}";
+            handleError(response, HttpServletResponse.SC_NOT_FOUND, ACCOUNT_NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            status = HttpServletResponse.SC_BAD_REQUEST;
-            jsonResponse = "{\"error\":\"" + e.getMessage() + "\"}";
+            handleError(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (SQLException e) {
-            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-            jsonResponse = "{\"error\":\"Database error\"}";
+            handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, DATABASE_ERROR);
         }
+    }
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+    private void sendResponse(HttpServletResponse response, int status, Map<String, String> message) throws IOException {
         response.setStatus(status);
+        String jsonResponse = new Gson().toJson(message);
         response.getWriter().write(jsonResponse);
     }
+
+    private void handleError(HttpServletResponse response, int status, String errorMessage) throws IOException {
+        sendResponse(response, status, Map.of("error", errorMessage));
+    }
+
 }
