@@ -29,8 +29,8 @@ public class CheckTest {
                 | Тип транзакции:       INTEREST |
                 | Банк отправителя:   SenderBank |
                 | Банк получателя: RecipientBank |
-                | Счет отправителя:            1 |
-                | Счет получателя:             2 |
+                | Счет отправителя:           1L |
+                | Счет получателя:            2L |
                 | Сумма:              100.00 BYN |
                 ----------------------------------
                 """;
@@ -42,8 +42,8 @@ public class CheckTest {
         int notRealId = -1;
         object.setNumber(notRealId);
         object.setDate(new Timestamp(5000));
-        object.setAccountSourceId(1L);
-        object.setAccountDestinationId(2L);
+        object.setAccountSourceId("1L");
+        object.setAccountDestinationId("2L");
         object.setAmount(new BigDecimal("100.0"));
         object.setSenderBankName("SenderBank");
         object.setRecipientBankName("RecipientBank");

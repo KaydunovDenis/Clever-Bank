@@ -112,11 +112,14 @@ public class AccountDao implements CrudRepository<Account, String> {
 
         Account sourceAccount = findById(accountSourceId).get();
         sourceAccount.withdrawBalance(amount);
-        Transaction withdrawTransaction = new Transaction(amount, createdAt, accountSourceId, accountDestinationId, TransactionType.WITHDRAW);
+        String sourceCurrency = sourceAccount.getCurrency();
+        Transaction withdrawTransaction = new Transaction(amount, createdAt, accountSourceId, accountDestinationId, TransactionType.WITHDRAW, sourceCurrency);
 
         Account destinationAccount = findById(accountDestinationId).get();
+        //TODO convert sourceCurrency, add table currency, add entity currency, add DAO and service
         destinationAccount.depositBalance(amount);
-        Transaction depositTransaction = new Transaction(amount, createdAt, accountDestinationId, accountSourceId, TransactionType.DEPOSIT);
+        String destinationCurrency = destinationAccount.getCurrency();
+        Transaction depositTransaction = new Transaction(amount, createdAt, accountDestinationId, accountSourceId, TransactionType.DEPOSIT,destinationCurrency);
 
         Connection connection = ConnectionManager.getConnection();
         try {
@@ -139,18 +142,18 @@ public class AccountDao implements CrudRepository<Account, String> {
         account.withdrawBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());
-        Transaction transaction = new Transaction(amount, createdAt, accountSourceId, null, TransactionType.WITHDRAW);
+        Transaction transaction = new Transaction(amount, createdAt, accountSourceId, null, TransactionType.WITHDRAW, account.getCurrency());
         updateWithTransaction(account, transaction);
     }
 
-    public void deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
+    public Transaction deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
         Account destinationAccount = findById(accountDestinationId).orElseThrow(() -> new NotFoundException("Account now found"));
         destinationAccount.depositBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());
-        //todo transactiom should save to database
-        Transaction transaction = new Transaction(amount, createdAt, null, accountDestinationId, TransactionType.DEPOSIT);
+        Transaction transaction = new Transaction(amount, createdAt, null, accountDestinationId, TransactionType.DEPOSIT, destinationAccount.getCurrency());
         updateWithTransaction(destinationAccount, transaction);
+        return transaction;
     }
 
 

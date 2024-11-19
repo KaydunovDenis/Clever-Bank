@@ -65,19 +65,22 @@ public class StatementTest {
                 new Timestamp(Date.valueOf("2024-10-08").getTime()),
                 "1L",
                 "2L",
-                TransactionType.WITHDRAW);
+                TransactionType.WITHDRAW,
+                "BYN");
         Transaction transaction2 = new Transaction(
                 BigDecimal.valueOf(2512.72),
                 new Timestamp(Date.valueOf("2024-10-09").getTime()),
                 "3L",
                 "1L",
-                TransactionType.DEPOSIT);
+                TransactionType.DEPOSIT,
+                "BYN");
         Transaction transaction3 = new Transaction(
                 BigDecimal.valueOf(512.72),
                 new Timestamp(Date.valueOf("2023-10-11").getTime()),
                 "3L",
                 "1L",
-                TransactionType.DEPOSIT);
+                TransactionType.DEPOSIT,
+                "BYN");
         return List.of(transaction1, transaction2, transaction3);
     }
 }

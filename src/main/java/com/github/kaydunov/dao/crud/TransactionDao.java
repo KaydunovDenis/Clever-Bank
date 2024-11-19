@@ -27,7 +27,8 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
 
     @Override
     public Transaction create(Transaction transaction) {
-        try (PreparedStatement statement = ConnectionManager.getConnection().prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS)) {
             statement.setBigDecimal(1, transaction.getAmount());
             statement.setTimestamp(2, transaction.getCreatedAt());
             statement.setInt(3, transaction.getTransactionType().ordinal() + 1); // Assuming the ordinal corresponds to the transaction_type_id
@@ -146,6 +147,7 @@ public class TransactionDao implements CrudRepository<Transaction, Long> {
         int transactionOrdinal = resultSet.getInt("transaction_type_id");
         TransactionType transactionType = TransactionType.getByOrdinal(transactionOrdinal);
         transaction.setTransactionType(transactionType);
+        transaction.setCurrency(resultSet.getString("currency"));
         return transaction;
     }
 }

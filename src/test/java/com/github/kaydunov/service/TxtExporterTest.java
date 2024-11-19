@@ -1,6 +1,8 @@
 package com.github.kaydunov.service;
 
+import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.dto.Statement;
+import com.github.kaydunov.entity.CheckTest;
 import com.github.kaydunov.entity.StatementTest;
 import com.github.kaydunov.exporter.FileExporter;
 import com.github.kaydunov.exporter.TxtExporter;
@@ -9,12 +11,14 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static org.junit.Assert.assertTrue;
+
 class TxtExporterTest {
 
     private final FileExporter target = new TxtExporter();
 
     @Test
-    void export() {
+    void checkFileNumber() {
         //Arrange Statement(s)
         Statement statement = StatementTest.getStatement();
 
@@ -37,6 +41,20 @@ class TxtExporterTest {
         } else {
             assert false;
         }
+    }
+
+    @Test
+    void export() {
+        Check check = CheckTest.getCheck();
+        String filename = "check/check_" + check.getNumber() + ".txt";
+        File file = new File(filename);
+        if (file.exists()) {
+            file.delete();
+        }
+        //Arrange Statement(s)
+        //Act Statement(s)
+        target.export(check);
+        assertTrue(file.exists());
     }
 
 
