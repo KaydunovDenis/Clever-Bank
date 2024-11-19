@@ -4,6 +4,7 @@ import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.entity.Bank;
 import com.github.kaydunov.exception.DaoException;
 import com.github.kaydunov.spring.Component;
+import javassist.NotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,6 +19,31 @@ public class BankDao implements CrudRepository<Bank, Long> {
     public static final String SQL_SELECT_ALL = "SELECT * FROM bank";
     public static final String SQL_UPDATE = "UPDATE bank SET name = ? WHERE id = ?";
     public static final String SQL_DELETE_BY_ID = "DELETE FROM bank WHERE id = ?";
+    private static final String GET_BANK_BY_ACCOUNT_ID = """
+                SELECT bank.*
+                FROM account
+                JOIN bank ON account.bank_id = bank.id
+                WHERE account.id = ?;
+            """;
+
+    public Bank getByAccountId(String accountId) throws NotFoundException {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_BANK_BY_ACCOUNT_ID)) {
+
+            statement.setString(1, accountId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return mapResultSetToBank(resultSet);
+                } else {
+                    throw new NotFoundException("Bank not found for account ID: " + accountId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e.getMessage(), e);
+        }
+    }
+
 
     @Override
     public Bank create(Bank bank) {

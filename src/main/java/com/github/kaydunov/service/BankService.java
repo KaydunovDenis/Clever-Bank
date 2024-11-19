@@ -4,6 +4,7 @@ import com.github.kaydunov.dao.crud.BankDao;
 import com.github.kaydunov.entity.Bank;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
+import javassist.NotFoundException;
 
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class BankService {
 
     public List<Bank> findAll() {
         return bankDao.findAll();
+    }
+
+    public Bank getByAccountId(String accountId) throws NotFoundException {
+        return bankDao.getByAccountId(accountId);
     }
 
 }
