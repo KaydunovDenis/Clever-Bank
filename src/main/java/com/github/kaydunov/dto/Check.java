@@ -35,8 +35,8 @@ public class Check extends Report {
     TransactionType type;
     String recipientBankName;
     String senderBankName;
-    Long accountSourceId;
-    Long accountDestinationId;
+    String accountSourceId;
+    String accountDestinationId;
     BigDecimal amount;
     String currency;
 
@@ -54,8 +54,8 @@ public class Check extends Report {
         sb.append(String.format("| Тип транзакции: %14s |%n", type));
         sb.append(String.format("| Банк отправителя: %12s |%n", senderBankName));
         sb.append(String.format("| Банк получателя: %10s |%n", recipientBankName));
-        sb.append(String.format("| Счет отправителя: %12d |%n", accountSourceId));
-        sb.append(String.format("| Счет получателя:%14d |%n", accountDestinationId));
+        sb.append(String.format("| Счет отправителя: %12s |%n", accountSourceId));
+        sb.append(String.format("| Счет получателя:%14s |%n", accountDestinationId));
         sb.append(String.format("| Сумма:        %12.2f %s |%n", amount, currency));
         sb.append("----------------------------------\n");
 
