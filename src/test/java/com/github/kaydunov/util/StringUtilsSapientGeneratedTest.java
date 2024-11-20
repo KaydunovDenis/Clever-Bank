@@ -38,4 +38,37 @@ class StringUtilsSapientGeneratedTest {
         //Assert statement(s)
         assertAll("result", () -> assertThat(result, equalTo(" 1 \n")));
     }
+
+    @Test
+    void alignTitleByCentre_whenIsEven() {
+        //Arrange Statement(s)
+
+        //Act Statement(s)
+        String result = StringUtils.alignByCentre("123456789", 16);
+
+        //Assert statement(s)
+        assertAll("result", () -> assertThat(result, equalTo("    123456789   ")));
+    }
+
+    @Test()
+    void alignTitleByCentre_whenIsOdd() {
+        //Arrange Statement(s)
+
+        //Act Statement(s)
+        String result = StringUtils.alignByCentre("0123456789", 16);
+
+        //Assert statement(s)
+        assertAll("result", () -> assertThat(result, equalTo("   0123456789   ")));
+    }
+
+    @Test()
+    void alignTitleByCentre_whenIsOddAndLineIsEven() {
+        //Arrange Statement(s)
+
+        //Act Statement(s)
+        String result = StringUtils.alignByCentre("0123456789", 15);
+
+        //Assert statement(s)
+        assertAll("result", () -> assertThat(result, equalTo("   0123456789  ")));
+    }
 }
