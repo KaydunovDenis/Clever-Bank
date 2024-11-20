@@ -38,17 +38,17 @@ public class CheckTest {
     }
 
     public static Check createCheck() {
-        Check object = new Check();
+        Check check = new Check();
         int notRealId = -1;
-        object.setNumber(notRealId);
-        object.setDate(new Timestamp(5000));
-        object.setAccountSourceId("1L");
-        object.setAccountDestinationId("2L");
-        object.setAmount(new BigDecimal("100.0"));
-        object.setSenderBankName("SenderBank");
-        object.setRecipientBankName("RecipientBank");
-        object.setType(TransactionType.INTEREST);
-        object.setCurrency("BYN");
-        return object;
+        check.setNumber(notRealId);
+        check.setDate(new Timestamp(5000));
+        check.setAccountSourceId("1L");
+        check.setAccountDestinationId("2L");
+        check.setAmount(new BigDecimal("100.0"));
+        check.setSenderBankName("SenderBank");
+        check.setRecipientBankName("RecipientBank");
+        check.setType(TransactionType.INTEREST);
+        check.setCurrency("BYN");
+        return check;
     }
 }

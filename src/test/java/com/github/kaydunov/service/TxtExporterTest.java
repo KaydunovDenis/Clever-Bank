@@ -6,12 +6,12 @@ import com.github.kaydunov.dto.CheckTest;
 import com.github.kaydunov.dto.StatementTest;
 import com.github.kaydunov.exporter.FileExporter;
 import com.github.kaydunov.exporter.TxtExporter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 class TxtExporterTest {
 
@@ -19,42 +19,42 @@ class TxtExporterTest {
 
     @Test
     void checkFileNumber() {
-        //Arrange Statement(s)
+        //Arrange
         Statement statement = StatementTest.getStatement();
 
-        //Act Statement(s)
+        //Act
         File file1 = target.export(statement);
         File file2 = target.export(statement);
 
-        //Assert statement(s)
-        Assertions.assertTrue(file1.exists());
-        Assertions.assertTrue(file2.exists());
+        //Assert
+          assertTrue(file1.exists());
+          assertTrue(file2.exists());
 
         int file1Number = getFileNumberFromName(file1);
         int file2Number = getFileNumberFromName(file2);
-        Assertions.assertTrue(file1Number < file2Number);
+          assertTrue(file1Number < file2Number);
 
         if (file1.exists() && file2.exists()) {
-            file1.delete();
-            file2.delete();
-            assert true;
-        } else {
-            assert false;
+            assertTrue(file1.delete());
+            assertTrue(file2.delete());
         }
     }
 
     @Test
     void export() {
+        //Arrange
         Check check = CheckTest.createCheck();
-        String filename = "check/check_" + check.getNumber() + ".txt";
-        File file = new File(filename);
-        if (file.exists()) {
-            file.delete();
+
+        //Act
+        File result = target.export(check);
+
+        //Assert
+          assertTrue(result.exists());
+          assertTrue(result.getPath().contains("check/check_"));
+          assertTrue(result.getPath().contains(".txt"));
+        if (result.exists()) {
+              assertTrue(result.delete());
         }
-        //Arrange Statement(s)
-        //Act Statement(s)
-        target.export(check);
-        assertTrue(file.exists());
     }
 
 
