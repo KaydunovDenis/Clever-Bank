@@ -1,20 +1,20 @@
 package com.github.kaydunov.service;
 
 import com.github.kaydunov.dao.AccountPercentDao;
-import com.github.kaydunov.dao.ConnectionManager;
 import com.github.kaydunov.dao.crud.AccountDao;
+import com.github.kaydunov.dao.crud.TransactionDaoTest;
+import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.entity.Account;
+import com.github.kaydunov.dto.CheckTest;
+import com.github.kaydunov.entity.Transaction;
 import javassist.NotFoundException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,102 +33,117 @@ class AccountServiceTest {
     private AccountDao accountDao;
     @Mock
     private AccountPercentDao accountPercentDao;
+    @Mock
+    private CheckService checkService;
     @InjectMocks
     private AccountService target;
 
     @BeforeEach
-    void setUp(){
-        try(MockedStatic<ConnectionManager> mockedStatic = Mockito.mockStatic(ConnectionManager.class)) {
-            when(ConnectionManager.getConnection()).thenReturn(Mockito.mock(Connection.class));
-            openMocks(this);
-        }
-
+    void setUp() {
+        openMocks(this);
     }
 
     @SneakyThrows
     @Test
     void transfer() {
-        // Given
-        // When
+        // Arrange
         doNothing().when(accountDao).transfer(amount, accountSourceId, accountDestinationId);
+        
+        // Act
         target.transfer(amount, accountSourceId, accountDestinationId);
-        // Then
+        
+        // Assert
         verify(accountDao).transfer(amount, accountSourceId, accountDestinationId);
     }
 
     @SneakyThrows
     @Test
     void withdraw() {
-        // Given
-        // When
+        // Arrange
         doNothing().when(accountDao).withdraw(amount, accountSourceId);
+        
+        // Act
         target.withdraw(amount, accountSourceId);
-        // Then
+        
+        // Assert
         verify(accountDao).withdraw(amount, accountSourceId);
     }
 
     @SneakyThrows
     @Test
     void deposit() {
-        // Given
-        // When
-        doNothing().when(accountDao).deposit(amount, accountDestinationId);
-        target.deposit(amount, accountDestinationId);
-        // Then
+        // Arrange
+        Transaction transaction = TransactionDaoTest.createTransaction();
+        Check check = CheckTest.createCheck();
+        when(accountDao.deposit(amount, accountDestinationId)).thenReturn(transaction);
+        when(checkService.create(any(), any(), any(), any(), any())).thenReturn(check);
+
+        // Act
+        target.deposit(amount, accountDestinationId, "txt");
+        
+        // Assert
         verify(accountDao).deposit(amount, accountDestinationId);
+        verify(checkService).create(null, accountDestinationId, amount, transaction.getTransactionType(), transaction.getCurrency());
     }
 
     @Test
     void getAll() {
-        // Given
+        // Arrange
         List<Account> accounts = new ArrayList<Account>();
-        // When
         when(accountDao.findAll()).thenReturn(accounts);
-        // Then
-        assertEquals(accounts, target.getAll());
+        
+        // Act
+        List<Account> result = target.getAll();
+        
+        // Assert
+        assertEquals(accounts, result);
     }
 
     @Test
     void chargePercents() {
-        // Given
-        // When
+        // Arrange
         doNothing().when(accountPercentDao).chargePercents(1.0);
+        
+        // Act
         target.chargePercents(1.0);
-        // Then
+        
+        // Assert
         verify(accountPercentDao).chargePercents(1.0);
     }
 
     @SneakyThrows
     @Test
     void getById_Positive() {
-        // Given
+        // Arrange
         Account account = mock(Account.class);
-        // When
         when(accountDao.findById(accountSourceId)).thenReturn(Optional.of(account));
+        
+        // Act
         target.getById(accountSourceId);
-        // Then
+        
+        // Assert
         verify(accountDao).findById(accountSourceId);
     }
 
     @Test
     void getById_Negative() {
-        // Given
-        Account account = mock(Account.class);
-        // When
+        // Arrange
         when(accountDao.findById(accountSourceId)).thenReturn(Optional.empty());
+        
+        // Act & Assert
         assertThrows(NotFoundException.class, () -> target.getById(accountSourceId));
-        // Then
         verify(accountDao).findById(accountSourceId);
     }
 
     @Test
     void deleteById() {
-        // Given
-        // When
+        // Arrange
         doNothing().when(accountDao).deleteById(accountSourceId);
+        
+        // Act
         target.deleteById(accountSourceId);
-        // Then
+        
+        // Assert
         verify(accountDao).deleteById(accountSourceId);
     }
-
 }

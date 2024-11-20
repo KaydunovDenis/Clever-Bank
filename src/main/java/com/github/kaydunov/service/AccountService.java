@@ -2,7 +2,11 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dao.AccountPercentDao;
 import com.github.kaydunov.dao.crud.AccountDao;
+import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.entity.Account;
+import com.github.kaydunov.entity.Transaction;
+import com.github.kaydunov.entity.TransactionType;
+import com.github.kaydunov.exporter.FileExporterFactory;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import javassist.NotFoundException;
@@ -17,6 +21,10 @@ public class AccountService {
     private AccountDao accountDao;
     @Autowired
     private AccountPercentDao accountPercentDao;
+    @Autowired
+    private CheckService checkService;
+    @Autowired
+    private FileExporterFactory fileExporterFactory;
 
     public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId) throws SQLException {
         accountDao.transfer(amount, accountSourceId, accountDestinationId);
@@ -26,8 +34,11 @@ public class AccountService {
         accountDao.withdraw(amount, accountSourceId);
     }
 
-    public void deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
-        accountDao.deposit(amount, accountDestinationId);
+    public void deposit(BigDecimal amount, String accountDestinationId, String format) throws SQLException, NotFoundException {
+        Transaction transaction = accountDao.deposit(amount, accountDestinationId);
+        String currency = transaction.getCurrency();
+        Check check = checkService.create(null, accountDestinationId, amount, TransactionType.DEPOSIT, currency);
+        fileExporterFactory.getExporter(format).export(check);
     }
 
     public List<Account> getAll(){
