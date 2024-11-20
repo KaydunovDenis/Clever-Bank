@@ -1,25 +1,22 @@
 package com.github.kaydunov.service;
 
-import javassist.NotFoundException;
+import com.github.kaydunov.dao.crud.BankDao;
+import com.github.kaydunov.entity.Bank;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.InjectMocks;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import java.util.List;
-import com.github.kaydunov.dao.crud.BankDao;
-import java.util.Optional;
-import java.util.ArrayList;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.github.kaydunov.entity.Bank;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
@@ -124,16 +121,16 @@ class BankServiceSapientGeneratedTest {
     }
 
     @Test
-    void getByAccountIdTest() throws NotFoundException {
+    void getByAccountIdTest() {
         //Arrange Statement(s)
-        when(bankDaoMock.getByAccountId("accountId")).thenReturn(bankMock);
+        when(bankDaoMock.getByAccountId("accountId")).thenReturn(Optional.of(bankMock));
 
         //Act Statement(s)
-        Bank result = target.getByAccountId("accountId");
+        Optional<Bank> result = target.getByAccountId("accountId");
 
         //Assert statement(s)
         assertAll("result", () -> {
-            assertThat(result, equalTo(bankMock));
+            assertThat(result.get(), equalTo(bankMock));
             verify(bankDaoMock).getByAccountId("accountId");
         });
     }

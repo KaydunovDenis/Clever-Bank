@@ -39,6 +39,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Statement extends Report {
 
+    static final DateTimeFormatter onlyDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    static final int LINE_WITH = 65;
+
     String clientName;
     String accountNumber;
     String currency;
@@ -48,10 +52,6 @@ public class Statement extends Report {
     LocalDate endOfPeriod;
     LocalDateTime generationDate;
     List<Transaction> transactions;
-
-    static final DateTimeFormatter onlyDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
-    static final int LINE_WITH = 65;
 
     @Override
     public String toString() {

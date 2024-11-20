@@ -26,7 +26,7 @@ public class BankDao implements CrudRepository<Bank, Long> {
                 WHERE account.id = ?;
             """;
 
-    public Bank getByAccountId(String accountId) throws NotFoundException {
+    public Optional<Bank> getByAccountId(String accountId) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(GET_BANK_BY_ACCOUNT_ID)) {
 
@@ -34,16 +34,15 @@ public class BankDao implements CrudRepository<Bank, Long> {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return mapResultSetToBank(resultSet);
+                    return Optional.of(mapResultSetToBank(resultSet));
                 } else {
-                    throw new NotFoundException("Bank not found for account ID: " + accountId);
+                    return Optional.empty();
                 }
             }
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e);
         }
     }
-
 
     @Override
     public Bank create(Bank bank) {

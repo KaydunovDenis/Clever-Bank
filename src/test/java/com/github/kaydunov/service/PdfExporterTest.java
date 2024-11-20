@@ -1,7 +1,7 @@
 package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Check;
-import com.github.kaydunov.entity.CheckTest;
+import com.github.kaydunov.dto.CheckTest;
 import com.github.kaydunov.exception.FileExporterException;
 import com.github.kaydunov.exporter.FileExporter;
 import com.github.kaydunov.exporter.PdfExporter;
@@ -23,7 +23,7 @@ class PdfExporterTest {
 
     @Test
     void export() {
-        Check check = CheckTest.getCheck();
+        Check check = CheckTest.createCheck();
         String filename = "check/check_" + check.getNumber() + ".txt";
         File file = new File(filename);
         if (file.exists()) {
@@ -47,7 +47,7 @@ class PdfExporterTest {
 
         // Act & Assert: ожидаем выброс исключения FileProcessorException
         FileExporterException thrown = assertThrows(FileExporterException.class, () -> {
-            target.export(CheckTest.getCheck());
+            target.export(CheckTest.createCheck());
         });
 
         assertEquals("Exception saving to file: invalid/path", thrown.getMessage(), "The exception message should contain the file path.");

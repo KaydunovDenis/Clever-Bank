@@ -2,8 +2,8 @@ package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.dto.Statement;
-import com.github.kaydunov.entity.CheckTest;
-import com.github.kaydunov.entity.StatementTest;
+import com.github.kaydunov.dto.CheckTest;
+import com.github.kaydunov.dto.StatementTest;
 import com.github.kaydunov.exporter.FileExporter;
 import com.github.kaydunov.exporter.TxtExporter;
 import org.junit.jupiter.api.Assertions;
@@ -45,7 +45,7 @@ class TxtExporterTest {
 
     @Test
     void export() {
-        Check check = CheckTest.getCheck();
+        Check check = CheckTest.createCheck();
         String filename = "check/check_" + check.getNumber() + ".txt";
         File file = new File(filename);
         if (file.exists()) {

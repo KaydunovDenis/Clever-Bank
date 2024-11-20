@@ -1,6 +1,7 @@
-package com.github.kaydunov.entity;
+package com.github.kaydunov.dto;
 
-import com.github.kaydunov.dto.Statement;
+import com.github.kaydunov.entity.Transaction;
+import com.github.kaydunov.entity.TransactionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 

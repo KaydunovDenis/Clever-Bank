@@ -13,12 +13,12 @@ public class FileExporterFactory {
     private List<FileExporter> exporters;
 
 
-    public FileExporter getExporter(String extension) {
-        String beanName = extension.toLowerCase() + "exporter";
+    public FileExporter getExporter(String format) {
+        String beanName = format.toLowerCase() + "exporter";
         return exporters.stream()
                 .filter(exporter -> getExporterName(exporter).equals(beanName))
                 .findFirst()
-                .orElseThrow(() -> new FileExporterException("Unsupported format: " + extension));
+                .orElseThrow(() -> new FileExporterException("Unsupported format: " + format));
     }
 
     private String getExporterName(FileExporter exporter) {
