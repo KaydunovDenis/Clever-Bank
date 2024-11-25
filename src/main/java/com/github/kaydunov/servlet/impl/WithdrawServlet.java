@@ -1,10 +1,10 @@
 package com.github.kaydunov.servlet.impl;
 
 import com.github.kaydunov.service.AccountService;
+import com.github.kaydunov.servlet.CommonHttpServlet;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javassist.NotFoundException;
@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 @Component
 @WebServlet("/account/withdraw")
-public class WithdrawServlet extends HttpServlet {
+public class WithdrawServlet extends CommonHttpServlet {
 
     @Autowired
     private AccountService accountService;
@@ -28,7 +28,7 @@ public class WithdrawServlet extends HttpServlet {
         try {
             String accountId = request.getParameter("accountId");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
-
+//TODO check implementation
             accountService.withdraw(amount, accountId);
             jsonResponse = "{\"message\":\"Withdrawal successful\"}";
 

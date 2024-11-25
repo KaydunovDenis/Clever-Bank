@@ -12,7 +12,7 @@ public class CommonHttpServlet extends HttpServlet {
     public static final String ACCOUNT_ID_URL_PARAMETER = "accountId";
     public static final String AMOUNT_URL_PARAMETER = "amount";
 
-    protected void sendResponse(HttpServletResponse response, int status, Map<String, String> message) throws IOException {
+    protected void sendResponse(HttpServletResponse response, int status, Map<String, Object> message) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(status);

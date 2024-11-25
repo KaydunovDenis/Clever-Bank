@@ -13,6 +13,10 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+/**
+ * This service create different statements for a defined account.
+ */
 @Component
 public class StatementService {
     @Autowired
@@ -22,11 +26,23 @@ public class StatementService {
     @Autowired
     private UserService userService;
 
+    public Statement getStatement(String userId, int year, int month) throws NotFoundException {
+        if (month > 0) {
+            return createMonthlyStatement(userId, year, month);
+        } else if (year > 0) {
+            return createYearlyStatement(userId, year);
+        } else {
+            return createFullPeriodStatement(userId);
+        }
+    }
+
+
+
     /**
      * Creates a statement with the specified account id and
      * the current date.
      */
-    public Statement createByAccountId(String accountId) throws NotFoundException {
+    public Statement createFullPeriodStatement(String accountId) throws NotFoundException {
         Account account = accountService.getById(accountId);
         Timestamp startDate = account.getCreatedAt();
         Timestamp endDate = DateConverter.getCurrentTimestamp();
@@ -40,7 +56,7 @@ public class StatementService {
      * @param accountId
      * @param year
      */
-    public Statement createByAccountIdAndYear(String accountId, int year) throws NotFoundException {
+    public Statement createYearlyStatement(String accountId, int year) throws NotFoundException {
         Timestamp startDate = DateConverter.toTimestamp(year);
         Timestamp endDate = DateConverter.toTimestamp(++year);
         return createStatement(accountId, startDate, endDate);
@@ -53,7 +69,10 @@ public class StatementService {
      * @param accountId
      * @param month of year 1-12
      */
-    public Statement createByAccountIdAndMonth(String accountId, int year, int month) throws NotFoundException {
+    public Statement createMonthlyStatement(String accountId, int year, int month) throws NotFoundException {
+        if (year == 0) {
+            year = LocalDateTime.now().getYear();
+        }
         Timestamp startDate = DateConverter.toTimestamp(year, month);
         Timestamp endDate = DateConverter.toTimestamp(year, ++month);
         return createStatement(accountId, startDate, endDate);
