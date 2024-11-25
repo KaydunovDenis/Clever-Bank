@@ -1,5 +1,6 @@
 package com.github.kaydunov.servlet.impl;
 
+import com.github.kaydunov.servlet.CommonHttpServlet;
 import com.github.kaydunov.util.HTMLFileToStringConverter;
 import com.github.kaydunov.spring.Component;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,7 +13,7 @@ import java.io.PrintWriter;
 
 @Component
 @WebServlet("")
-public class GreetingPageServlet extends HttpServlet {
+public class GreetingPageServlet extends CommonHttpServlet {
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)  {

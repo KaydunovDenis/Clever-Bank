@@ -20,7 +20,7 @@ public class StatementTest {
     @Test()
     void toStringTest() {
         //Arrange Statement(s)
-        Statement target = getStatement();
+        Statement target = createStatement();
 
         //Act Statement(s)
         String result = target.toString();
@@ -46,7 +46,7 @@ public class StatementTest {
         assertEquals(expectedCheck, result);
     }
 
-    public static Statement getStatement() {
+    public static Statement createStatement() {
         Statement statement = new Statement();
         statement.setClientName("Сотников Кирилл Артёмович ");
         statement.setAccountNumber("AS12 ASDG 1200 2132 ASDA 353A 2132");

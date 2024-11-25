@@ -8,11 +8,16 @@ import java.io.File;
  */
 public abstract class Report {
 
+    private String fileDirectory;
+
     /**
      * Returns the directory where the report will be saved.
      */
     public String getFileDirectory() {
-        return getReportType().toLowerCase();
+        if (fileDirectory == null) {
+            fileDirectory = getReportType().toLowerCase();
+        }
+        return fileDirectory;//TODO fix package to statement-money
     }
 
     /**

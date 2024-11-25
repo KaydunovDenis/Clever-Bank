@@ -64,13 +64,13 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void testCreateByAccountId() throws NotFoundException {
+    void testCreateFullPeriodStatement() throws NotFoundException {
         String accountId = "123";
         when(accountService.getById(accountId)).thenReturn(account);
         when(transactionService.findByAccountIdAndDateRange(eq(accountId), any(), any()))
                 .thenReturn(transactions);
         when(userService.findById(USER_ID)).thenReturn(user);
-        Statement result = statementService.createByAccountId(accountId);
+        Statement result = statementService.createFullPeriodStatement(accountId);
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
         assertEquals(accountId, result.getAccountNumber());
@@ -86,12 +86,12 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void testCreateByAccountId_throwsException() throws NotFoundException {
+    void testCreateFullPeriodStatement_throwsException() throws NotFoundException {
         //Arrange
         String accountId = "123";
         when(accountService.getById(accountId)).thenThrow(new NotFoundException("Account not found"));
         //Act
-        assertThrows(NotFoundException.class, () -> statementService.createByAccountId(accountId));
+        assertThrows(NotFoundException.class, () -> statementService.createFullPeriodStatement(accountId));
         //Assert
         verify(accountService).getById(accountId);
         verify(userService, never()).findById(any());
@@ -100,7 +100,7 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void testCreateByAccountIdByAccountIdAndYear() throws NotFoundException {
+    void testCreateByAccountIdFullReportAndYear() throws NotFoundException {
         //Arrange
         String accountId = "123";
         int year = 2023;
@@ -108,7 +108,7 @@ class StatementServiceSapientGeneratedTest {
         when(userService.findById(USER_ID)).thenReturn(user);
         when(transactionService.findByAccountIdAndDateRange(eq(accountId), any(Timestamp.class), any(Timestamp.class))).thenReturn(transactions);
         //Act
-        Statement result = statementService.createByAccountIdAndYear(accountId, year);
+        Statement result = statementService.createYearlyStatement(accountId, year);
         //Assert
         assertNotNull(result);
         assertEquals("John Doe", result.getClientName());
@@ -120,13 +120,13 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void createByAccountIdAndYear_ThrowsNotFoundException() throws NotFoundException {
+    void createFullPeriodStatementAndYear_ThrowsNotFoundException() throws NotFoundException {
         //Arrange
         String accountId = "123";
         int year = 2023;
         when(accountService.getById(accountId)).thenThrow(new NotFoundException("Account not found"));
         //Act
-        assertThrows(NotFoundException.class, () -> statementService.createByAccountIdAndYear(accountId, year));
+        assertThrows(NotFoundException.class, () -> statementService.createYearlyStatement(accountId, year));
         //Assert
         verify(accountService).getById(accountId);
         verify(userService, never()).findById(any());
@@ -135,7 +135,7 @@ class StatementServiceSapientGeneratedTest {
     }
 
     @Test
-    void testCreateByAccountIdByAccountIdAndMonth() throws NotFoundException {
+    void testCreateByAccountIdFullReportAndMonth() throws NotFoundException {
         //Arrange
         String accountId = "123";
         int year = 2024;
@@ -147,7 +147,7 @@ class StatementServiceSapientGeneratedTest {
         Long userId = account.getUserId();
         when(userService.findById(userId)).thenReturn(user);
         //Act
-        Statement result = statementService.createByAccountIdAndMonth(accountId, year, month);
+        Statement result = statementService.createMonthlyStatement(accountId, year, month);
         //Assert
         verify(transactionService).findByAccountIdAndDateRange(eq(accountId), any(), any());
         verify(accountService).getById(accountId);

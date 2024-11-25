@@ -20,7 +20,7 @@ class TxtExporterTest {
     @Test
     void checkFileNumber() {
         //Arrange
-        Statement statement = StatementTest.getStatement();
+        Statement statement = StatementTest.createStatement();
 
         //Act
         File file1 = target.export(statement);
@@ -41,7 +41,7 @@ class TxtExporterTest {
     }
 
     @Test
-    void export() {
+    void exportCheckToTxt() {
         //Arrange
         Check check = CheckTest.createCheck();
 
@@ -54,6 +54,23 @@ class TxtExporterTest {
           assertTrue(result.getPath().contains(".txt"));
         if (result.exists()) {
               assertTrue(result.delete());
+        }
+    }
+
+    @Test
+    void exportStatementToTxt() {
+        //Arrange
+        Statement statement = StatementTest.createStatement();
+
+        //Act
+        File result = target.export(statement);
+
+        //Assert
+        assertTrue(result.exists());
+        assertTrue(result.getPath().contains("statement-money/statement_"));
+        assertTrue(result.getPath().contains(".txt"));
+        if (result.exists()) {
+            assertTrue(result.delete());
         }
     }
 
