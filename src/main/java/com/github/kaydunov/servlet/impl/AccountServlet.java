@@ -3,6 +3,7 @@ package com.github.kaydunov.servlet.impl;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.service.AccountService;
+import com.github.kaydunov.servlet.CommonHttpServlet;
 import com.github.kaydunov.servlet.ObjectMapperWrapper;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Component
 @WebServlet("/account")
-public class AccountServlet extends HttpServlet {
+public class AccountServlet extends CommonHttpServlet {
     private static final String ACCOUNT_NOT_FOUND = "Account not found";
     @Autowired
     private ObjectMapperWrapper mapper;

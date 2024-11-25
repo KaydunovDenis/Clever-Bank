@@ -1,6 +1,7 @@
 package com.github.kaydunov.servlet.impl;
 
 import com.github.kaydunov.service.AccountService;
+import com.github.kaydunov.servlet.CommonHttpServlet;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import com.google.gson.Gson;
@@ -17,22 +18,23 @@ import java.util.Map;
 
 @Component
 @WebServlet("/account/deposit")
-public class DepositServlet extends HttpServlet {
+public class DepositServlet extends CommonHttpServlet {
 
     private static final String INVALID_INPUT = "Invalid input";
     private static final String DATABASE_ERROR = "Database error";
     private static final String DEPOSIT_WAS_SUCCESSFUL = "Deposit was successful";
+    private static final String FORMAT_URL_PARAMETER = "format";
+    private static final String DEFAULT_FORMAT = "txt";
+
     @Autowired
     private AccountService accountService;
 
+    //TODO handle IOException
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
         try {
-            String accountId = request.getParameter("accountId");
-            BigDecimal amount = new BigDecimal(request.getParameter("amount"));
+            String accountId = request.getParameter(ACCOUNT_ID_URL_PARAMETER);
+            BigDecimal amount = new BigDecimal(request.getParameter(AMOUNT_URL_PARAMETER));
             String format = getFormat(request);
 
             accountService.deposit(amount, accountId, format);
@@ -49,21 +51,13 @@ public class DepositServlet extends HttpServlet {
     }
 
     private String getFormat(HttpServletRequest request) {
-        String format = request.getParameter("format");
+        String format = request.getParameter(FORMAT_URL_PARAMETER);
         if (format == null || format.isBlank()) {
-            format = "txt"; // Дефолтный формат
+            format = DEFAULT_FORMAT; // Дефолтный формат
         }
         return format;
     }
 
-    private void sendResponse(HttpServletResponse response, int status, Map<String, String> message) throws IOException {
-        response.setStatus(status);
-        String jsonResponse = new Gson().toJson(message);
-        response.getWriter().write(jsonResponse);
-    }
 
-    private void handleError(HttpServletResponse response, int status, String errorMessage) throws IOException {
-        sendResponse(response, status, Map.of("error", errorMessage));
-    }
 
 }
