@@ -28,10 +28,13 @@ public class AccountService {
 
     public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId) throws SQLException {
         accountDao.transfer(amount, accountSourceId, accountDestinationId);
+        //TODO add saving of check
     }
+
 
     public void withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
         accountDao.withdraw(amount, accountSourceId);
+        //TODO add saving of check
     }
 
     public void deposit(BigDecimal amount, String accountDestinationId, String format) throws SQLException, NotFoundException {

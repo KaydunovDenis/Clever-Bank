@@ -42,6 +42,7 @@ public class Statement extends Report {
     static final DateTimeFormatter onlyDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
     static final int LINE_WITH = 65;
+    String fileDirectory = "statement-money";
 
     String clientName;
     String accountNumber;
