@@ -1,7 +1,7 @@
 package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Check;
-import com.github.kaydunov.entity.TransactionType;
+import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
 import com.github.kaydunov.util.DateConverter;
@@ -20,8 +20,7 @@ public class CheckService {
     public Check create(String accountSourceId,
                         String accountDestinationId,
                         BigDecimal amount,
-                        TransactionType transactionType,
-                        String currency) {
+                        Transaction transaction) {
         Check check = new Check();
         int id = check.getNextNumber();
         check.setNumber(id);
@@ -32,8 +31,8 @@ public class CheckService {
         check.setAmount(amount);
         check.setSenderBankName(bankService.getBankName(accountSourceId));
         check.setRecipientBankName(bankService.getBankName(accountDestinationId));
-        check.setType(transactionType);
-        check.setCurrency(currency);
+        check.setType(transaction.getTransactionType());
+        check.setCurrency(transaction.getCurrency());
         return check;
     }
 }
