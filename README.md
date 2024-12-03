@@ -78,4 +78,6 @@ Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors.
 
 [Documentation](docs/index.html)
 
+### Resources:
+https://app.exchangerate-api.com/ - third API to get currency rates
 
