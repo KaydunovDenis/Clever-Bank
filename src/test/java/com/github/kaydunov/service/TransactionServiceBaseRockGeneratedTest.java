@@ -24,7 +24,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.hamcrest.Matchers.is;
 
 @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-class TransactionServiceSapientGeneratedTest {
+class TransactionServiceBaseRockGeneratedTest {
 
     private final TransactionDao transactionDaoMock = mock(TransactionDao.class, "transactionDao");
 
@@ -48,10 +48,8 @@ class TransactionServiceSapientGeneratedTest {
         doReturn(transactionMock).when(transactionDaoMock).create(transactionMock2);
         target = new TransactionService();
         autoCloseableMocks = MockitoAnnotations.openMocks(this);
-        
         //Act Statement(s)
         Transaction result = target.save(transactionMock2);
-        
         //Assert statement(s)
         assertAll("result", () -> {
             assertThat(result, equalTo(transactionMock));
@@ -70,7 +68,6 @@ class TransactionServiceSapientGeneratedTest {
         final NotFoundException result = assertThrows(NotFoundException.class, () -> {
             target.findById(0L);
         });
-        
         //Assert statement(s)
         assertAll("result", () -> {
             assertThat(result, is(notNullValue()));
@@ -86,10 +83,8 @@ class TransactionServiceSapientGeneratedTest {
         doReturn(transactionList).when(transactionDaoMock).findAll();
         target = new TransactionService();
         autoCloseableMocks = MockitoAnnotations.openMocks(this);
-        
         //Act Statement(s)
         List<Transaction> result = target.findAll();
-        
         //Assert statement(s)
         assertAll("result", () -> {
             assertThat(result, equalTo(transactionList));
@@ -104,10 +99,8 @@ class TransactionServiceSapientGeneratedTest {
         doNothing().when(transactionDaoMock).deleteById(0L);
         target = new TransactionService();
         autoCloseableMocks = MockitoAnnotations.openMocks(this);
-        
         //Act Statement(s)
         target.delete(0L);
-        
         //Assert statement(s)
         assertAll("result", () -> verify(transactionDaoMock).deleteById(0L));
     }
@@ -122,10 +115,8 @@ class TransactionServiceSapientGeneratedTest {
         doReturn(transactionList).when(transactionDaoMock).findByAccountIdAndDateRange("accountId1", timestamp, timestamp2);
         target = new TransactionService();
         autoCloseableMocks = MockitoAnnotations.openMocks(this);
-        
         //Act Statement(s)
         List<Transaction> result = target.findByAccountIdAndDateRange("accountId1", timestamp, timestamp2);
-        
         //Assert statement(s)
         assertAll("result", () -> {
             assertThat(result, equalTo(transactionList));

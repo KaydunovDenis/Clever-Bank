@@ -23,8 +23,6 @@ public class DepositServlet extends CommonHttpServlet {
     private static final String INVALID_INPUT = "Invalid input";
     private static final String DATABASE_ERROR = "Database error";
     private static final String DEPOSIT_WAS_SUCCESSFUL = "Deposit was successful";
-    private static final String FORMAT_URL_PARAMETER = "format";
-    private static final String DEFAULT_FORMAT = "txt";
 
     @Autowired
     private AccountService accountService;
@@ -50,13 +48,7 @@ public class DepositServlet extends CommonHttpServlet {
         }
     }
 
-    private String getFormat(HttpServletRequest request) {
-        String format = request.getParameter(FORMAT_URL_PARAMETER);
-        if (format == null || format.isBlank()) {
-            format = DEFAULT_FORMAT; // Дефолтный формат
-        }
-        return format;
-    }
+
 
 
 

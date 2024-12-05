@@ -28,8 +28,7 @@ public class WithdrawServlet extends CommonHttpServlet {
         try {
             String accountId = request.getParameter("accountId");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
-//TODO check implementation
-            accountService.withdraw(amount, accountId);
+            accountService.withdraw(amount, accountId, getFormat(request));
             jsonResponse = "{\"message\":\"Withdrawal successful\"}";
 
         } catch (NumberFormatException e) {

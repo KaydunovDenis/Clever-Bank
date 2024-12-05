@@ -51,20 +51,7 @@ public class AccountServlet extends CommonHttpServlet {
     @SneakyThrows
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            // Parse JSON into Transaction object
-            Transaction transaction = mapper.readValue(request.getInputStream(), Transaction.class);
-
-            // Perform the requested operation
-            BigDecimal amount = transaction.getAmount();
-            String accountSourceId = transaction.getSourceAccountId();
-            String accountDestinationId = transaction.getDestinationAccountId();
-            accountService.transfer(amount, accountSourceId, accountDestinationId);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().println("Error: " + e.getMessage());
-        }
+        //TODO  implementation
     }
 
     @SneakyThrows

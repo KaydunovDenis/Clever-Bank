@@ -107,43 +107,16 @@ public class AccountDao implements CrudRepository<Account, String> {
         }
     }
 
-    public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId) throws SQLException {
-        Timestamp createdAt = Timestamp.from(Instant.now());
 
-        Account sourceAccount = findById(accountSourceId).get();
-        sourceAccount.withdrawBalance(amount);
-        String sourceCurrency = sourceAccount.getCurrency();
-        Transaction withdrawTransaction = new Transaction(amount, createdAt, accountSourceId, accountDestinationId, TransactionType.WITHDRAW, sourceCurrency);
 
-        Account destinationAccount = findById(accountDestinationId).get();
-        //TODO convert sourceCurrency, add table currency, add entity currency, add DAO and service
-        destinationAccount.depositBalance(amount);
-        String destinationCurrency = destinationAccount.getCurrency();
-        Transaction depositTransaction = new Transaction(amount, createdAt, accountDestinationId, accountSourceId, TransactionType.DEPOSIT,destinationCurrency);
-
-        Connection connection = ConnectionManager.getConnection();
-        try {
-            connection.setAutoCommit(false);
-
-            updateWithTransaction(sourceAccount, withdrawTransaction);
-            updateWithTransaction(destinationAccount, depositTransaction);
-
-            connection.commit();
-            log.info("Transfer %s from %f account to %f account was successfully completed.", amount, accountSourceId, accountDestinationId);
-        } catch (SQLException e) {
-            connection.rollback();
-            log.info("Transfer was automatically rolled back. Reason: {}", e.getMessage());
-            throw new SQLTransactionRollbackException(e.getMessage(), e);
-        }
-    }
-
-    public void withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
+    public Transaction withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
         Account account = findById(accountSourceId).orElseThrow(() -> new NotFoundException("Account not found: " + accountSourceId));
         account.withdrawBalance(amount);
 
         Timestamp createdAt = Timestamp.from(Instant.now());
         Transaction transaction = new Transaction(amount, createdAt, accountSourceId, null, TransactionType.WITHDRAW, account.getCurrency());
         updateWithTransaction(account, transaction);
+        return transaction;
     }
 
     public Transaction deposit(BigDecimal amount, String accountDestinationId) throws SQLException, NotFoundException {
@@ -157,7 +130,7 @@ public class AccountDao implements CrudRepository<Account, String> {
     }
 
 
-    private void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
+    public void updateWithTransaction(Account account, Transaction transaction) throws SQLException {
         Connection connection = ConnectionManager.getConnection();
         try {
             connection.setAutoCommit(false);

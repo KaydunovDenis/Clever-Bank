@@ -57,18 +57,7 @@ class AccountServiceTest {
         Mockito.reset(accountDao);
     }
 
-    @SneakyThrows
-    @Test
-    void transfer() {
-        // Arrange
-        doNothing().when(accountDao).transfer(amount, accountSourceId, accountDestinationId);
 
-        // Act
-        target.transfer(amount, accountSourceId, accountDestinationId);
-
-        // Assert
-        verify(accountDao).transfer(amount, accountSourceId, accountDestinationId);
-    }
 
     @SneakyThrows
     @Test
@@ -77,7 +66,7 @@ class AccountServiceTest {
         doNothing().when(accountDao).withdraw(amount, accountSourceId);
 
         // Act
-        target.withdraw(amount, accountSourceId);
+        target.withdraw(amount, accountSourceId, "txt");
 
         // Assert
         verify(accountDao).withdraw(amount, accountSourceId);
@@ -91,7 +80,7 @@ class AccountServiceTest {
         Check check = CheckTest.createCheck();
         String fileFormat = "txt";
         when(accountDao.deposit(amount, accountDestinationId)).thenReturn(transaction);
-        when(checkService.create(any(), any(), any(), any(), any())).thenReturn(check);
+        when(checkService.create(any(), any(), any(), any())).thenReturn(check);
         when(fileExporterFactory.getExporter(fileFormat)).thenReturn(txtExporter);
         when(txtExporter.export(check)).thenReturn(mock(File.class));
 
@@ -100,7 +89,7 @@ class AccountServiceTest {
 
         // Assert
         verify(accountDao).deposit(amount, accountDestinationId);
-        verify(checkService).create(null, accountDestinationId, amount, transaction.getTransactionType(), transaction.getCurrency());
+        verify(checkService).create(null, accountDestinationId, amount, transaction);
         verify(fileExporterFactory).getExporter(fileFormat);
     }
 

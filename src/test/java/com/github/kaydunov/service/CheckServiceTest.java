@@ -1,6 +1,7 @@
 package com.github.kaydunov.service;
 
 import com.github.kaydunov.dto.Check;
+import com.github.kaydunov.entity.Transaction;
 import com.github.kaydunov.entity.TransactionType;
 import com.github.kaydunov.util.DateConverter;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,9 @@ class CheckServiceTest {
         String accountDestinationId = "destination456";
         BigDecimal amount = new BigDecimal("1000.00");
         TransactionType transactionType = TransactionType.DEPOSIT;
+        Timestamp createdAt = DateConverter.getCurrentTimestamp();
         String currency = "USD";
+        Transaction transaction = new Transaction(amount, createdAt, accountSourceId, accountDestinationId, transactionType, currency);
 
         // Mocking the bankService calls
         when(bankService.getBankName(accountSourceId)).thenReturn("Sender Bank");
@@ -48,7 +51,7 @@ class CheckServiceTest {
             mockedDateConverter.when(DateConverter::getCurrentTimestamp).thenReturn(mockTimestamp);
 
             // Act
-            Check result = checkService.create(accountSourceId, accountDestinationId, amount, transactionType, currency);
+            Check result = checkService.create(accountSourceId, accountDestinationId, amount, transaction);
 
             // Assert
             assertNotNull(result);

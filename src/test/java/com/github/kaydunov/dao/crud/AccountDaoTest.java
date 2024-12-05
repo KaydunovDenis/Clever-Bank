@@ -185,40 +185,6 @@ class AccountDaoTest {
     }
 
     @Test
-    void transferTest() throws SQLException {
-        //Arrange Statement(s)
-        Account accountMock = mock(Account.class);
-        Account accountMock2 = mock(Account.class);
-        Transaction transactionMock = mock(Transaction.class);
-        Transaction transactionMock2 = mock(Transaction.class);
-        try (MockedStatic<ConnectionManager> connectionManager = mockStatic(ConnectionManager.class)) {
-            connectionManager.when(ConnectionManager::getConnection).thenReturn(connectionMock);
-            target = spy(new AccountDao());
-            autoCloseableMocks = openMocks(this);
-            doReturn(Optional.of(accountMock)).when(target).findById("1");
-            doNothing().when(accountMock).withdrawBalance(any());
-            doReturn(Optional.of(accountMock2)).when(target).findById("987654321");
-            doNothing().when(accountMock2).depositBalance(any());
-            doNothing().when(target).update(accountMock);
-            doNothing().when(target).update(accountMock2);
-            doReturn(transactionMock, transactionMock2).when(transactionDao).create(any());
-            //Act Statement(s)
-            target.transfer(new BigDecimal("100.0"), "1", "987654321");
-            //Assert statement(s)
-            assertAll("result", () -> {
-                connectionManager.verify(ConnectionManager::getConnection, atLeast(1));
-                verify(target).findById("1");
-                verify(accountMock).withdrawBalance(any());
-                verify(target).findById("987654321");
-                verify(accountMock2).depositBalance(any());
-                verify(target).update(accountMock);
-                verify(target).update(accountMock2);
-                verify(transactionDao, atLeast(2)).create(any());
-            });
-        }
-    }
-
-    @Test
     void withdrawTest() throws SQLException, NotFoundException {
         Account accountMock = mock(Account.class);
         Transaction transactionMock = mock(Transaction.class);

@@ -105,7 +105,7 @@ class AccountServletTest {
             verify(requestMock).getInputStream();
             verify(responseMock).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             verify(responseMock).getWriter();
-            verify(accountService, never()).transfer(any(), anyString(), anyString());
+            verify(accountService, never()).transfer(any(), anyString(), anyString(), anyString());
         });
     }
 
@@ -128,7 +128,7 @@ class AccountServletTest {
             verify(requestMock).getInputStream();
             verify(responseMock).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             verify(responseMock).getWriter();
-            verify(accountService, never()).transfer(any(), anyString(), anyString());
+            verify(accountService, never()).transfer(any(), anyString(), anyString(), anyString());
         });
     }
 
@@ -137,7 +137,7 @@ class AccountServletTest {
         // When
         when(requestMock.getInputStream()).thenReturn(servletInputStreamMock);
         when(objectMapper.readValue(servletInputStreamMock, Transaction.class)).thenReturn(getTransaction());
-        doNothing().when(accountService).transfer(any(BigDecimal.class), eq(accountSourceId), eq(accountDestinationId));
+        doNothing().when(accountService).transfer(any(BigDecimal.class), eq(accountSourceId), eq(accountDestinationId), eq("txt"));
 
         // Act
         target.doPost(requestMock, responseMock);
@@ -146,7 +146,7 @@ class AccountServletTest {
         assertAll("result", () -> {
             verify(requestMock).getInputStream();
             verify(objectMapper).readValue(any(InputStream.class), eq(Transaction.class));
-            verify(accountService).transfer(BigDecimal.valueOf(100), accountSourceId, accountDestinationId);
+            verify(accountService).transfer(BigDecimal.valueOf(100), accountSourceId, accountDestinationId, "txt");
             verify(responseMock).setStatus(HttpServletResponse.SC_OK);
         });
     }
