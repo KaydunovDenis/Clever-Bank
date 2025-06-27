@@ -5,7 +5,6 @@ import com.github.kaydunov.dao.crud.AccountDao;
 import com.github.kaydunov.dto.Check;
 import com.github.kaydunov.entity.Account;
 import com.github.kaydunov.entity.Transaction;
-import com.github.kaydunov.entity.TransactionType;
 import com.github.kaydunov.exporter.FileExporterFactory;
 import com.github.kaydunov.spring.Autowired;
 import com.github.kaydunov.spring.Component;
@@ -24,23 +23,26 @@ public class AccountService {
     @Autowired
     private CheckService checkService;
     @Autowired
+    private  TransferService transferService;
+    @Autowired
     private FileExporterFactory fileExporterFactory;
 
-    public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId) throws SQLException {
-        accountDao.transfer(amount, accountSourceId, accountDestinationId);
+    public void transfer(BigDecimal amount, String accountSourceId, String accountDestinationId, String format) throws SQLException {
+        Transaction transaction = transferService.transfer(amount, accountSourceId, accountDestinationId);
         //TODO add saving of check
+        Check check = checkService.create(accountSourceId, accountDestinationId, amount, transaction);
     }
 
 
-    public void withdraw(BigDecimal amount, String accountSourceId) throws SQLException, NotFoundException {
-        accountDao.withdraw(amount, accountSourceId);
-        //TODO add saving of check
+    public void withdraw(BigDecimal amount, String accountSourceId, String format) throws SQLException, NotFoundException {
+        Transaction transaction = accountDao.withdraw(amount, accountSourceId);
+        Check check = checkService.create(accountSourceId, null, amount, transaction);
+        fileExporterFactory.getExporter(format).export(check);
     }
 
     public void deposit(BigDecimal amount, String accountDestinationId, String format) throws SQLException, NotFoundException {
         Transaction transaction = accountDao.deposit(amount, accountDestinationId);
-        String currency = transaction.getCurrency();
-        Check check = checkService.create(null, accountDestinationId, amount, TransactionType.DEPOSIT, currency);
+        Check check = checkService.create(null, accountDestinationId, amount, transaction);
         fileExporterFactory.getExporter(format).export(check);
     }
 

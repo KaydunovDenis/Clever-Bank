@@ -8,6 +8,7 @@ import com.github.kaydunov.servlet.ObjectMapperWrapper;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.jdt.internal.compiler.util.SortedCharArrays;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -130,6 +133,7 @@ class AccountServletTest {
             verify(responseMock).getWriter();
             verify(accountService, never()).transfer(any(), anyString(), anyString(), anyString());
         });
+
     }
 
     @Test
@@ -160,5 +164,31 @@ class AccountServletTest {
         transaction.setSourceAccountId(accountSourceId);
         transaction.setDestinationAccountId(accountDestinationId);
         return transaction;
+    }
+
+    @Test
+    void test() {
+        //String s = "Hello world";
+        int[] nums = new int[]{1, 2, 2, 3, 1};
+        assertEquals(3, findUniqueNumberInTheList(nums));
+        nums = new int[]{4, 1, 2, 1, 2};
+        assertEquals(4, findUniqueNumberInTheList(nums));
+        nums = new int[]{1};
+        assertEquals(1, findUniqueNumberInTheList(nums));
+
+    }
+
+    public int findUniqueNumberInTheList(int[] nums) {
+        List<Integer> sortedList = Arrays.stream(nums).boxed().sorted().toList();
+        for (int i = 0; i <= sortedList.size(); i = i + 2) {
+            if (i == sortedList.size() - 1) {
+                return sortedList.get(i);
+            }
+            if (sortedList.get(i).equals(sortedList.get(i + 1))) {
+                continue;
+            }
+            return sortedList.get(i);
+        }
+        return 0;
     }
 }
